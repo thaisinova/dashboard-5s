@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -281,14 +282,11 @@ header {
   * { -webkit-print-color-adjust:exact!important; print-color-adjust:exact!important; }
   body { background:#fff!important; color:#2A2725!important; font-size:11px!important; }
 
-  /* Ocultar controles, abas extras, seletor de ano */
   header .hbts, header .hcontrols,
   .overlay, #tab-placar, #tab-trimestral, #tab-anual,
   .chart-box, .legend { display:none!important; }
-  /* esconder o bloco do seletor de ano (div após segundo logo-sep) */
   .logo ~ div[style] { display:none!important; }
 
-  /* Header fixo — repete em todas as páginas */
   header {
     position:fixed!important; top:0; left:0; right:0; z-index:9999;
     height:38px!important; padding:0 14px!important;
@@ -300,14 +298,12 @@ header {
   .logo img { height:18px!important; }
   .logo-info h1 { font-size:10px!important; color:#fff!important; }
   .logo-info p  { display:none!important; }
-  /* Ocultar seletor de ano e separador extra */
   .logo-sep:nth-of-type(2), .logo-sep ~ div { display:none!important; }
   .print-title {
     display:block!important; font-size:10px!important; font-weight:900;
     letter-spacing:2px; text-transform:uppercase; color:#C8102E!important; margin-left:auto;
   }
 
-  /* Empurrar conteúdo para baixo do header fixo */
   .tab-panel { display:none!important; }
   #tab-mensal { display:block!important; }
   #tab-mensal .main { padding:50px 8px 12px!important; max-width:100%!important; }
@@ -315,7 +311,6 @@ header {
   .slabel { font-size:8px!important; margin-bottom:5px!important; }
   .slabel::after { display:none!important; }
 
-  /* KPI 2×2 */
   .kpis { grid-template-columns:repeat(2,1fr)!important; gap:5px!important; }
   .card { padding:7px 10px 6px!important; box-shadow:none!important; border:1px solid #E0DDD9!important; border-radius:2px!important; }
   .card::before { height:2px!important; }
@@ -323,23 +318,19 @@ header {
   .card-val  { font-size:14px!important; }
   .card-sub  { font-size:8px!important; }
 
-  /* Ranking */
   .rank-wrap { box-shadow:none!important; border:1px solid #E0DDD9!important; }
   .rank th, .rank td { font-size:8.5px!important; padding:4px 8px!important; }
   .td-nota { font-size:12px!important; }
   .badge   { font-size:7px!important; padding:2px 7px!important; border-radius:10px!important; }
 
-  /* Heatmap — nova página */
   .hm-section-print { page-break-before:always; padding-top:50px!important; }
   .print-hm-header  { display:none!important; }
   .hm-wrap { overflow:visible!important; box-shadow:none!important; border:1px solid #E0DDD9!important; }
   .hm th, .hm td { font-size:7px!important; padding:3px 2px!important; }
   .hm th.th-s, .hm td.td-s { font-size:7px!important; padding-left:5px!important; min-width:82px!important; }
 
-  /* Ocultar coluna Variação no print */
   .hm th:last-child, .hm td:last-child { display:none!important; }
 
-  /* ── Trimestral: 4 rankings em 1 página ── */
   #tab-trimestral .main { padding:48px 6px 8px!important; }
   #tab-trimestral .section { margin-bottom:6px!important; }
   #tab-trimestral .kpis { grid-template-columns:repeat(4,1fr)!important; gap:4px!important; }
@@ -495,18 +486,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
 
   <div class="placar-table">
     <table class="pt" id="placarTable">
-      <thead>
-        <tr>
-          <th class="pt-s">Setor</th>
-          <th>1º S<br><small style="font-weight:400;opacity:.6">Utilização</small></th>
-          <th>2º S<br><small style="font-weight:400;opacity:.6">Organização</small></th>
-          <th>3º S<br><small style="font-weight:400;opacity:.6">Limpeza</small></th>
-          <th>4º S<br><small style="font-weight:400;opacity:.6">Padronização</small></th>
-          <th>5º S<br><small style="font-weight:400;opacity:.6">Autodisciplina</small></th>
-          <th>Desc.</th>
-          <th style="background:#4A4540">Total</th>
-        </tr>
-      </thead>
+      <thead id="placarHead"></thead>
       <tbody id="placarBody"></tbody>
     </table>
   </div>
@@ -563,7 +543,6 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
   </section>
 
   <section class="section hm-section-print">
-    <!-- Mini-header repetido para a página do heatmap no print -->
     <div class="print-hm-header" style="display:none">
       <span>Heatmap — Pontuação Mensal por Setor (máx. 20)</span>
       <em id="printHmTitle">Março · 2026</em>
@@ -641,7 +620,7 @@ let   editMode     = false;
 // ════════════════════════════════════════════════════════════════════
 //  DADOS
 // ════════════════════════════════════════════════════════════════════
-const SECTORS = [
+let SECTORS = [
   'PPCPM','Qualidade e Meio Ambiente','RH','Controladoria','Comercial','TI',
   'Logística','MTA - Industrial','MTA - Resfriar','MTA - Automotivo',
   'Montagem de Placas','Assistência Técnica','Chicote','Usinagem',
@@ -653,7 +632,7 @@ const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
 const ABBR   = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const SENSOS = ['1º S','2º S','3º S','4º S','5º S','Desc'];
 const META   = 18;
-const N      = SECTORS.length;
+let   N      = SECTORS.length;
 const QUARTERS = [
   { label:'1º Trimestre', months:[0,1,2],  abbr:'T1' },
   { label:'2º Trimestre', months:[3,4,5],  abbr:'T2' },
@@ -704,10 +683,9 @@ let S_SCORES = {
     20:[3,3,3,4,4,2],21:[4,4,4,4,4,2]
   }
 };
-// Inicializar meses vazios no S_SCORES
 for(let mi=3;mi<12;mi++){
   S_SCORES[mi]={};
-  for(let si=0;si<N;si++) S_SCORES[mi][si]=[0,0,0,0,0,0];
+  for(let si=0;si<22;si++) S_SCORES[mi][si]=[0,0,0,0,0,0];
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -722,11 +700,13 @@ async function binLoad(){
     const d=await r.json();
     if(d.record.SCORES)   SCORES   = d.record.SCORES;
     if(d.record.S_SCORES) S_SCORES = d.record.S_SCORES;
+    if(d.record.SECTORS)  SECTORS  = d.record.SECTORS;
+    N = SECTORS.length;
     return true;
   }catch(e){return false;}
 }
 async function binSave(){
-  const data={SCORES,S_SCORES};
+  const data={SCORES,S_SCORES,SECTORS};
   if(!BIN_ID){
     const r=await fetch('https://api.jsonbin.io/v3/b',{
       method:'POST',
@@ -751,14 +731,12 @@ async function binSave(){
 //  HELPERS
 // ════════════════════════════════════════════════════════════════════
 function scoreColor(v){
-  // Pastel — usado na coluna de Pontuação do ranking
   if(!v||v===0) return null;
   if(v<=13) return {bg:'#FEF0F0',fg:'#C0392B',border:'#F5C6C6'};
   if(v<=17) return {bg:'#FEF9EC',fg:'#9A6B0A',border:'#F5E4A0'};
   return           {bg:'#F0FAF0',fg:'#1E7E34',border:'#B2DFB4'};
 }
 function hmColor(v){
-  // Pastéis — igual ao ranking
   if(!v||v===0) return null;
   if(v<=13) return {bg:'#FEF0F0',fg:'#C0392B',border:'#F5C6C6'};
   if(v<=17) return {bg:'#FEF9EC',fg:'#9A6B0A',border:'#F5E4A0'};
@@ -789,7 +767,6 @@ function showTab(name){
   document.querySelectorAll('.hbt').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   document.querySelectorAll('.hbt').forEach(b=>{if(b.textContent.toLowerCase().includes(name.slice(0,3)))b.classList.add('active');});
-  // Show/hide month selector
   document.getElementById('mensal-sel-wrap').style.display = name==='mensal'?'flex':'none';
   if(name==='placar')     buildPlacar();
   if(name==='trimestral') buildTrimestral();
@@ -801,22 +778,75 @@ function showTab(name){
 // ════════════════════════════════════════════════════════════════════
 function buildPlacar(){
   const mi=parseInt(document.getElementById('placarMonthSel').value);
+  N = SECTORS.length;
+
+  // Rebuild thead dinamicamente — coluna Excluir só aparece em modo edição
+  const thead=document.getElementById('placarHead');
+  thead.innerHTML=`<tr>
+    <th class="pt-s">Setor</th>
+    <th>1º S<br><small style="font-weight:400;opacity:.6">Utilização</small></th>
+    <th>2º S<br><small style="font-weight:400;opacity:.6">Organização</small></th>
+    <th>3º S<br><small style="font-weight:400;opacity:.6">Limpeza</small></th>
+    <th>4º S<br><small style="font-weight:400;opacity:.6">Padronização</small></th>
+    <th>5º S<br><small style="font-weight:400;opacity:.6">Autodisciplina</small></th>
+    <th>Desconto<br><small style="font-weight:400;opacity:.6">Área Comum</small></th>
+    <th style="background:#4A4540">Total</th>
+    ${editMode?'<th style="background:#4A4540;width:50px;text-align:center;font-size:10px;letter-spacing:.5px">Excluir</th>':''}
+  </tr>`;
+
   const tbody=document.getElementById('placarBody'); tbody.innerHTML='';
   SECTORS.forEach((sec,si)=>{
     const ss=S_SCORES[mi][si]||[0,0,0,0,0,0];
     const total=calcTotal(ss);
     const tr=document.createElement('tr');
-    let cells=`<td class="pt-s">${sec}</td>`;
+
+    // Célula do setor: input editável no modo edição, texto simples fora
+    let cells = editMode
+      ? `<td class="pt-s"><input class="sinput" type="text"
+            style="width:175px;font-size:13px;font-weight:400;text-align:left"
+            value="${sec.replace(/"/g,'&quot;')}"
+            oninput="SECTORS[${si}]=this.value;setStat('placarStatus','✏️ Alterações não salvas...','warn')"></td>`
+      : `<td class="pt-s">${sec}</td>`;
+
     for(let s=0;s<6;s++){
       const v=ss[s]||0;
       cells+=`<td><input class="sinput" type="number" min="0" max="4" value="${v||''}"
               id="si_${si}_${s}" ${editMode?'':'readonly'} oninput="onSInput(${si},${s},this)"></td>`;
     }
     const c=scoreColor(total);
-    const style=total>0&&c?`background:${c.bg};color:${c.fg};`:'';
     cells+=`<td class="pt-total" id="tot_${si}" style="background:${total>0&&c?c.bg:'#F0EEE9'};color:${total>0&&c?c.fg:'#888'};font-weight:900;font-size:15px">${total>0?total:'–'}</td>`;
+
+    if(editMode){
+      cells+=`<td style="text-align:center;padding:6px 4px">
+        <button onclick="deleteSector(${si})" title="Excluir setor"
+          style="background:none;border:1px solid var(--red);color:var(--red);
+                 border-radius:2px;padding:5px 10px;cursor:pointer;
+                 font-size:13px;font-weight:700;line-height:1">✕</button>
+      </td>`;
+    }
     tr.innerHTML=cells; tbody.appendChild(tr);
   });
+}
+
+function deleteSector(si){
+  if(!confirm('Excluir o setor "'+SECTORS[si]+'"?\n\nEsta ação removerá todos os dados deste setor em todos os meses. Não pode ser desfeita.')) return;
+  SECTORS.splice(si,1);
+  N = SECTORS.length;
+  for(let mi=0;mi<12;mi++){
+    if(SCORES[mi]) SCORES[mi].splice(si,1);
+    if(S_SCORES[mi]){
+      const newSS={};
+      Object.keys(S_SCORES[mi]).forEach(k=>{
+        const ki=parseInt(k);
+        if(ki<si)      newSS[ki]   = S_SCORES[mi][k];
+        else if(ki>si) newSS[ki-1] = S_SCORES[mi][k];
+        // ki===si: descartado
+      });
+      S_SCORES[mi]=newSS;
+    }
+  }
+  buildPlacar();
+  setStat('placarStatus','✏️ Setor excluído — alterações não salvas...','warn');
 }
 
 function onSInput(si,s,input){
@@ -944,7 +974,6 @@ function buildHeatmap(mi){
     const tdA=row.insertCell();tdA.className='td-a';
     if(rv.length){const m=rv.reduce((a,b)=>a+b,0)/rv.length;tdA.textContent=m.toFixed(1);tdA.classList.add(m>=META?'above-meta':'below-meta');}
     else tdA.textContent='–';
-    // Unicode sparkline
     const tdSp=row.insertCell();tdSp.className='td-a';
     tdSp.style.cssText='font-size:13px;letter-spacing:2px;font-family:monospace;min-width:110px;text-align:left;padding-left:10px';
     const BLOCKS='·▁▂▃▄▅▆▇█';
@@ -986,24 +1015,19 @@ function buildRanking(mi){
     if(rk&&pos===0)tr.className='rank-1';
     else if(rk&&pos===1)tr.className='rank-2';
     else if(rk&&pos===2)tr.className='rank-3';
-    // Pos
     const tdP=tr.insertCell();
     if(rk&&pos===0)      tdP.innerHTML='<span class="pos-icon">🥇</span>';
     else if(rk&&pos===1) tdP.innerHTML='<span class="pos-icon">🥈</span>';
     else if(rk&&pos===2) tdP.innerHTML='<span class="pos-icon">🥉</span>';
     else                 tdP.innerHTML=`<span class="pos-num ${rk?'':'b-na'}">${rk?'#'+(pos+1):'–'}</span>`;
-    // Setor
     const tdS=tr.insertCell();tdS.textContent=SECTORS[si];
     tdS.style.fontWeight=pos<3&&rk?'700':'500';
     tdS.style.fontSize='14px';
-    // Anterior
     const tdA=Object.assign(tr.insertCell(),{className:'td-ant'});
     tdA.textContent=(mi>0&&ant>0)?ant:'–';
-    // Pontuação
     const tdN=Object.assign(tr.insertCell(),{className:'td-nota'});
     if(nota>0){const c=scoreColor(nota);tdN.style.background=c.bg;tdN.style.color=c.fg;tdN.style.fontWeight='900';tdN.style.border='1px solid '+(c.border||c.bg);tdN.textContent=nota;}
     else{tdN.textContent='–';tdN.style.color='#CCC';}
-    // Variação
     const tdT=Object.assign(tr.insertCell(),{className:'td-tend'});
     if(!rk)         tdT.innerHTML='<span class="badge b-na">sem dados</span>';
     else if(mi===0) tdT.innerHTML='<span class="badge b-na">primeiro mês</span>';
@@ -1027,7 +1051,7 @@ function buildChart(mi){
   if(ant) datasets.push({label:antLbl,data:order.map(i=>ant[i]||0),backgroundColor:'rgba(100,95,90,.35)',borderColor:'rgba(100,95,90,.6)',borderWidth:1,borderRadius:2});
   datasets.push({label:MONTHS[mi],data:dataCur,backgroundColor:'rgba(200,16,46,.75)',borderColor:'rgba(200,16,46,.9)',borderWidth:1,borderRadius:2});
   if(chartInst) chartInst.destroy();
-  document.getElementById('barChart').style.height=Math.max(300,N*24)+'px';
+  document.getElementById('barChart').style.height=Math.max(300,SECTORS.length*24)+'px';
   chartInst=new Chart(document.getElementById('barChart'),{
     type:'bar',data:{labels,datasets},
     options:{
@@ -1061,26 +1085,22 @@ function updateMensal(){
 // ════════════════════════════════════════════════════════════════════
 //  TRIMESTRAL
 // ════════════════════════════════════════════════════════════════════
-// Soma de todos os pontos do trimestre (soma das somas por setor)
 function triTotal(months){
   return SECTORS.map((_,si)=>months.reduce((acc,mi)=>acc+((SCORES[mi]||[])[si]||0),0))
     .reduce((a,b)=>a+b,0);
 }
-// Máximo possível do trimestre = setores × meses auditados × 20
 function triMax(months){
   const auditedMonths=months.filter(m=>hasData(m)).length;
-  return N*auditedMonths*20;
+  return SECTORS.length*auditedMonths*20;
 }
 
 function buildTrimestral(){
-  // KPI cards trimestrais
   const kpiEl=document.getElementById('tri-kpis');kpiEl.innerHTML='';
   QUARTERS.forEach((q,qi)=>{
     const vals=triSum(q.months);
     const valid=vals.filter(v=>v>0);
     const hasAny=valid.length>0;
     const totalMeses=q.months.filter(m=>hasData(m)).length;
-    // Média trimestral = média das médias mensais auditadas no trimestre
     const mediasTri=q.months.filter(m=>hasData(m)).map(mi=>{
       const v=(SCORES[mi]||[]).filter(x=>x>0);
       return v.length?v.reduce((a,b)=>a+b,0)/v.length:0;
@@ -1088,8 +1108,6 @@ function buildTrimestral(){
     const mediaTri=mediasTri.length?mediasTri.reduce((a,b)=>a+b,0)/mediasTri.length:null;
     const card=document.createElement('div');
     card.className='card '+(qi===0?'c-rd':qi===1?'c-gn':qi===2?'c-bl':'c-dk');
-    const metaStatus=mediaTri?(mediaTri>=META?'✔ Acima da meta':'⚠ Abaixo da meta'):'';
-    // Média por setor no trimestre = média mensal × meses auditados
     const mediaTriTotal = mediaTri ? Math.round(mediaTri * totalMeses * 10) / 10 : null;
     const maxTriSetor = totalMeses * 20;
     const metaTri = META * totalMeses;
@@ -1103,13 +1121,11 @@ function buildTrimestral(){
     kpiEl.appendChild(card);
   });
 
-  // Grids de ranking
   const grid=document.getElementById('tri-grid');grid.innerHTML='';
   QUARTERS.forEach((q,qi)=>{
     const sums=triSum(q.months);
     const hasAny=sums.some(v=>v>0);
     const card=document.createElement('div');card.className='tri-card';
-    // média trimestral
     const mTri=q.months.filter(m=>hasData(m)).map(mi=>{
       const v=(SCORES[mi]||[]).filter(x=>x>0);return v.length?v.reduce((a,b)=>a+b,0)/v.length:0;
     }).filter(x=>x>0);
@@ -1153,8 +1169,6 @@ function triSum(months){
   );
 }
 
-// triSum definida acima
-
 // ════════════════════════════════════════════════════════════════════
 //  ANUAL
 // ════════════════════════════════════════════════════════════════════
@@ -1165,10 +1179,8 @@ function buildAnual(){
   const mesesAuditados=allMonths.filter(m=>hasData(m));
   const totalMeses=mesesAuditados.length;
 
-  // KPI cards
   const kEl=document.getElementById('anual-kpis');kEl.innerHTML='';
   const valid=anualSums.filter(v=>v>0);
-  // Média acumulada = média das médias mensais auditadas (sempre /20)
   const mediaMensal = mesesAuditados.length
     ? mesesAuditados.map(mi=>{
         const v=(SCORES[mi]||[]).filter(x=>x>0);
@@ -1192,7 +1204,6 @@ function buildAnual(){
     kEl.appendChild(d);
   });
 
-  // Ranking anual
   const tbl=document.getElementById('anual-ranking');tbl.innerHTML='';
   const thead=tbl.createTHead(),hr=thead.insertRow();
   [['Pos.',''],['Setor',''],['Pontuação Acumulada','th-nota'],['Média Mensal','tc'],['Meses Auditados','tc']].forEach(([l,c])=>{
@@ -1222,7 +1233,6 @@ function buildAnual(){
     td.textContent='Nenhum dado registrado em 2026 ainda.';
   }
 
-  // Gráfico evolução mensal
   const labels=ABBR;
   const mediasMensais=allMonths.map(mi=>{
     const v=(SCORES[mi]||[]).filter(x=>x>0);
@@ -1275,12 +1285,10 @@ function exportPDF(){
   const hmTitle=document.getElementById('printHmTitle');
   if(hmTitle) hmTitle.textContent=label;
 
-  // Injetar CSS temporário para mostrar só a aba ativa no print
   const old=document.getElementById('print-tab-fix');
   if(old) old.remove();
   const style=document.createElement('style');
   style.id='print-tab-fix';
-  // Mostrar a aba ativa; se for mensal, já tratada no CSS base
   const tabsToHide=['placar','mensal','trimestral','anual']
     .filter(t=>t!==activeTab)
     .map(t=>'#tab-'+t)
@@ -1288,7 +1296,6 @@ function exportPDF(){
   style.textContent=`@media print{${tabsToHide}{display:none!important}#tab-${activeTab}{display:block!important}}`;
   document.head.appendChild(style);
 
-  // Canvas → img para gráficos
   ['barChart','anualChart'].forEach(id=>{
     const cv=document.getElementById(id);
     const inst=id==='barChart'?chartInst:anualChartInst;
@@ -1326,14 +1333,12 @@ function exportExcel(){
   const wb=XLSX.utils.book_new();
   const ano=document.getElementById('anoSel')?document.getElementById('anoSel').value:'2026';
 
-  // ── Aba 1: Notas Mensais ─────────────────────────────────────────────
   const notasHeader=['Setor',...MONTHS];
   const notasData=[notasHeader,...SECTORS.map((sec,si)=>[sec,...Array.from({length:12},(_,mi)=>SCORES[mi][si]||'–')])];
   const wsNotas=XLSX.utils.aoa_to_sheet(notasData);
   wsNotas['!cols']=[{wch:28},...Array(12).fill({wch:12})];
   XLSX.utils.book_append_sheet(wb,wsNotas,'Notas Mensais');
 
-  // ── Aba 2: Sensos (S1-S5) ────────────────────────────────────────────
   const sensosRows=[];
   const sensosHeader=['Setor','Mês','1º S - Utilização','2º S - Organização','3º S - Limpeza','4º S - Padronização','5º S - Autodisciplina','Desc.','Total'];
   sensosRows.push(sensosHeader);
@@ -1349,7 +1354,6 @@ function exportExcel(){
   wsSensos['!cols']=[{wch:28},{wch:14},...Array(7).fill({wch:14})];
   XLSX.utils.book_append_sheet(wb,wsSensos,'Sensos S1-S5');
 
-  // ── Aba 3: Rankings Mensais ──────────────────────────────────────────
   const rankRows=[['Mês','Posição','Setor','Pontuação','Variação vs Anterior']];
   MONTHS.forEach((mes,mi)=>{
     const vals=SCORES[mi];
@@ -1365,7 +1369,6 @@ function exportExcel(){
   wsRank['!cols']=[{wch:14},{wch:10},{wch:28},{wch:14},{wch:20}];
   XLSX.utils.book_append_sheet(wb,wsRank,'Rankings Mensais');
 
-  // ── Aba 4: Rankings Trimestrais ──────────────────────────────────────
   const triRows=[['Trimestre','Posição','Setor','Pontuação Trimestral','Máximo Possível']];
   QUARTERS.forEach(q=>{
     const sums=triSum(q.months);
@@ -1381,7 +1384,6 @@ function exportExcel(){
   wsTri['!cols']=[{wch:18},{wch:10},{wch:28},{wch:22},{wch:18}];
   XLSX.utils.book_append_sheet(wb,wsTri,'Rankings Trimestrais');
 
-  // ── Aba 5: Resumo Anual ──────────────────────────────────────────────
   const anualRows=[['Setor','Pontuação Acumulada','Média Mensal','Meses Auditados']];
   const anualSums=SECTORS.map((_,si)=>Array.from({length:12},(_,mi)=>(SCORES[mi]||[])[si]||0).reduce((a,b)=>a+b,0));
   const sorted=SECTORS.map((_,i)=>i).filter(i=>anualSums[i]>0).sort((a,b)=>anualSums[b]-anualSums[a]);
