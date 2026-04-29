@@ -462,7 +462,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
 <div class="overlay" id="pubOverlay">
   <div class="pwd-modal">
     <h3>🚀 Publicar para Todos</h3>
-    <p>Os dados do rascunho ficarão visíveis para todos que acessam o link. Confirme sua senha para continuar.</p>
+    <p>Os dados do rascunho ficarão visíveis para todos que acessam o link.<br>Confirme sua senha para continuar.</p>
     <input type="password" class="pwd-input" id="pubPwdInput" placeholder="Senha"
            onkeydown="if(event.key==='Enter')checkPubPwd()">
     <div class="pwd-error" id="pubPwdError"></div>
@@ -516,7 +516,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
   </div>
 
   <div id="placarLockMsg" class="locked-overlay">
-    🔒 Modo visualização — clique em <strong style="margin:0 4px">Editar</strong> e insira a senha para modificar os dados · <span style="color:var(--amber)">💾 Salvar Rascunho</span> guarda só para você · <span style="color:var(--green)">🚀 Publicar</span> libera para todos
+    🔒 Modo visualização — clique em <strong style="margin:0 4px">✏️ Editar</strong> para modificar · <span style="color:#1565C0;font-weight:700">💾 Salvar Rascunho</span> guarda só para você · <span style="color:var(--green);font-weight:700">🚀 Publicar</span> libera para todos
   </div>
 
   <div class="placar-table">
@@ -712,7 +712,7 @@ let   BIN_ID       = '69cd68d2856a682189ee6aea';
 let   BIN_ID_DRAFT = localStorage.getItem('inova5s_bin_draft') || '';
 let   editUnlocked = false;
 let   editMode     = false;
-let   hasDraft     = false; // indica se existe rascunho não publicado
+let   hasDraft     = false;
 
 // ════════════════════════════════════════════════════════════════════
 //  DADOS
@@ -809,10 +809,10 @@ async function binLoadDraft(){
       {headers:{'X-Master-Key':API_KEY}});
     if(!r.ok) return false;
     const d=await r.json();
+    if(d.record.__draft===true) hasDraft=true;
     if(d.record.SCORES)   SCORES   = d.record.SCORES;
     if(d.record.S_SCORES) S_SCORES = d.record.S_SCORES;
     if(d.record.SECTORS)  SECTORS  = d.record.SECTORS;
-    if(d.record.__draft)  hasDraft  = true;
     N = SECTORS.length;
     return true;
   }catch(e){return false;}
@@ -829,20 +829,17 @@ async function binSaveDraft(){
     const d=await r.json();
     BIN_ID_DRAFT=d.metadata.id;
     localStorage.setItem('inova5s_bin_draft',BIN_ID_DRAFT);
-    hasDraft=true;
-    return {created:true,id:BIN_ID_DRAFT};
+  } else {
+    const r=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID_DRAFT}`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},
+      body:JSON.stringify(data)
+    });
+    if(!r.ok) throw new Error(await r.text());
   }
-  const r=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID_DRAFT}`,{
-    method:'PUT',
-    headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},
-    body:JSON.stringify(data)
-  });
-  if(!r.ok) throw new Error(await r.text());
   hasDraft=true;
-  return {created:false};
 }
 async function binPublish(){
-  // Copia os dados atuais (do draft já carregado) para o bin público
   const data={SCORES,S_SCORES,SECTORS};
   const r=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
     method:'PUT',
@@ -850,16 +847,14 @@ async function binPublish(){
     body:JSON.stringify(data)
   });
   if(!r.ok) throw new Error(await r.text());
-  // Limpa flag de draft
   if(BIN_ID_DRAFT){
-    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID_DRAFT}`,{
+    fetch(`https://api.jsonbin.io/v3/b/${BIN_ID_DRAFT}`,{
       method:'PUT',
       headers:{'Content-Type':'application/json','X-Master-Key':API_KEY},
-      body:JSON.stringify({SCORES,S_SCORES,SECTORS,__draft:false})
+      body:JSON.stringify({...data,__draft:false})
     });
   }
   hasDraft=false;
-  return true;
 }
 async function binSave(){
   const data={SCORES,S_SCORES,SECTORS};
@@ -1025,6 +1020,7 @@ function onSInput(si,s,input){
   setStat('placarStatus','✏️ Alterações não salvas...','warn');
 }
 
+// Senha
 function requestEdit(){
   if(editUnlocked){enterEditMode();return;}
   document.getElementById('pwdInput').value='';
@@ -1039,41 +1035,50 @@ function checkPwd(){
   else{document.getElementById('pwdError').textContent='Senha incorreta. Tente novamente.';}
 }
 async function enterEditMode(){
-  // Carrega rascunho se existir
-  if(BIN_ID_DRAFT){
-    setStat('placarStatus','⏳ Carregando seu rascunho...','');
-    const ok=await binLoadDraft();
-    if(ok && hasDraft) setStat('placarStatus','📝 Rascunho carregado — ainda não publicado para todos','warn');
-    else setStat('placarStatus','','');
-  }
   editMode=true;
   document.getElementById('editBtn').style.display='none';
   document.getElementById('saveBtn').style.display='';
   document.getElementById('publishBtn').style.display='';
   document.getElementById('cancelBtn').style.display='';
   document.getElementById('placarLockMsg').style.display='none';
+  // Carrega rascunho se existir
+  if(BIN_ID_DRAFT){
+    setStat('placarStatus','⏳ Verificando rascunho salvo...','');
+    const ok=await binLoadDraft();
+    if(ok && hasDraft){
+      setStat('placarStatus','📝 Rascunho carregado — dados que somente você vê. Clique em 🚀 Publicar para liberar para todos.','warn');
+    } else {
+      setStat('placarStatus','✏️ Modo edição ativo — edite os valores e clique em 💾 Salvar Rascunho','warn');
+    }
+  } else {
+    setStat('placarStatus','✏️ Modo edição ativo — edite os valores e clique em 💾 Salvar Rascunho','warn');
+  }
   buildPlacar();
-  if(!BIN_ID_DRAFT || !hasDraft)
-    setStat('placarStatus','✏️ Modo edição ativo — altere os valores e clique em Salvar Rascunho','warn');
 }
 function cancelEdit(){
+  if(hasDraft){
+    const ok=confirm('Você tem um rascunho salvo. Sair do modo edição vai mostrar os dados públicos (sem as alterações do rascunho).\n\nOs dados do rascunho continuam salvos e voltam quando você editar novamente.\n\nDeseja sair?');
+    if(!ok) return;
+  }
   editMode=false;
   document.getElementById('editBtn').style.display='';
   document.getElementById('saveBtn').style.display='none';
   document.getElementById('publishBtn').style.display='none';
   document.getElementById('cancelBtn').style.display='none';
   document.getElementById('placarLockMsg').style.display='flex';
-  // Recarrega dados públicos
+  // Recarrega dados públicos para o modo visualização
   binLoad().then(()=>{buildPlacar();updateMensal();buildTrimestral();buildAnual();});
-  setStat('placarStatus','');
+  setStat('placarStatus', hasDraft ? '📝 Existe um rascunho pendente — clique em Editar para continuar.' : '');
 }
 async function savePlacar(){
   setStat('placarStatus','⏳ Salvando rascunho...','');
   try{
     await binSaveDraft();
-    setStat('placarStatus','✅ Rascunho salvo! Somente você vê isso. Clique em "Publicar" quando quiser liberar para todos.','ok');
+    alert('✅ Rascunho salvo!\n\nSomente você pode ver esses dados.\nQuando quiser publicar para todos, clique em "🚀 Publicar".');
+    setStat('placarStatus','✅ Rascunho salvo! Clique em 🚀 Publicar quando quiser liberar para todos.','ok');
     buildPlacar();updateMensal();buildTrimestral();buildAnual();
   }catch(e){
+    alert('❌ Erro ao salvar rascunho:\n'+e.message);
     setStat('placarStatus','❌ Erro: '+e.message,'err');
   }
 }
@@ -1091,9 +1096,17 @@ async function checkPubPwd(){
   setStat('placarStatus','⏳ Publicando para todos...','');
   try{
     await binPublish();
-    setStat('placarStatus','✅ Publicado! Todos os usuários já podem ver as atualizações.','ok');
-    cancelEdit();
+    alert('✅ Publicado com sucesso!\n\nTodos que acessam o link já podem ver os dados atualizados.');
+    editMode=false;
+    document.getElementById('editBtn').style.display='';
+    document.getElementById('saveBtn').style.display='none';
+    document.getElementById('publishBtn').style.display='none';
+    document.getElementById('cancelBtn').style.display='none';
+    document.getElementById('placarLockMsg').style.display='flex';
+    setStat('placarStatus','✅ Dados publicados com sucesso!','ok');
+    buildPlacar();updateMensal();buildTrimestral();buildAnual();
   }catch(e){
+    alert('❌ Erro ao publicar:\n'+e.message);
     setStat('placarStatus','❌ Erro ao publicar: '+e.message,'err');
   }
 }
