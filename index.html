@@ -811,17 +811,30 @@ for(let mi=3;mi<12;mi++){
 // ════════════════════════════════════════════════════════════════════
 async function binLoad(){
   if(!BIN_ID) return false;
+  // Carregar cache local imediatamente (acesso instantâneo)
+  try{
+    const c=localStorage.getItem('inova5s_cache');
+    if(c){
+      const d=JSON.parse(c);
+      if(d.SCORES)SCORES=d.SCORES;
+      if(d.S_SCORES)S_SCORES=d.S_SCORES;
+      if(d.SECTORS&&d.SECTORS.length){SECTORS=d.SECTORS;N=SECTORS.length;}
+    }
+  }catch(e){}
+  // Buscar dados atualizados da API em segundo plano
   try{
     const r=await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,
       {headers:{'X-Master-Key':API_KEY}});
-    if(!r.ok) return false;
+    if(!r.ok) return SECTORS.length>0;
     const d=await r.json();
     if(d.record.SCORES)   SCORES   = d.record.SCORES;
     if(d.record.S_SCORES) S_SCORES = d.record.S_SCORES;
     if(d.record.SECTORS)  SECTORS  = d.record.SECTORS;
     N = SECTORS.length;
+    // Atualizar cache com dados frescos
+    try{localStorage.setItem('inova5s_cache',JSON.stringify({SCORES,S_SCORES,SECTORS}));}catch(e){}
     return true;
-  }catch(e){return false;}
+  }catch(e){return SECTORS.length>0;}
 }
 async function binSave(){
   const data={SCORES,S_SCORES,SECTORS};
@@ -873,6 +886,26 @@ function comp(mi,si){
   return actual + prev;
 }
 function calcTotal(ss){return ss[0]+ss[1]+ss[2]+ss[3]+ss[4]-ss[5];}
+function compTri(months,si){
+  const total=months.reduce((acc,mi)=>acc+((SCORES[mi]||[])[si]||0),0);
+  if(!total)return 0;
+  // Para desempate: acumula critério mensal completo de cada mês auditado
+  // (S1-S5 do mês + constância = nota/sensos do mês anterior)
+  let tb=0;
+  months.forEach(mi=>{
+    const v=(SCORES[mi]||[])[si]||0; if(!v)return;
+    const ss=S_SCORES[mi]&&S_SCORES[mi][si]?S_SCORES[mi][si]:[0,0,0,0,0,0];
+    tb+=ss[0]*1e11+ss[1]*1e10+ss[2]*1e9+ss[3]*1e8+ss[4]*1e7;
+    if(mi>0){
+      const pv=(SCORES[mi-1]||[])[si]||0;
+      const ps=S_SCORES[mi-1]&&S_SCORES[mi-1][si]?S_SCORES[mi-1][si]:[0,0,0,0,0,0];
+      tb+=pv*1e5+ps[0]*1e4+ps[1]*1e3+ps[2]*1e2+ps[3]*10+ps[4];
+    }
+  });
+  return total*1e14+tb;
+}
+function compAnual(si){const months=Array.from({length:12},(_,i)=>i);const total=months.reduce((acc,mi)=>acc+((SCORES[mi]||[])[si]||0),0);if(!total)return 0;const ss=[0,1,2,3,4].map(s=>months.reduce((acc,mi)=>acc+((S_SCORES[mi]&&S_SCORES[mi][si])?S_SCORES[mi][si][s]:0),0));return total*1e12+ss[0]*1e11+ss[1]*1e10+ss[2]*1e9+ss[3]*1e8+ss[4]*1e7;}
+
 function setStat(id,txt,cls=''){const el=document.getElementById(id);if(el){el.textContent=txt;el.style.color=cls==='ok'?'var(--green)':cls==='warn'?'var(--amber)':cls==='err'?'var(--red)':'var(--muted)';}}
 function showToast(msg,type){
   const t=document.getElementById('toast');
@@ -1304,7 +1337,7 @@ function buildTrimestral(){
       body.innerHTML='<div class="tri-no-data">Sem dados para este trimestre</div>';
     }else{
       const sorted=SECTORS.map((_,i)=>i).filter(i=>sums[i]>0)
-        .sort((a,b)=>sums[b]-sums[a]);
+        .sort((a,b)=>compTri(q.months,b)-compTri(q.months,a));
       const tbl=document.createElement('table');tbl.className='tri-rank';
       sorted.forEach((si,pos)=>{
         const tr=document.createElement('tr');
@@ -1371,7 +1404,7 @@ function buildAnual(){
   [['Pos.',''],['Setor',''],['Pontuação Acumulada','th-nota'],['Média Mensal','tc'],['Meses Auditados','tc']].forEach(([l,c])=>{
     hr.appendChild(Object.assign(document.createElement('th'),{textContent:l,className:c}));
   });
-  const sorted=SECTORS.map((_,i)=>i).filter(i=>anualSums[i]>0).sort((a,b)=>anualSums[b]-anualSums[a]);
+  const sorted=SECTORS.map((_,i)=>i).filter(i=>anualSums[i]>0).sort((a,b)=>compAnual(b)-compAnual(a));
   const tb=tbl.createTBody();
   sorted.forEach((si,pos)=>{
     const tr=tb.insertRow();
@@ -1537,7 +1570,7 @@ function exportExcel(){
     if(!sums.some(v=>v>0)) return;
     const auditedM=q.months.filter(m=>hasData(m)).length;
     const maxPts=auditedM*20;
-    const sorted=SECTORS.map((_,i)=>i).filter(i=>sums[i]>0).sort((a,b)=>sums[b]-sums[a]);
+    const sorted=SECTORS.map((_,i)=>i).filter(i=>sums[i]>0).sort((a,b)=>compTri(q.months,b)-compTri(q.months,a));
     sorted.forEach((si,pos)=>{
       triRows.push([q.label,'#'+(pos+1),SECTORS[si],sums[si],maxPts]);
     });
@@ -1548,7 +1581,7 @@ function exportExcel(){
 
   const anualRows=[['Setor','Pontuação Acumulada','Média Mensal','Meses Auditados']];
   const anualSums=SECTORS.map((_,si)=>Array.from({length:12},(_,mi)=>(SCORES[mi]||[])[si]||0).reduce((a,b)=>a+b,0));
-  const sorted=SECTORS.map((_,i)=>i).filter(i=>anualSums[i]>0).sort((a,b)=>anualSums[b]-anualSums[a]);
+  const sorted=SECTORS.map((_,i)=>i).filter(i=>anualSums[i]>0).sort((a,b)=>compAnual(b)-compAnual(a));
   sorted.forEach(si=>{
     const meses=Array.from({length:12},(_,mi)=>(SCORES[mi]||[])[si]>0?1:0).reduce((a,b)=>a+b,0);
     const media=meses?+(anualSums[si]/meses).toFixed(1):0;
@@ -1811,6 +1844,8 @@ function printTV(){
   w.document.write(`<!DOCTYPE html><html><head>
 <meta charset="utf-8">
 <title>5S – ${mes} 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Outfit:wght@700;900&display=swap" rel="stylesheet">
 <style>
   @page{size:A4 landscape;margin:0}
