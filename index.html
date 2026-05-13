@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -688,9 +686,14 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
 <div id="tv-content" style="display:none">
 <div class="main">
   <section class="section">
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px">
-      <button class="hbtn" onclick="showTab('mensal')" title="Voltar para a aba Mensal">← Fechar</button>
-      <div style="width:1px;height:24px;background:var(--border)"></div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;align-items:center">
+      <button class="hbtn" onclick="showTab('mensal')" title="Voltar">← Fechar</button>
+      <div style="width:1px;height:24px;background:var(--border);margin:0 4px"></div>
+      <button id="tvTab-mensal" onclick="switchTVSubTab('mensal')" class="hbtn" style="background:var(--red);border-color:var(--red);color:#fff">📅 Mensal</button>
+      <button id="tvTab-trimestral" onclick="switchTVSubTab('trimestral')" class="hbtn">📊 Trimestral</button>
+      <button class="hbtn" style="opacity:.35;cursor:not-allowed" disabled>🏆 Anual (em breve)</button>
+    </div>
+    <div id="tv-mensal-ctrl" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px">
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:13px;color:var(--muted);font-weight:600">Mês:</span>
         <select id="tvMonthSel" onchange="buildTV()" style="font-size:13px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:#fff;color:var(--txt)">
@@ -706,11 +709,25 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
         <span style="font-size:13px;color:var(--muted);font-weight:600">Foto do 1° lugar:</span>
         <input type="file" id="tvPhoto" accept="image/*" onchange="tvLoadPhoto()" style="font-size:12px">
       </div>
-      <button class="hbtn" onclick="printTV()" style="background:var(--red);border-color:var(--red);color:#fff;margin-left:auto">
-        🖨️ Imprimir / Salvar PDF
-      </button>
+      <button class="hbtn" onclick="printTV()" style="background:var(--red);border-color:var(--red);color:#fff;margin-left:auto">🖨️ Imprimir / Salvar PDF</button>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:14px">
+    <div id="tv-tri-ctrl" style="display:none;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:13px;color:var(--muted);font-weight:600">Trimestre:</span>
+        <select id="tvTriSel" onchange="tvTriIdx=parseInt(this.value);buildTVTrimestral()" style="font-size:13px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:#fff;color:var(--txt)">
+          <option value="0">1º Trimestre</option>
+          <option value="1">2º Trimestre</option>
+          <option value="2">3º Trimestre</option>
+          <option value="3">4º Trimestre</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:13px;color:var(--muted);font-weight:600">Foto do 1° lugar:</span>
+        <input type="file" id="tvPhotoTri" accept="image/*" onchange="tvLoadPhotoTri()" style="font-size:12px">
+      </div>
+      <button class="hbtn" onclick="printTV()" style="background:var(--red);border-color:var(--red);color:#fff;margin-left:auto">🖨️ Imprimir / Salvar PDF</button>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:14px" id="tv-hint">
       ℹ️ Selecione o mês e adicione a foto do setor vencedor. O slide é gerado automaticamente com todos os dados do mês.
     </div>
   </section>
@@ -1602,6 +1619,9 @@ let tvUnlocked = false;
 let anualUnlocked = false;
 let placarTabUnlocked = false;
 let tvPhotoUrl = null;
+let tvSubTab = 'mensal';
+let tvTriIdx = 0;
+let tvPhotoTriUrl = null;
 
 function tvSyncMonth(){
   // Find most recent month with data; fallback to current mensal selection
@@ -1624,6 +1644,12 @@ function openTV(){
   } else {
     document.getElementById('tv-lock').style.display='none';
     document.getElementById('tv-content').style.display='block';
+    tvSubTab='mensal';
+    {const mc=document.getElementById('tv-mensal-ctrl'),tc=document.getElementById('tv-tri-ctrl');
+    if(mc)mc.style.display='flex';if(tc)tc.style.display='none';
+    const bm=document.getElementById('tvTab-mensal'),bt=document.getElementById('tvTab-trimestral');
+    if(bm){bm.style.background='var(--red)';bm.style.borderColor='var(--red)';bm.style.color='#fff';}
+    if(bt){bt.style.background='transparent';bt.style.borderColor='rgba(255,255,255,.2)';bt.style.color='rgba(255,255,255,.6)';}}
     tvSyncMonth();
     buildTV();
   }
@@ -1836,9 +1862,179 @@ function buildTV(){
   document.getElementById('tv-slide').innerHTML=html;
 }
 
+function tvSyncTrimestre(){
+  let best=0;
+  for(let qi=3;qi>=0;qi--){if(QUARTERS[qi].months.some(m=>hasData(m))){best=qi;break;}}
+  const sel=document.getElementById('tvTriSel');
+  if(sel){sel.value=best;tvTriIdx=best;}
+}
+
+function tvLoadPhotoTri(){
+  const f=document.getElementById('tvPhotoTri').files[0];
+  if(!f)return;
+  tvPhotoTriUrl=URL.createObjectURL(f);
+  buildTVTrimestral();
+}
+
+function switchTVSubTab(tab){
+  tvSubTab=tab;
+  ['mensal','trimestral'].forEach(t=>{
+    const btn=document.getElementById('tvTab-'+t);
+    if(btn){btn.style.background=t===tab?'var(--red)':'transparent';
+      btn.style.borderColor=t===tab?'var(--red)':'rgba(255,255,255,.2)';
+      btn.style.color=t===tab?'#fff':'rgba(255,255,255,.6)';}
+  });
+  const mc=document.getElementById('tv-mensal-ctrl'),tc=document.getElementById('tv-tri-ctrl');
+  if(mc)mc.style.display=tab==='mensal'?'flex':'none';
+  if(tc)tc.style.display=tab==='trimestral'?'flex':'none';
+  const hint=document.getElementById('tv-hint');
+  if(hint)hint.textContent=tab==='mensal'
+    ?'ℹ️ Selecione o mês e adicione a foto do setor vencedor. O slide é gerado automaticamente com todos os dados do mês.'
+    :'ℹ️ Selecione o trimestre e adicione a foto do 1° lugar. O ranking acumulado (/60) é gerado automaticamente.';
+  if(tab==='mensal')buildTV();
+  else{tvSyncTrimestre();buildTVTrimestral();}
+}
+
+function buildTVTrimestral(){
+  const qi=tvTriIdx;
+  const q=QUARTERS[qi];
+  const months=q.months;
+  const triLabel=q.label;
+  const RED='#C8102E',DARK='#3D3935',GREEN='#2E7D32';
+  const MUTED='#8A8078',BORDER='#E0DDD9';
+
+  // Acumulado por setor (3 meses × 20 = 60 max)
+  const accum=SECTORS.map((_,si)=>months.reduce((sum,mi)=>sum+((SCORES[mi]||[])[si]||0),0));
+
+  // Ordenação com desempate via compTri
+  const sorted=SECTORS.map((_,i)=>i).filter(i=>accum[i]>0)
+    .sort((a,b)=>compTri(months,b)-compTri(months,a));
+
+  // KPIs
+  const validAcc=accum.filter(v=>v>0);
+  const auditedM=months.filter(m=>hasData(m));
+  const mAvgs=auditedM.map(mi=>{const v=(SCORES[mi]||[]).filter(x=>x>0);return v.length?v.reduce((a,b)=>a+b,0)/v.length:0;}).filter(x=>x>0);
+  const triAvg=mAvgs.length?mAvgs.reduce((a,b)=>a+b,0)/mAvgs.length:null;
+  const avgOk=triAvg?triAvg>=META:false;
+
+  const maxAcc=validAcc.length?Math.max(...validAcc):0;
+  const minAcc=validAcc.length?Math.min(...validAcc):0;
+  const bestSi=sorted[0];
+  // Pior: menor acumulado entre os que têm dado
+  const worstSi=accum.reduce((wi,v,i,arr)=>(v>0&&(arr[wi]===0||v<arr[wi]))?i:wi,sorted[sorted.length-1]??0);
+
+  // Maior Evolução vs trimestre anterior
+  let kE='–',kEsub='';
+  if(qi>0){
+    const prevM=QUARTERS[qi-1].months;
+    const prevAcc=SECTORS.map((_,si)=>prevM.reduce((sum,mi)=>sum+((SCORES[mi]||[])[si]||0),0));
+    const best=[...accum.map((v,i)=>(v>0&&prevAcc[i]>0)?{i,d:v-prevAcc[i]}:{i,d:-9999})].sort((a,b)=>b.d-a.d)[0];
+    if(best&&best.d>0){kE=SECTORS[best.i];kEsub='▲ '+best.d+' pts vs '+QUARTERS[qi-1].label;}
+    else{kE='–';kEsub='Sem evolução';}
+  }else{kEsub='Primeiro trimestre';}
+
+  // Paleta por acumulado (meta: ≥54=18×3; regular 42-53=14-17×3; ruim <42)
+  function scC(v){
+    if(v>=54)return{bg:'#F0FAF0',fg:'#1E7E34',bd:'#B2DFB4'};
+    if(v>=42)return{bg:'#FEF9EC',fg:'#9A6B0A',bd:'#F5E4A0'};
+    return{bg:'#FEF0F0',fg:'#C0392B',bd:'#F5C6C6'};
+  }
+
+  function kpiCard(lbl,val,sub,vc,tc){
+    return `<div style="background:#fff;border:1px solid ${BORDER};border-radius:4px;padding:6px 10px 5px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.10);flex:1;min-width:0">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${tc}"></div>
+      <div style="font-size:.58vw;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:${MUTED};margin-bottom:2px">${lbl}</div>
+      <div style="font-size:1.1vw;font-weight:900;color:${vc};line-height:1.1;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${val}</div>
+      <div style="font-size:.58vw;color:${vc}">${sub}</div>
+    </div>`;
+  }
+
+  function rankRows(items){
+    return items.map(({si,pos})=>{
+      const nota=accum[si];
+      const bg=pos%2===0?'rgba(255,255,255,.94)':'rgba(248,247,245,.94)';
+      const ic=['🥇','🥈','🥉'];
+      const pc=pos<3?`<span style="font-size:.9vw">${ic[pos]}</span>`:`<b style="font-size:.72vw;color:${DARK}">#${pos+1}</b>`;
+      const c=scC(nota);
+      const nc=nota>0?`<span style="background:${c.bg};color:${c.fg};border:1px solid ${c.bd};padding:0 4px;border-radius:2px;font-weight:900;font-size:.7vw">${nota}<span style="font-weight:400;font-size:.55vw;color:${MUTED}">/60</span></span>`:`<span style="color:#ccc">–</span>`;
+      return `<tr style="background:${bg}">
+        <td style="text-align:center;padding:2px 3px;border-bottom:1px solid rgba(224,221,217,.4);width:2.2vw">${pc}</td>
+        <td style="padding:2px 5px;font-size:.78vw;font-weight:${pos<3?700:400};color:${DARK};border-bottom:1px solid rgba(224,221,217,.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:0">${SECTORS[si]}</td>
+        <td style="text-align:center;padding:2px 5px;border-bottom:1px solid rgba(224,221,217,.4);width:5vw">${nc}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function colTable(hdr,rows){
+    return `<div style="flex:1;display:flex;flex-direction:column;overflow:hidden;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.09)">
+      <div style="background:${RED};color:#fff;padding:.28vw .6vw;font-size:.68vw;font-weight:700;letter-spacing:.06em;text-transform:uppercase;flex-shrink:0">${hdr}</div>
+      <div style="background:${DARK};display:grid;grid-template-columns:2.2vw 1fr 5vw;padding:.16vw .2vw;flex-shrink:0">
+        ${['Pos.','Setor','Acum.'].map(h=>`<span style="color:#bbb;font-size:.52vw;font-weight:700;text-align:center;text-transform:uppercase">${h}</span>`).join('')}
+      </div>
+      <div style="overflow:hidden;flex:1">
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;height:100%">
+          <colgroup><col style="width:2.2vw"><col><col style="width:5vw"></colgroup>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+  }
+
+  const col1=sorted.slice(0,11).map((si,i)=>({si,pos:i}));
+  const col2=sorted.slice(11).map((si,i)=>({si,pos:i+11}));
+
+  // Pódio
+  const top3=sorted.slice(0,3).map(si=>({n:SECTORS[si]||'',pts:accum[si]||0}));
+  const podOrder=[top3[1],top3[0],top3[2]];
+  const podH=['38%','56%','27%'],podLabel=['2','1','3'];
+  const podium=podOrder.map((s,i)=>{
+    if(!s||!s.n)return`<div style="flex:1"></div>`;
+    return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%">
+      <div style="text-align:center;font-size:.72vw;font-weight:700;color:${DARK};line-height:1.2;margin-bottom:.04vw;padding:0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%">${s.n}</div>
+      <div style="font-size:.6vw;color:${RED};font-weight:700;margin-bottom:.04vw">${s.pts}<span style="font-weight:400;font-size:.52vw;color:${MUTED}">/60</span></div>
+      <div style="width:94%;height:${podH[i]};background:${RED};display:flex;align-items:center;justify-content:center;border-radius:3px 3px 0 0;color:#fff;font-size:2.4vw;font-weight:900;text-shadow:0 1px 3px rgba(0,0,0,.3)">${podLabel[i]}</div>
+    </div>`;
+  }).join('');
+
+  const kAvg=triAvg?triAvg.toFixed(1)+'/20':'–';
+  const kAvgSub=triAvg?(avgOk?'✔ Acima da meta (≥ 18)':'⚠ Abaixo da meta (18)'):'Sem dados';
+  const kD=bestSi!==undefined?SECTORS[bestSi]:'–';
+  const kDsub=maxAcc>0?'Acumulado: '+maxAcc+'/60':'';
+  const kA=validAcc.length?SECTORS[worstSi]:'–';
+  const kAsub=minAcc>0?'Acumulado: '+minAcc+'/60':'';
+
+  const html=`
+    <div style="position:absolute;inset:0;background-image:url('${TV_BG}');background-size:cover;background-position:center"></div>
+    <div style="position:absolute;top:0;left:0;right:0;height:7.5%;background:${DARK};display:flex;align-items:center;justify-content:space-between;padding:0 2%">
+      <span style="color:#ffffff;font-size:1.9vw;font-weight:900;letter-spacing:.02em;font-family:'Outfit',sans-serif">PROGRAMA 5S – ${triLabel} 2026</span>
+      <div style="display:flex;align-items:center;gap:.8vw">
+        <span style="color:#ccc;font-size:.72vw;font-weight:500;letter-spacing:.03em">SIDI | Solução Inovação Dedicação Inspiração</span>
+        <img src="https://www.inova.ind.br/assets/img/logoInova.png" style="height:1.6vw;object-fit:contain" onerror="this.style.display='none'">
+      </div>
+    </div>
+    <div style="position:absolute;top:9%;left:5%;width:28%;height:43%;overflow:hidden;border-radius:4px;box-shadow:0 2px 10px rgba(0,0,0,.2)">
+      ${tvPhotoTriUrl?`<img src="${tvPhotoTriUrl}" style="width:100%;height:100%;object-fit:cover;display:block">`:`<div style="width:100%;height:100%;background:rgba(255,255,255,.65);display:flex;flex-direction:column;align-items:center;justify-content:center;color:${MUTED};font-size:.75vw;gap:.3vw"><span style="font-size:1.5vw">📷</span>Foto do 1° lugar do trimestre</div>`}
+    </div>
+    <div style="position:absolute;top:53.5%;left:5%;width:28%;height:38%;display:flex;align-items:flex-end;gap:2%;z-index:10">
+      <div style="flex:1;height:100%;display:flex;align-items:flex-end;gap:.5%">${podium}</div>
+    </div>
+    <div style="position:absolute;top:9%;left:35%;right:1%;height:13%;display:flex;gap:.6%">
+      ${kpiCard('Média Mensal (trim.)',kAvg,kAvgSub,avgOk?GREEN:RED,avgOk?GREEN:RED)}
+      ${kpiCard('Destaque do Trimestre',kD,kDsub,GREEN,GREEN)}
+      ${kpiCard('Requer Atenção',kA,kAsub,RED,RED)}
+      ${kpiCard('Maior Evolução',kE,kEsub,'#1565C0','#1565C0')}
+    </div>
+    <div style="position:absolute;top:23%;left:35%;right:1%;bottom:.5%;display:flex;gap:.8%">
+      ${colTable('Ranking — '+triLabel+' 2026 (acumulado /60)',rankRows(col1))}
+      ${colTable('Continuação',rankRows(col2))}
+    </div>
+  `;
+  document.getElementById('tv-slide').innerHTML=html;
+}
+
 function printTV(){
   const mi=parseInt(document.getElementById('tvMonthSel').value);
-  const mes=MONTHS[mi];
+  const mes=tvSubTab==='trimestral'?QUARTERS[tvTriIdx].label:MONTHS[mi];
   const slideHTML=document.getElementById('tv-slide').innerHTML;
   const w=window.open('','_blank','width=1280,height=720');
   w.document.write(`<!DOCTYPE html><html><head>
@@ -1851,8 +2047,8 @@ function printTV(){
   @page{size:A4 landscape;margin:0}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{margin:0;padding:0;background:#fff}
-  #wrapper{width:297mm;height:210mm;overflow:hidden;position:relative;background:#fff}
-  #s{width:1280px;height:720px;position:absolute;top:0;left:0;transform:scale(0.877);transform-origin:top left;overflow:hidden;font-family:'Lato',sans-serif}
+  #wrapper{width:297mm;height:210mm;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
+  #s{width:1280px;height:720px;flex-shrink:0;transform:scale(0.877);transform-origin:center center;overflow:hidden;font-family:'Lato',sans-serif}
 </style>
 </head><body>
 <div id="wrapper"><div id="s">${slideHTML}</div></div>
