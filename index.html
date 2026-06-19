@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -60,6 +61,9 @@ header {
   transition:all .2s; white-space:nowrap;
 }
 .hbtn:hover { border-color:var(--red); color:#fff; }
+#tv-content .hbtn { color:var(--txt); border-color:var(--border); }
+#tv-content .hbtn:hover { border-color:var(--red); color:var(--red); }
+#tv-content .hbtn[style*="background:var(--red)"] { color:#fff !important; }
 
 .sel-wrap { display:flex; align-items:center; gap:8px; }
 .sel-wrap label { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.4); }
@@ -729,6 +733,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
       <div style="width:1px;height:24px;background:var(--border);margin:0 4px"></div>
       <button id="tvTab-mensal" onclick="switchTVSubTab('mensal')" class="hbtn" style="background:var(--red);border-color:var(--red);color:#fff">📅 Mensal</button>
       <button id="tvTab-trimestral" onclick="switchTVSubTab('trimestral')" class="hbtn">📊 Trimestral</button>
+      <button id="tvTab-a4" onclick="switchTVSubTab('a4')" class="hbtn">📄 Folha A4</button>
       <button class="hbtn" style="opacity:.35;cursor:not-allowed" disabled>🏆 Anual (em breve)</button>
     </div>
     <div id="tv-mensal-ctrl" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px">
@@ -747,6 +752,10 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
         <span style="font-size:13px;color:var(--muted);font-weight:600">Foto do 1° lugar:</span>
         <input type="file" id="tvPhoto" accept="image/*" onchange="tvLoadPhoto()" style="font-size:12px">
       </div>
+      <button class="hbtn" onclick="salvarTV('mensal')" style="background:var(--red);border-color:var(--red);color:#fff;margin-left:auto">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Salvar
+      </button>
     </div>
     <div id="tv-tri-ctrl" style="display:none;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px">
       <div style="display:flex;align-items:center;gap:8px">
@@ -762,6 +771,35 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
         <span style="font-size:13px;color:var(--muted);font-weight:600">Foto do 1° lugar:</span>
         <input type="file" id="tvPhotoTri" accept="image/*" onchange="tvLoadPhotoTri()" style="font-size:12px">
       </div>
+      <button class="hbtn" onclick="salvarTV('trimestral')" style="background:var(--red);border-color:var(--red);color:#fff;margin-left:auto">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Salvar
+      </button>
+    </div>
+    <div id="tv-a4-ctrl" style="display:none;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:13px;color:var(--muted);font-weight:600">Mês:</span>
+        <select id="tvA4MonthSel" onchange="buildTVA4()" style="font-size:13px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:#fff;color:var(--txt)">
+          <option value="0">Janeiro</option><option value="1">Fevereiro</option>
+          <option value="2">Março</option><option value="3">Abril</option>
+          <option value="4">Maio</option><option value="5">Junho</option>
+          <option value="6">Julho</option><option value="7">Agosto</option>
+          <option value="8">Setembro</option><option value="9">Outubro</option>
+          <option value="10">Novembro</option><option value="11">Dezembro</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:13px;color:var(--muted);font-weight:600">Foto do 1° lugar:</span>
+        <input type="file" id="tvA4Photo" accept="image/*" onchange="tvLoadA4Photo()" style="font-size:12px">
+      </div>
+      <button class="hbtn" onclick="salvarTV('a4')" style="background:var(--red);border-color:var(--red);color:#fff">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Salvar
+      </button>
+      <button class="hbtn" onclick="printA4()" style="margin-left:auto">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Imprimir / Salvar PDF
+      </button>
     </div>
     <div style="font-size:11px;color:var(--muted);margin-bottom:14px" id="tv-hint">
       ℹ️ Selecione o mês e adicione a foto do setor vencedor. O slide é gerado automaticamente com todos os dados do mês.
@@ -769,9 +807,18 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
   </section>
 
   <!-- SLIDE PREVIEW -->
-  <section class="section">
+  <section class="section" id="tv-slide-section">
     <div id="tv-slide-wrap" style="width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;border-radius:6px;border:2px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.15)">
       <div id="tv-slide" style="position:absolute;inset:0;font-family:'Lato',sans-serif;overflow:hidden"></div>
+    </div>
+  </section>
+
+  <!-- A4 PORTRAIT PREVIEW -->
+  <section class="section" id="tv-a4-section" style="display:none">
+    <div style="display:flex;justify-content:center">
+      <div id="tv-a4-outer" style="width:210mm;min-height:297mm;background:#fff;border:1px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.15);border-radius:4px;overflow:hidden;position:relative;display:inline-block">
+        <div id="tv-a4-slide" style="font-family:'Lato',sans-serif;width:210mm"></div>
+      </div>
     </div>
   </section>
 </div>
@@ -1674,6 +1721,7 @@ let tvUnlocked = false;
 let anualUnlocked = false;
 let placarTabUnlocked = false;
 let tvPhotoUrl = null;
+let tvA4PhotoUrl = null;
 let tvSubTab = 'mensal';
 let tvTriIdx = 0;
 let tvPhotoTriUrl = null;
@@ -1708,6 +1756,7 @@ function openTV(){
     if(bm){bm.style.background='var(--red)';bm.style.borderColor='var(--red)';bm.style.color='#fff';}
     if(bt){bt.style.background='transparent';bt.style.borderColor='rgba(255,255,255,.2)';bt.style.color='rgba(255,255,255,.6)';}}
     tvSyncMonth();
+    restaurarTV();
     buildTV();
   }
 }
@@ -1721,6 +1770,7 @@ function checkTVPwd(){
     document.getElementById('tvPwdInput').value='';
     document.getElementById('tvPwdError').textContent='';
     tvSyncMonth();
+    restaurarTV();
     buildTV();
   } else {
     document.getElementById('tvPwdError').textContent='Senha incorreta.';
@@ -1819,21 +1869,21 @@ function buildTV(){
       const nota=vals[si],ant=antVals[si],rk=nota>0;
       const delta=(nota>0&&ant>0)?nota-ant:null;
       const bg=pos%2===0?'rgba(255,255,255,.94)':'rgba(248,247,245,.94)';
-      let pc=rk&&pos<3?`<span style="font-size:.9vw">${MD[pos]}</span>`
-        :rk?`<b style="font-size:.72vw;color:${DARK}">#${pos+1}</b>`
-        :`<span style="color:#ccc;font-size:.72vw">–</span>`;
-      let nc=nota>0?`<span style="background:${sC(nota).bg};color:${sC(nota).fg};border:1px solid ${sC(nota).bd};padding:0 4px;border-radius:2px;font-weight:900;font-size:.75vw">${nota}</span>`:`<span style="color:#ccc">–</span>`;
-      let ac=`<span style="color:#aaa;font-size:.65vw">${(mi>0&&ant>0)?ant:'–'}</span>`;
+      let pc=rk&&pos<3?`<span style="font-size:1.1vw">${MD[pos]}</span>`
+        :rk?`<b style="font-size:.88vw;color:${DARK}">#${pos+1}</b>`
+        :`<span style="color:#ccc;font-size:.88vw">–</span>`;
+      let nc=nota>0?`<span style="background:${sC(nota).bg};color:${sC(nota).fg};border:1px solid ${sC(nota).bd};padding:0 5px;border-radius:2px;font-weight:900;font-size:.92vw">${nota}</span>`:`<span style="color:#ccc">–</span>`;
+      let ac=`<span style="color:#aaa;font-size:.82vw">${(mi>0&&ant>0)?ant:'–'}</span>`;
       let badge='';
-      if(!rk) badge=`<span style="background:#f0f0f0;color:#bbb;padding:0 4px;border-radius:6px;font-size:.6vw">s/d</span>`;
-      else if(mi===0) badge=`<span style="background:#f0f0f0;color:#aaa;padding:0 4px;border-radius:6px;font-size:.6vw">1°m</span>`;
-      else if(delta===null) badge=`<span style="background:#f0f0f0;color:#aaa;padding:0 4px;border-radius:6px;font-size:.6vw">–</span>`;
-      else if(delta>0) badge=`<span style="background:#d4edda;color:#155724;padding:0 4px;border-radius:6px;font-size:.65vw;font-weight:700">▲+${delta}</span>`;
-      else if(delta<0) badge=`<span style="background:#f8d7da;color:#721c24;padding:0 4px;border-radius:6px;font-size:.65vw;font-weight:700">▼${delta}</span>`;
-      else badge=`<span style="background:#e2e3e5;color:#555;padding:0 4px;border-radius:6px;font-size:.6vw">→Est.</span>`;
+      if(!rk) badge=`<span style="background:#f0f0f0;color:#bbb;padding:0 5px;border-radius:6px;font-size:.76vw">s/d</span>`;
+      else if(mi===0) badge=`<span style="background:#f0f0f0;color:#aaa;padding:0 5px;border-radius:6px;font-size:.76vw">1°m</span>`;
+      else if(delta===null) badge=`<span style="background:#f0f0f0;color:#aaa;padding:0 5px;border-radius:6px;font-size:.76vw">–</span>`;
+      else if(delta>0) badge=`<span style="background:#d4edda;color:#155724;padding:0 5px;border-radius:6px;font-size:.82vw;font-weight:700">▲+${delta}</span>`;
+      else if(delta<0) badge=`<span style="background:#f8d7da;color:#721c24;padding:0 5px;border-radius:6px;font-size:.82vw;font-weight:700">▼${delta}</span>`;
+      else badge=`<span style="background:#e2e3e5;color:#555;padding:0 5px;border-radius:6px;font-size:.76vw">→Est.</span>`;
       return `<tr style="background:${bg}">
         <td style="text-align:center;padding:2px 3px;border-bottom:1px solid rgba(224,221,217,.4);width:2.2vw">${pc}</td>
-        <td style="padding:2px 5px;font-size:.82vw;font-weight:${pos<3&&rk?700:400};color:${DARK};border-bottom:1px solid rgba(224,221,217,.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:0">${SECTORS[si]}</td>
+        <td style="padding:2px 5px;font-size:1.0vw;font-weight:${pos<3&&rk?700:400};color:${DARK};border-bottom:1px solid rgba(224,221,217,.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:0">${SECTORS[si]}</td>
         <td style="text-align:center;padding:2px 2px;border-bottom:1px solid rgba(224,221,217,.4);width:1.8vw">${ac}</td>
         <td style="text-align:center;padding:2px 3px;border-bottom:1px solid rgba(224,221,217,.4);width:2.8vw">${nc}</td>
         <td style="text-align:center;padding:2px 3px;border-bottom:1px solid rgba(224,221,217,.4);width:4vw">${badge}</td>
@@ -1969,20 +2019,28 @@ function tvLoadPhotoTri(){
 
 function switchTVSubTab(tab){
   tvSubTab=tab;
-  ['mensal','trimestral'].forEach(t=>{
+  ['mensal','trimestral','a4'].forEach(t=>{
     const btn=document.getElementById('tvTab-'+t);
     if(btn){btn.style.background=t===tab?'var(--red)':'transparent';
       btn.style.borderColor=t===tab?'var(--red)':'rgba(255,255,255,.2)';
       btn.style.color=t===tab?'#fff':'rgba(255,255,255,.6)';}
   });
   const mc=document.getElementById('tv-mensal-ctrl'),tc=document.getElementById('tv-tri-ctrl');
+  const ac=document.getElementById('tv-a4-ctrl');
+  const ss=document.getElementById('tv-slide-section'),as4=document.getElementById('tv-a4-section');
   if(mc)mc.style.display=tab==='mensal'?'flex':'none';
   if(tc)tc.style.display=tab==='trimestral'?'flex':'none';
+  if(ac)ac.style.display=tab==='a4'?'flex':'none';
+  if(ss)ss.style.display=tab==='a4'?'none':'block';
+  if(as4)as4.style.display=tab==='a4'?'block':'none';
   const hint=document.getElementById('tv-hint');
   if(hint)hint.textContent=tab==='mensal'
     ?'ℹ️ Selecione o mês e adicione a foto do setor vencedor. O slide é gerado automaticamente com todos os dados do mês.'
+    :tab==='a4'
+    ?'ℹ️ Gera uma folha A4 retrato para imprimir e afixar na fábrica. Use o botão "Imprimir / Salvar PDF" para salvar.'
     :'ℹ️ Selecione o trimestre e adicione a foto do 1° lugar. O ranking acumulado (/60) é gerado automaticamente.';
   if(tab==='mensal')buildTV();
+  else if(tab==='a4'){tvSyncA4();buildTVA4();}
   else{tvSyncTrimestre();buildTVTrimestral();}
 }
 
@@ -2045,7 +2103,7 @@ function buildTVTrimestral(){
       const nota=accum[si];
       const bg=pos%2===0?'rgba(255,255,255,.94)':'rgba(248,247,245,.94)';
       const ic=['🥇','🥈','🥉'];
-      const pc=pos<3?`<span style="font-size:.9vw">${ic[pos]}</span>`:`<b style="font-size:.72vw;color:${DARK}">#${pos+1}</b>`;
+      const pc=pos<3?`<span style="font-size:.9vw">${ic[pos]}</span>`:`<b style="font-size:.88vw;color:${DARK}">#${pos+1}</b>`;
       const c=scC(nota);
       const nc=nota>0?`<span style="background:${c.bg};color:${c.fg};border:1px solid ${c.bd};padding:0 4px;border-radius:2px;font-weight:900;font-size:.7vw">${nota}<span style="font-weight:400;font-size:.55vw;color:${MUTED}">/60</span></span>`:`<span style="color:#ccc">–</span>`;
       return `<tr style="background:${bg}">
@@ -2351,8 +2409,10 @@ function buildAcAnual(){
 //  SMART EXPORT — único botão PDF contextual
 // ════════════════════════════════════════════════════════════════════
 function smartExport(){
-  if(activeTab==='tv') printTVFixed();
-  else exportPDF();
+  if(activeTab==='tv'){
+    if(tvSubTab==='a4') printA4();
+    else printTVFixed();
+  } else exportPDF();
 }
 
 // Atualiza label do botão ao trocar de aba
@@ -2365,71 +2425,426 @@ function updatePdfBtn(){
 // ════════════════════════════════════════════════════════════════════
 //  PRINT TV CORRIGIDO — abre janela e aguarda fontes + imagens
 // ════════════════════════════════════════════════════════════════════
-function printTVFixed(){
-  const mes = tvSubTab==='trimestral' ? QUARTERS[tvTriIdx].label : MONTHS[parseInt(document.getElementById('tvMonthSel').value)];
-  const slideHTML = document.getElementById('tv-slide').innerHTML;
-
-  // Extrair todas as src de imagem do slide para pré-carregar
-  const imgSrcs = [];
-  const imgRe = /src="([^"]+)"/g;
-  let m;
-  while((m = imgRe.exec(slideHTML)) !== null){
-    if(!m[1].startsWith('data:')) imgSrcs.push(m[1]);
-  }
-
-  const w = window.open('','_blank','width=1280,height=800');
-  w.document.write(`<!DOCTYPE html><html><head>
-<meta charset="utf-8">
-<title>5S – ${mes} 2026</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Outfit:wght@700;900&display=swap" rel="stylesheet">
-<style>
-  @page{size:A4 landscape;margin:0}
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  html,body{margin:0;padding:0;width:297mm;height:210mm;overflow:hidden;background:#fff}
-  #wrapper{width:297mm;height:210mm;position:relative;overflow:hidden;background:#fff}
-  #s{
-    width:1280px;height:720px;
-    position:absolute;top:0;left:0;
-    transform-origin:top left;
-    transform:scale(0.876563);
-    overflow:hidden;font-family:'Lato',sans-serif
-  }
-  @media screen{
-    body{display:flex;align-items:center;justify-content:center;background:#222;min-height:100vh;width:auto;height:auto}
-    #wrapper{width:1122px;height:794px;box-shadow:0 4px 32px rgba(0,0,0,.5)}
-    #s{transform:scale(0.876563)}
-  }
-</style>
-</head><body>
-<div id="wrapper"><div id="s">${slideHTML}</div></div>
-<script>
-  var imgSrcs=${JSON.stringify(imgSrcs)};
-  function waitAndPrint(){
-    var loaded=0, total=imgSrcs.length;
-    if(total===0){doPrint();return;}
-    imgSrcs.forEach(function(src){
-      var img=new Image();
-      img.onload=img.onerror=function(){loaded++;if(loaded===total)doPrint();};
-      img.src=src;
+// ════════════════════════════════════════════════════════════════════
+//  SALVAR / RESTAURAR DIVULGAÇÃO — localStorage
+// ════════════════════════════════════════════════════════════════════
+function blobToDataUrl(url){
+  if(!url||!url.startsWith('blob:')) return Promise.resolve(url||null);
+  return fetch(url).then(function(r){return r.blob();}).then(function(b){
+    return new Promise(function(res,rej){
+      var fr=new FileReader();
+      fr.onload=function(e){res(e.target.result);};
+      fr.onerror=function(){rej(new Error('FileReader error'));};
+      fr.readAsDataURL(b);
     });
-    setTimeout(doPrint,3000);
-  }
-  function doPrint(){
-    if(document.fonts && document.fonts.ready){
-      document.fonts.ready.then(function(){
-        setTimeout(function(){window.print();},400);
-      });
-    } else {
-      setTimeout(function(){window.print();},1500);
-    }
-  }
-  window.onload=function(){setTimeout(waitAndPrint,200);};
-<\/script>
-</body></html>`);
-  w.document.close();
+  }).catch(function(){return url;});
 }
+
+function salvarTV(tipo){
+  var chave,getMonth,getPhoto,setPhoto,getLabel;
+  if(tipo==='mensal'){
+    chave='inova5s_tv_mensal';
+    getMonth=function(){return {month:document.getElementById('tvMonthSel').value};};
+    getPhoto=function(){return tvPhotoUrl;};
+    setPhoto=function(v){tvPhotoUrl=v;};
+    getLabel='✅ Mensal salvo!';
+  } else if(tipo==='trimestral'){
+    chave='inova5s_tv_tri';
+    getMonth=function(){return {tri:document.getElementById('tvTriSel').value};};
+    getPhoto=function(){return tvPhotoTriUrl;};
+    setPhoto=function(v){tvPhotoTriUrl=v;};
+    getLabel='✅ Trimestral salvo!';
+  } else if(tipo==='a4'){
+    chave='inova5s_tv_a4';
+    getMonth=function(){return {month:document.getElementById('tvA4MonthSel').value};};
+    getPhoto=function(){return tvA4PhotoUrl;};
+    setPhoto=function(v){tvA4PhotoUrl=v;};
+    getLabel='✅ Folha A4 salva!';
+  } else { return; }
+
+  blobToDataUrl(getPhoto()).then(function(photoData){
+    if(photoData&&photoData.startsWith('data:')) setPhoto(photoData);
+    var dados=getMonth();
+    dados.photo=photoData||null;
+    try{
+      localStorage.setItem(chave,JSON.stringify(dados));
+      showToast(getLabel,'ok');
+    }catch(e){
+      showToast('❌ Erro ao salvar: '+e.message,'err');
+      console.error('salvarTV localStorage error:',e);
+    }
+  }).catch(function(e){
+    showToast('❌ Erro ao salvar: '+e.message,'err');
+    console.error('salvarTV error:',e);
+  });
+}
+
+function restaurarTV(){
+  try{
+    var dm=localStorage.getItem('inova5s_tv_mensal');
+    if(dm){
+      var d=JSON.parse(dm);
+      var sel=document.getElementById('tvMonthSel');
+      if(sel&&d.month!=null) sel.value=d.month;
+      if(d.photo){tvPhotoUrl=d.photo;}
+    }
+  }catch(e){}
+  try{
+    var dt=localStorage.getItem('inova5s_tv_tri');
+    if(dt){
+      var d2=JSON.parse(dt);
+      var selT=document.getElementById('tvTriSel');
+      if(selT&&d2.tri!=null){selT.value=d2.tri;tvTriIdx=parseInt(d2.tri);}
+      if(d2.photo){tvPhotoTriUrl=d2.photo;}
+    }
+  }catch(e){}
+  try{
+    var da=localStorage.getItem('inova5s_tv_a4');
+    if(da){
+      var d3=JSON.parse(da);
+      var selA=document.getElementById('tvA4MonthSel');
+      if(selA&&d3.month!=null) selA.value=d3.month;
+      if(d3.photo){tvA4PhotoUrl=d3.photo;}
+    }
+  }catch(e){}
+}
+
+function printTVFixed(){
+  printTVBlob(tvSubTab==='trimestral'?'trimestral':'mensal');
+}
+
+function printTVBlob(tipo){
+  var mes = tipo==='trimestral' ? QUARTERS[tvTriIdx].label : MONTHS[parseInt(document.getElementById('tvMonthSel').value)];
+  var anoAtual = parseInt(document.getElementById('anoSel').value)||2026;
+  var slideEl = document.getElementById('tv-slide');
+  if(!slideEl||!slideEl.innerHTML.trim()){alert('Gere o slide antes de imprimir.');return;}
+  var slideHTML = slideEl.innerHTML;
+
+  // Converter blob URL da foto para dataURL (evita erro cross-origin na nova janela)
+  var photoUrl = tipo==='trimestral' ? (tvPhotoTriUrl||null) : (window.tvPhotoUrl||null);
+  var photoPromise = Promise.resolve(slideHTML);
+  if(photoUrl && photoUrl.startsWith('blob:')){
+    photoPromise = fetch(photoUrl).then(function(r){return r.blob();}).then(function(b){
+      return new Promise(function(res){
+        var fr=new FileReader();
+        fr.onload=function(e){
+          var re=new RegExp(photoUrl.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g');
+          res(slideHTML.replace(re,e.target.result));
+        };
+        fr.readAsDataURL(b);
+      });
+    }).catch(function(){return slideHTML;});
+  }
+
+  photoPromise.then(function(html){
+    var fullHTML='<!DOCTYPE html><html><head>'
+      +'<meta charset="utf-8">'
+      +'<title>5S – '+mes+' '+anoAtual+'<\/title>'
+      +'<link rel="preconnect" href="https://fonts.googleapis.com">'
+      +'<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Outfit:wght@700;900&display=swap" rel="stylesheet">'
+      +'<style>'
+      +'@page{size:297mm 210mm landscape;margin:0}'
+      +'*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}'
+      +'html,body{margin:0;padding:0;background:#fff;overflow:hidden}'
+      +'#wrapper{width:297mm;height:210mm;position:relative;overflow:hidden;background:#fff}'
+      +'#s{width:1280px;height:720px;position:absolute;top:0;left:0;transform-origin:top left;transform:scale(0.876563);overflow:hidden;font-family:Lato,sans-serif}'
+      +'@media screen{body{background:#222;display:flex;align-items:center;justify-content:center;min-height:100vh;width:auto;height:auto}'
+      +'#wrapper{width:1122px;height:632px;box-shadow:0 4px 32px rgba(0,0,0,.5)}}'
+      +'<\/style>'
+      +'<\/head><body>'
+      +'<div id="wrapper"><div id="s">'+html+'<\/div><\/div>'
+      +'<script>'
+      +'if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){setTimeout(function(){window.print();},600);});}else{setTimeout(function(){window.print();},2000);}'
+      +'<\/script>'
+      +'<\/body><\/html>';
+    var blob=new Blob([fullHTML],{type:'text/html;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.style.display='none';
+    document.body.appendChild(a);
+    var w=window.open(url,'_blank');
+    if(!w){
+      a.href=url;
+      a.download='5S-Slide-'+tipo+'-'+mes+'-'+anoAtual+'.html';
+      a.click();
+    }
+    setTimeout(function(){URL.revokeObjectURL(url);document.body.removeChild(a);},10000);
+  });
+}
+
+
+// ════════════════════════════════════════════════════════════════════
+//  FOLHA A4 RETRATO — Divulgação fábrica
+// ════════════════════════════════════════════════════════════════════
+
+function tvLoadA4Photo(){
+  var f=document.getElementById('tvA4Photo').files[0];
+  if(!f)return;
+  tvA4PhotoUrl=URL.createObjectURL(f);
+  buildTVA4();
+}
+
+function tvSyncA4(){
+  var best=parseInt(document.getElementById('tvMonthSel').value)||0;
+  var sel=document.getElementById('tvA4MonthSel');
+  if(sel) sel.value=best;
+}
+
+function buildTVA4(){
+  try{
+    var mi=parseInt(document.getElementById('tvA4MonthSel').value);
+    var el=document.getElementById('tv-a4-slide');
+    if(!el) return;
+
+    var mesNome=MONTHS[mi];
+    var anoAtual=parseInt(document.getElementById('anoSel').value)||2026;
+    var RED='#C8102E',DARK='#3D3935',GREEN='#2E7D32',AMBER='#E89B1A';
+    var GOLD='#B8960C',SILVER='#7A7A7A',BRONZE='#7A4A2E';
+    var MUTED='#8A8078',BORDER='#E0DDD9';
+
+    var vals=SCORES[mi]||[];
+    var antVals=mi>0?(SCORES[mi-1]||[]):[];
+    var sorted=[].concat(
+      SECTORS.map(function(_,i){return i;}).filter(function(i){return vals[i]>0;}).sort(function(a,b){return comp(mi,b)-comp(mi,a);}),
+      SECTORS.map(function(_,i){return i;}).filter(function(i){return !vals[i]||vals[i]===0;})
+    );
+
+    var valid=vals.filter(function(v){return v>0;});
+    var media=null,kBest='–',kBestPts=0,kWorst='–',kWorstPts=0;
+    if(valid.length){
+      media=valid.reduce(function(a,b){return a+b;},0)/valid.length;
+      var maxV=Math.max.apply(null,valid),minV=Math.min.apply(null,valid);
+      var comps=vals.map(function(v,i){return{i:i,c:comp(mi,i)};});
+      var bArr=comps.filter(function(x){return vals[x.i]===maxV;}).sort(function(a,b){return b.c-a.c;});
+      var wArr=comps.filter(function(x){return vals[x.i]===minV;}).sort(function(a,b){return a.c-b.c;});
+      if(bArr.length){kBest=SECTORS[bArr[0].i];kBestPts=maxV;}
+      if(wArr.length){kWorst=SECTORS[wArr[0].i];kWorstPts=minV;}
+    }
+
+    function sC(v){
+      if(!v) return{bg:'#F0F0F0',fg:'#999',bd:'#DDD'};
+      if(v>=18)return{bg:'#F0FAF0',fg:'#1E7E34',bd:'#B2DFB4'};
+      if(v>=14)return{bg:'#FEF9EC',fg:'#9A6B0A',bd:'#F5E4A0'};
+      return{bg:'#FEF0F0',fg:'#C0392B',bd:'#F5C6C6'};
+    }
+
+    // Linhas do ranking
+    var rankRows='';
+    sorted.forEach(function(si,pos){
+      var nota=vals[si]||0;
+      var ant=antVals[si]||0;
+      var delta=(nota>0&&ant>0)?nota-ant:null;
+      var c=sC(nota);
+      var medal='';
+      if(nota>0){
+        if(pos===0)medal='🥇';
+        else if(pos===1)medal='🥈';
+        else if(pos===2)medal='🥉';
+      }
+      var posCell=medal?('<span style="font-size:13px">'+medal+'</span>'):'<span style="font-size:10px;color:#aaa">'+(nota>0?'#'+(pos+1):'–')+'</span>';
+      var varBadge='';
+      if(delta===null) varBadge='<span style="color:#bbb;font-size:10px">–</span>';
+      else if(delta>0) varBadge='<span style="color:#1E7E34;font-weight:700;font-size:10px">▲+'+delta+'</span>';
+      else if(delta<0) varBadge='<span style="color:#C0392B;font-weight:700;font-size:10px">▼'+delta+'</span>';
+      else varBadge='<span style="color:#888;font-size:10px">→</span>';
+      var bg=pos%2===0?'#fff':'#FAFAF9';
+      var lb=pos===0?('border-left:3px solid '+GOLD):pos===1?('border-left:3px solid '+SILVER):pos===2?('border-left:3px solid '+BRONZE):'border-left:3px solid transparent';
+      var notaCell=nota>0?('<span style="background:'+c.bg+';color:'+c.fg+';border:1px solid '+c.bd+';padding:2px 6px;border-radius:2px;font-weight:900;font-size:13px;display:inline-block">'+nota+'</span>'):'<span style="color:#ccc">–</span>';
+      rankRows+='<tr style="background:'+bg+'">'+
+        '<td style="padding:4px 4px;text-align:center;'+lb+';width:30px">'+posCell+'</td>'+
+        '<td style="padding:4px 8px;font-size:12px;color:'+DARK+';font-weight:'+(pos<3&&nota>0?700:400)+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:0">'+SECTORS[si]+'</td>'+
+        '<td style="padding:4px 4px;text-align:center;font-size:11px;color:#aaa;width:30px">'+(ant>0?ant:'–')+'</td>'+
+        '<td style="padding:4px 6px;text-align:center;width:42px">'+notaCell+'</td>'+
+        '<td style="padding:4px 4px;text-align:center;width:36px">'+varBadge+'</td>'+
+      '</tr>';
+    });
+
+    // Áreas Comuns
+    var ac=AC_SCORES[mi]||[0,0,0];
+    var acBlock='';
+    if(ac.some(function(v){return v>0;})){
+      var acCells='';
+      AC_NAMES.forEach(function(nome,ai){
+        var v=ac[ai]||0;
+        var pct=AC_MAX>0?v/AC_MAX:0;
+        var col=pct>=0.83?GREEN:pct>=0.67?AMBER:RED;
+        var bar=v>0?('<div style="height:3px;background:#E0DDD9;border-radius:2px;margin-top:3px;overflow:hidden"><div style="width:'+Math.round(pct*100)+'%;height:100%;background:'+col+';border-radius:2px"></div></div>'):'';
+        acCells+='<div style="padding:7px 10px;border-right:1px solid '+BORDER+';'+(ai===2?'border-right:none':'')+'">'
+          +'<div style="font-size:9px;font-weight:700;color:'+MUTED+';letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px">'+nome+'</div>'
+          +'<div style="font-size:15px;font-weight:900;color:'+(v>0?col:'#ccc')+'">'+(v>0?v:'–')+'<span style="font-size:10px;font-weight:400;color:#aaa"> /'+AC_MAX+'</span></div>'
+          +bar+'</div>';
+      });
+      acBlock='<div style="margin-top:8px;border:1px solid '+BORDER+';border-radius:4px;overflow:hidden">'
+        +'<div style="background:'+DARK+';color:#fff;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-bottom:2px solid '+RED+'">Áreas Comuns <span style="opacity:.5;font-weight:400;letter-spacing:0">· não entra no ranking</span></div>'
+        +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0">'+acCells+'</div>'
+        +'</div>';
+    }
+
+    // Foto do 1° lugar — usa tvA4PhotoUrl (input exclusivo da aba A4)
+    var fotoBlock='';
+    var photoSrc=tvA4PhotoUrl||null;
+    if(photoSrc){
+      fotoBlock='<div style="display:flex;justify-content:center;margin-bottom:8px">'
+        +'<div style="text-align:center">'
+        +'<div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+MUTED+';margin-bottom:4px">Setor Destaque</div>'
+        +'<img src="'+photoSrc+'" style="max-width:200px;max-height:180px;border-radius:6px;border:3px solid '+GOLD+';object-fit:cover">'
+        +'</div></div>';
+    }
+
+    var mediaColor=media===null?'#aaa':media>=META?GREEN:AMBER;
+    var today=new Date();
+    var dataStr=today.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    var antLabel=mi>0?ABBR[mi-1]:'–';
+
+    var html=''
+    +'<div style="width:210mm;height:297mm;background:#fff;font-family:Lato,sans-serif;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden">'
+
+    // Cabeçalho
+    +'<div style="background:'+DARK+';border-bottom:4px solid '+RED+';padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">'
+      +'<div style="display:flex;align-items:center;gap:12px">'
+        +'<img src="https://www.inova.ind.br/assets/img/logoInova.png" style="height:24px" onerror="this.style.display=String.fromCharCode(110,111,110,101)">'
+        +'<div style="width:1px;height:24px;background:rgba(255,255,255,.2)"></div>'
+        +'<div>'
+          +'<div style="font-size:14px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#fff">Programa 5S</div>'
+          +'<div style="font-size:9px;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:1px">Melhoria Contínua · Inova</div>'
+        +'</div>'
+      +'</div>'
+      +'<div style="text-align:right">'
+        +'<div style="font-size:18px;font-weight:900;color:#fff;letter-spacing:.5px">'+mesNome+' '+anoAtual+'</div>'
+        +'<div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:2px">Resultado da Auditoria Mensal</div>'
+      +'</div>'
+    +'</div>'
+
+    // Corpo
+    +'<div style="padding:14px 18px;flex:1;display:flex;flex-direction:column;gap:10px">'
+
+      // KPIs
+      +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'
+        +'<div style="background:#fff;border:1px solid '+BORDER+';border-radius:3px;padding:10px 12px;border-top:3px solid '+DARK+'">'
+          +'<div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+MUTED+';margin-bottom:5px">Média Geral</div>'
+          +'<div style="font-size:24px;font-weight:900;color:'+mediaColor+';line-height:1">'+(media!==null?media.toFixed(1):'–')+'</div>'
+          +'<div style="font-size:9px;color:'+mediaColor+';margin-top:2px">'+(media!==null?(media>=META?'✔ Acima da meta':'⚠ Abaixo da meta'):'Sem dados')+'</div>'
+        +'</div>'
+        +'<div style="background:#fff;border:1px solid '+BORDER+';border-radius:3px;padding:10px 12px;border-top:3px solid '+GREEN+'">'
+          +'<div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+MUTED+';margin-bottom:5px">Destaque</div>'
+          +'<div style="font-size:13px;font-weight:900;color:'+GREEN+';line-height:1.2">'+kBest+'</div>'
+          +'<div style="font-size:9px;color:'+GREEN+';margin-top:2px">'+(kBestPts>0?kBestPts+'/20 pts':'')+'</div>'
+        +'</div>'
+        +'<div style="background:#fff;border:1px solid '+BORDER+';border-radius:3px;padding:10px 12px;border-top:3px solid '+RED+'">'
+          +'<div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+MUTED+';margin-bottom:5px">Atenção</div>'
+          +'<div style="font-size:13px;font-weight:900;color:'+RED+';line-height:1.2">'+kWorst+'</div>'
+          +'<div style="font-size:9px;color:'+RED+';margin-top:2px">'+(kWorstPts>0?kWorstPts+'/20 pts':'')+'</div>'
+        +'</div>'
+        +'<div style="background:#fff;border:1px solid '+BORDER+';border-radius:3px;padding:10px 12px;border-top:3px solid #1565C0">'
+          +'<div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+MUTED+';margin-bottom:5px">Meta</div>'
+          +'<div style="font-size:24px;font-weight:900;color:#1565C0;line-height:1">'+META+'/20</div>'
+          +'<div style="font-size:9px;color:#1565C0;margin-top:2px">Pontuação mínima</div>'
+        +'</div>'
+      +'</div>'
+
+      // Foto
+      +fotoBlock
+
+      // Ranking
+      +'<div style="border:1px solid '+BORDER+';border-radius:4px;overflow:hidden;flex:1">'
+        +'<div style="background:'+DARK+';border-bottom:2px solid '+RED+';padding:7px 14px;display:flex;align-items:center;justify-content:space-between">'
+          +'<span style="font-size:11px;font-family:Outfit,sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff">Ranking de Setores</span>'
+          +'<span style="font-size:10px;color:rgba(255,255,255,.45)">'+mesNome+' '+anoAtual+' · Máx. 20 pts</span>'
+        +'</div>'
+        +'<table style="width:100%;border-collapse:collapse;table-layout:fixed">'
+          +'<thead><tr style="background:#4A4540">'
+            +'<th style="width:30px;padding:5px 4px;text-align:center;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#bbb;border-bottom:1px solid '+BORDER+'">Pos.</th>'
+            +'<th style="padding:5px 8px;text-align:left;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#bbb;border-bottom:1px solid '+BORDER+'">Setor</th>'
+            +'<th style="width:30px;padding:5px 4px;text-align:center;font-size:9px;font-weight:700;color:#bbb;border-bottom:1px solid '+BORDER+'">'+antLabel+'</th>'
+            +'<th style="width:42px;padding:5px 4px;text-align:center;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:'+RED+';border-bottom:1px solid '+RED+'">'+ABBR[mi]+'</th>'
+            +'<th style="width:36px;padding:5px 4px;text-align:center;font-size:9px;font-weight:700;color:#bbb;border-bottom:1px solid '+BORDER+'">Var.</th>'
+          +'</tr></thead>'
+          +'<tbody>'+rankRows+'</tbody>'
+        +'</table>'
+      +'</div>'
+
+      // Áreas Comuns
+      +acBlock
+
+    +'</div>'
+
+    // Rodapé
+    +'<div style="border-top:1px solid '+BORDER+';padding:7px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:#FAFAF9">'
+      +'<span style="font-size:8px;color:'+MUTED+';font-weight:700;letter-spacing:1px;text-transform:uppercase">Inova · Programa 5S · Melhoria Contínua</span>'
+      +'<span style="font-size:8px;color:'+MUTED+'">Gerado em '+dataStr+'</span>'
+      +'<div style="display:flex;align-items:center;gap:5px">'
+        +'<span style="font-size:8px;background:#FEF0F0;color:#C0392B;border:1px solid #F5C6C6;padding:2px 6px;border-radius:2px;font-weight:700">Ruim ≤13</span>'
+        +'<span style="font-size:8px;background:#FEF9EC;color:#9A6B0A;border:1px solid #F5E4A0;padding:2px 6px;border-radius:2px;font-weight:700">Regular 14-17</span>'
+        +'<span style="font-size:8px;background:#F0FAF0;color:#1E7E34;border:1px solid #B2DFB4;padding:2px 6px;border-radius:2px;font-weight:700">Bom ≥18</span>'
+      +'</div>'
+    +'</div>'
+
+    +'</div>';
+
+    el.innerHTML=html;
+  }catch(e){
+    var el2=document.getElementById('tv-a4-slide');
+    if(el2) el2.innerHTML='<div style="padding:40px;text-align:center;color:#C8102E;font-weight:700">Erro ao gerar folha: '+e.message+'</div>';
+    console.error('buildTVA4 error:',e);
+  }
+}
+
+function printA4(){
+  var mi=parseInt(document.getElementById('tvA4MonthSel').value);
+  var mes=MONTHS[mi];
+  var anoAtual=parseInt(document.getElementById('anoSel').value)||2026;
+  var slideEl=document.getElementById('tv-a4-slide');
+  if(!slideEl||!slideEl.innerHTML.trim()){alert('Selecione o mês para gerar a folha antes de imprimir.');return;}
+  var slideHTML=slideEl.innerHTML;
+
+  // Substituir blob URLs de foto por dataURL para funcionar na nova janela
+  var photoPromise=Promise.resolve(slideHTML);
+  if(tvA4PhotoUrl&&tvA4PhotoUrl.startsWith('blob:')){
+    photoPromise=fetch(tvA4PhotoUrl).then(function(r){return r.blob();}).then(function(b){
+      return new Promise(function(res){
+        var fr=new FileReader();
+        fr.onload=function(e){res(slideHTML.replace(new RegExp(tvA4PhotoUrl.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'),e.target.result));};
+        fr.readAsDataURL(b);
+      });
+    }).catch(function(){return slideHTML;});
+  }
+
+  photoPromise.then(function(html){
+    var fullHTML='<!DOCTYPE html><html><head>'
+      +'<meta charset="utf-8">'
+      +'<title>5S – Folha A4 – '+mes+' '+anoAtual+'</title>'
+      +'<link rel="preconnect" href="https://fonts.googleapis.com">'
+      +'<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Outfit:wght@700;900&display=swap" rel="stylesheet">'
+      +'<style>'
+      +'@page{size:210mm 297mm portrait;margin:0}'
+      +'*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}'
+      +'html,body{width:210mm;height:297mm;background:#fff;overflow:hidden}'
+      +'#content{width:210mm;height:297mm;background:#fff;display:flex;flex-direction:column}'
+      +'@media screen{body{background:#555;display:flex;align-items:flex-start;justify-content:center;min-height:100vh;width:auto;height:auto;padding:20px}#content{box-shadow:0 4px 32px rgba(0,0,0,.4)}}'
+      +'</style>'
+      +'</head><body>'
+      +'<div id="content">'+html+'</div>'
+      +'<script>'
+      +'if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){setTimeout(function(){window.print();},500);});}else{setTimeout(function(){window.print();},2000);}'
+      +'<\/script>'
+      +'</body></html>';
+
+    var blob=new Blob([fullHTML],{type:'text/html;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.style.display='none';
+    document.body.appendChild(a);
+    var w=window.open(url,'_blank');
+    if(!w){
+      // popup bloqueado — fallback: download do HTML
+      a.href=url;
+      a.download='5S-Folha-A4-'+mes+'-'+anoAtual+'.html';
+      a.click();
+    }
+    setTimeout(function(){URL.revokeObjectURL(url);document.body.removeChild(a);},10000);
+  });
+}
+
 
 async function init(){
   setStat('syncStatus','Carregando dados online…','');
