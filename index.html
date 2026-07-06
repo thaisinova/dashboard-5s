@@ -868,6 +868,7 @@ const QUARTERS = [
   { label:'3º Trimestre', months:[6,7,8],  abbr:'T3' },
   { label:'4º Trimestre', months:[9,10,11],abbr:'T4' },
 ];
+const ANNUAL_MONTHS = Array.from({length:12},(_,i)=>i);
 
 // Totais mensais: SCORES[mi][si] = nota total (0=sem dado)
 let SCORES = {
@@ -990,36 +991,70 @@ function hmColor(v){
 }
 function hasData(mi){return SCORES[mi]&&SCORES[mi].some(v=>v>0);}
 function avg(arr){const v=arr.filter(x=>x>0);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null;}
-function comp(mi,si){
-  const n=SCORES[mi][si]||0; if(!n) return 0;
-  const ss=S_SCORES[mi]&&S_SCORES[mi][si]?S_SCORES[mi][si]:[0,0,0,0,0,0];
-  const actual = n*1e12 + ss[0]*1e11 + ss[1]*1e10 + ss[2]*1e9 + ss[3]*1e8 + ss[4]*1e7;
-  if(mi===0) return actual;
-  const np=SCORES[mi-1][si]||0;
-  const sp=S_SCORES[mi-1]&&S_SCORES[mi-1][si]?S_SCORES[mi-1][si]:[0,0,0,0,0,0];
-  const prev = np*1e5 + sp[0]*1e4 + sp[1]*1e3 + sp[2]*1e2 + sp[3]*10 + sp[4];
-  return actual + prev;
-}
+// ════════════════════════════════════════════════════════════════════
+//  DESEMPATE (IT 01.28, item 7.1)
+//  Ordem: Pontuação total > Utilização > Organização > Limpeza >
+//  Padronização > Autodisciplina > Constância (mês anterior).
+//  Se a Constância também empatar, retroage para o mês anterior a esse,
+//  e assim por diante, até esgotar o histórico do setor no ano.
+// ════════════════════════════════════════════════════════════════════
 function calcTotal(ss){return ss[0]+ss[1]+ss[2]+ss[3]+ss[4]-ss[5];}
-function compTri(months,si){
-  const total=months.reduce((acc,mi)=>acc+((SCORES[mi]||[])[si]||0),0);
-  if(!total)return 0;
-  // Para desempate: acumula critério mensal completo de cada mês auditado
-  // (S1-S5 do mês + constância = nota/sensos do mês anterior)
-  let tb=0;
-  months.forEach(mi=>{
-    const v=(SCORES[mi]||[])[si]||0; if(!v)return;
-    const ss=S_SCORES[mi]&&S_SCORES[mi][si]?S_SCORES[mi][si]:[0,0,0,0,0,0];
-    tb+=ss[0]*1e11+ss[1]*1e10+ss[2]*1e9+ss[3]*1e8+ss[4]*1e7;
-    if(mi>0){
-      const pv=(SCORES[mi-1]||[])[si]||0;
-      const ps=S_SCORES[mi-1]&&S_SCORES[mi-1][si]?S_SCORES[mi-1][si]:[0,0,0,0,0,0];
-      tb+=pv*1e5+ps[0]*1e4+ps[1]*1e3+ps[2]*1e2+ps[3]*10+ps[4];
-    }
-  });
-  return total*1e14+tb;
+
+// Vetor de desempate para o ranking MENSAL: começa no mês avaliado (mi)
+// e retroage mês a mês até o início do ano. Cada mês contribui 6 valores:
+// [Total, Utilização, Organização, Limpeza, Padronização, Autodisciplina].
+// Vetor de desempate MENSAL: pontuação total, os 5 critérios (Utilização,
+// Organização, Limpeza, Padronização, Autodisciplina), e por último a
+// Constância (pontuação TOTAL do mês anterior — um único nível, igual ao
+// app5s_web/index.html, função carregarResultados/normais.sort).
+function tieBreakVector(mi,si){
+  const n=(SCORES[mi]||[])[si]||0;
+  const ss=(S_SCORES[mi]&&S_SCORES[mi][si])?S_SCORES[mi][si]:[0,0,0,0,0,0];
+  const prevTotal=mi>0?((SCORES[mi-1]||[])[si]||0):0;
+  return [n,ss[0],ss[1],ss[2],ss[3],ss[4],prevTotal];
 }
-function compAnual(si){const months=Array.from({length:12},(_,i)=>i);const total=months.reduce((acc,mi)=>acc+((SCORES[mi]||[])[si]||0),0);if(!total)return 0;const ss=[0,1,2,3,4].map(s=>months.reduce((acc,mi)=>acc+((S_SCORES[mi]&&S_SCORES[mi][si])?S_SCORES[mi][si][s]:0),0));return total*1e12+ss[0]*1e11+ss[1]*1e10+ss[2]*1e9+ss[3]*1e8+ss[4]*1e7;}
+// Compara dois setores para o ranking mensal. Retorna negativo se siA
+// deve ficar à frente de siB (uso direto em Array.sort).
+function compareRanking(mi,siA,siB){
+  const va=tieBreakVector(mi,siA), vb=tieBreakVector(mi,siB);
+  const len=Math.max(va.length,vb.length);
+  for(let i=0;i<len;i++){
+    const a=va[i]||0,b=vb[i]||0;
+    if(a!==b) return b-a;
+  }
+  return 0;
+}
+
+// Vetor de desempate para um PERÍODO (trimestre/ano): primeiro nível é o
+// total acumulado do período e a soma dos 5 critérios no período; se
+// empatar, retroage mês a mês para antes do período (mesma regra da
+// Constância, só que sem limite de um único mês).
+// Vetor de desempate de PERÍODO (trimestre/ano): total acumulado do
+// período, soma dos 5 critérios no período, e por último a Constância —
+// pontuação total do único mês imediatamente anterior ao início do
+// período (mesmo nível único de profundidade usado no mensal/app).
+function tieBreakVectorPeriod(months,si){
+  const total=months.reduce((acc,m)=>acc+((SCORES[m]||[])[si]||0),0);
+  const sums=[0,0,0,0,0];
+  months.forEach(m=>{
+    const ss=(S_SCORES[m]&&S_SCORES[m][si])?S_SCORES[m][si]:[0,0,0,0,0,0];
+    for(let k=0;k<5;k++) sums[k]+=ss[k];
+  });
+  const firstMonth=Math.min(...months);
+  const prevTotal=firstMonth>0?((SCORES[firstMonth-1]||[])[si]||0):0;
+  return [total,sums[0],sums[1],sums[2],sums[3],sums[4],prevTotal];
+}
+// Compara dois setores para ranking de trimestre ou ano. Retorna negativo
+// se siA deve ficar à frente de siB (uso direto em Array.sort).
+function compareRankingPeriod(months,siA,siB){
+  const va=tieBreakVectorPeriod(months,siA), vb=tieBreakVectorPeriod(months,siB);
+  const len=Math.max(va.length,vb.length);
+  for(let i=0;i<len;i++){
+    const a=va[i]||0,b=vb[i]||0;
+    if(a!==b) return b-a;
+  }
+  return 0;
+}
 
 function setStat(id,txt,cls=''){const el=document.getElementById(id);if(el){el.textContent=txt;el.style.color=cls==='ok'?'var(--green)':cls==='warn'?'var(--amber)':cls==='err'?'var(--red)':'var(--muted)';}}
 function showToast(msg,type){
@@ -1241,9 +1276,10 @@ function updateKPIs(mi){
     return;
   }
   const mean=avg(vals),maxV=Math.max(...valid),minV=Math.min(...valid);
-  const comps=vals.map((v,i)=>({i,c:comp(mi,i)}));
-  const bestI =comps.filter(x=>vals[x.i]===maxV).sort((a,b)=>b.c-a.c)[0].i;
-  const worstI=comps.filter(x=>vals[x.i]===minV).sort((a,b)=>a.c-b.c)[0].i;
+  const bestCand=SECTORS.map((_,i)=>i).filter(i=>vals[i]===maxV).sort((a,b)=>compareRanking(mi,a,b));
+  const worstCand=SECTORS.map((_,i)=>i).filter(i=>vals[i]===minV).sort((a,b)=>compareRanking(mi,a,b));
+  const bestI =bestCand[0];
+  const worstI=worstCand[worstCand.length-1];
   document.getElementById('k-avg').textContent=mean.toFixed(1)+' / 20';
   const as=document.getElementById('k-avg-s');
   if(mean>=META){as.textContent='✔ Acima da meta (≥ '+META+')';as.className='card-sub ok';}
@@ -1318,7 +1354,7 @@ function buildRanking(mi){
     td.textContent='Sem dados para este mês.';return;
   }
   const sorted=[
-    ...SECTORS.map((_,i)=>i).filter(i=>vals[i]>0).sort((a,b)=>comp(mi,b)-comp(mi,a)),
+    ...SECTORS.map((_,i)=>i).filter(i=>vals[i]>0).sort((a,b)=>compareRanking(mi,a,b)),
     ...SECTORS.map((_,i)=>i).filter(i=>!vals[i])
   ];
   sorted.forEach((si,pos)=>{
@@ -1454,7 +1490,7 @@ function buildTrimestral(){
       body.innerHTML='<div class="tri-no-data">Sem dados para este trimestre</div>';
     }else{
       const sorted=SECTORS.map((_,i)=>i).filter(i=>sums[i]>0)
-        .sort((a,b)=>compTri(q.months,b)-compTri(q.months,a));
+        .sort((a,b)=>compareRankingPeriod(q.months,a,b));
       const tbl=document.createElement('table');tbl.className='tri-rank';
       sorted.forEach((si,pos)=>{
         const tr=document.createElement('tr');
@@ -1522,7 +1558,7 @@ function buildAnual(){
   [['Pos.',''],['Setor',''],['Pontuação Acumulada','th-nota'],['Média Mensal','tc'],['Meses Auditados','tc']].forEach(([l,c])=>{
     hr.appendChild(Object.assign(document.createElement('th'),{textContent:l,className:c}));
   });
-  const sorted=SECTORS.map((_,i)=>i).filter(i=>anualSums[i]>0).sort((a,b)=>compAnual(b)-compAnual(a));
+  const sorted=SECTORS.map((_,i)=>i).filter(i=>anualSums[i]>0).sort((a,b)=>compareRankingPeriod(ANNUAL_MONTHS,a,b));
   const tb=tbl.createTBody();
   sorted.forEach((si,pos)=>{
     const tr=tb.insertRow();
@@ -1672,7 +1708,7 @@ function exportExcel(){
   MONTHS.forEach((mes,mi)=>{
     const vals=SCORES[mi];
     if(!vals.some(v=>v>0)) return;
-    const sorted=SECTORS.map((_,i)=>i).filter(i=>vals[i]>0).sort((a,b)=>comp(mi,b)-comp(mi,a));
+    const sorted=SECTORS.map((_,i)=>i).filter(i=>vals[i]>0).sort((a,b)=>compareRanking(mi,a,b));
     sorted.forEach((si,pos)=>{
       const ant=mi>0?SCORES[mi-1][si]:null;
       const delta=(vals[si]>0&&ant>0)?vals[si]-ant:'–';
@@ -1689,7 +1725,7 @@ function exportExcel(){
     if(!sums.some(v=>v>0)) return;
     const auditedM=q.months.filter(m=>hasData(m)).length;
     const maxPts=auditedM*20;
-    const sorted=SECTORS.map((_,i)=>i).filter(i=>sums[i]>0).sort((a,b)=>compTri(q.months,b)-compTri(q.months,a));
+    const sorted=SECTORS.map((_,i)=>i).filter(i=>sums[i]>0).sort((a,b)=>compareRankingPeriod(q.months,a,b));
     sorted.forEach((si,pos)=>{
       triRows.push([q.label,'#'+(pos+1),SECTORS[si],sums[si],maxPts]);
     });
@@ -1700,7 +1736,7 @@ function exportExcel(){
 
   const anualRows=[['Setor','Pontuação Acumulada','Média Mensal','Meses Auditados']];
   const anualSums=SECTORS.map((_,si)=>Array.from({length:12},(_,mi)=>(SCORES[mi]||[])[si]||0).reduce((a,b)=>a+b,0));
-  const sorted=SECTORS.map((_,i)=>i).filter(i=>anualSums[i]>0).sort((a,b)=>compAnual(b)-compAnual(a));
+  const sorted=SECTORS.map((_,i)=>i).filter(i=>anualSums[i]>0).sort((a,b)=>compareRankingPeriod(ANNUAL_MONTHS,a,b));
   sorted.forEach(si=>{
     const meses=Array.from({length:12},(_,mi)=>(SCORES[mi]||[])[si]>0?1:0).reduce((a,b)=>a+b,0);
     const media=meses?+(anualSums[si]/meses).toFixed(1):0;
@@ -1823,7 +1859,7 @@ function buildTV(){
   const MUTED='#8A8078',BORDER='#E0DDD9';
   const vals=SCORES[mi]||[], antVals=mi>0?(SCORES[mi-1]||[]):[];
   const sorted=[
-    ...SECTORS.map((_,i)=>i).filter(i=>vals[i]>0).sort((a,b)=>comp(mi,b)-comp(mi,a)),
+    ...SECTORS.map((_,i)=>i).filter(i=>vals[i]>0).sort((a,b)=>compareRanking(mi,a,b)),
     ...SECTORS.map((_,i)=>i).filter(i=>!vals[i])
   ];
 
@@ -1835,9 +1871,10 @@ function buildTV(){
     kM=mean.toFixed(1)+'/20'; kMok=mean>=META;
     kMsub=kMok?'✔ Acima da meta (≥'+META+')':'⚠ Abaixo da meta ('+META+')';
     const maxV=Math.max(...valid),minV=Math.min(...valid);
-    const comps=vals.map((v,i)=>({i,c:comp(mi,i)}));
-    const bI=comps.filter(x=>vals[x.i]===maxV).sort((a,b)=>b.c-a.c)[0].i;
-    const wI=comps.filter(x=>vals[x.i]===minV).sort((a,b)=>a.c-b.c)[0].i;
+    const bCand=SECTORS.map((_,i)=>i).filter(i=>vals[i]===maxV).sort((a,b)=>compareRanking(mi,a,b));
+    const wCand=SECTORS.map((_,i)=>i).filter(i=>vals[i]===minV).sort((a,b)=>compareRanking(mi,a,b));
+    const bI=bCand[0];
+    const wI=wCand[wCand.length-1];
     kD=SECTORS[bI]; kDsub='Pontuação: '+maxV+'/20';
     kA=SECTORS[wI]; kAsub='Pontuação: '+minV+'/20';
     if(mi===0){kEsub='Primeiro mês';}
@@ -2055,9 +2092,9 @@ function buildTVTrimestral(){
   // Acumulado por setor (3 meses × 20 = 60 max)
   const accum=SECTORS.map((_,si)=>months.reduce((sum,mi)=>sum+((SCORES[mi]||[])[si]||0),0));
 
-  // Ordenação com desempate via compTri
+  // Ordenação com desempate retroagindo por todo o histórico anterior ao trimestre
   const sorted=SECTORS.map((_,i)=>i).filter(i=>accum[i]>0)
-    .sort((a,b)=>compTri(months,b)-compTri(months,a));
+    .sort((a,b)=>compareRankingPeriod(months,a,b));
 
   // KPIs
   const validAcc=accum.filter(v=>v>0);
@@ -2605,7 +2642,7 @@ function buildTVA4(){
     var vals=SCORES[mi]||[];
     var antVals=mi>0?(SCORES[mi-1]||[]):[];
     var sorted=[].concat(
-      SECTORS.map(function(_,i){return i;}).filter(function(i){return vals[i]>0;}).sort(function(a,b){return comp(mi,b)-comp(mi,a);}),
+      SECTORS.map(function(_,i){return i;}).filter(function(i){return vals[i]>0;}).sort(function(a,b){return compareRanking(mi,a,b);}),
       SECTORS.map(function(_,i){return i;}).filter(function(i){return !vals[i]||vals[i]===0;})
     );
 
@@ -2614,11 +2651,10 @@ function buildTVA4(){
     if(valid.length){
       media=valid.reduce(function(a,b){return a+b;},0)/valid.length;
       var maxV=Math.max.apply(null,valid),minV=Math.min.apply(null,valid);
-      var comps=vals.map(function(v,i){return{i:i,c:comp(mi,i)};});
-      var bArr=comps.filter(function(x){return vals[x.i]===maxV;}).sort(function(a,b){return b.c-a.c;});
-      var wArr=comps.filter(function(x){return vals[x.i]===minV;}).sort(function(a,b){return a.c-b.c;});
-      if(bArr.length){kBest=SECTORS[bArr[0].i];kBestPts=maxV;}
-      if(wArr.length){kWorst=SECTORS[wArr[0].i];kWorstPts=minV;}
+      var bArr=SECTORS.map(function(_,i){return i;}).filter(function(i){return vals[i]===maxV;}).sort(function(a,b){return compareRanking(mi,a,b);});
+      var wArr=SECTORS.map(function(_,i){return i;}).filter(function(i){return vals[i]===minV;}).sort(function(a,b){return compareRanking(mi,a,b);});
+      if(bArr.length){kBest=SECTORS[bArr[0]];kBestPts=maxV;}
+      if(wArr.length){kWorst=SECTORS[wArr[wArr.length-1]];kWorstPts=minV;}
     }
 
     function sC(v){
