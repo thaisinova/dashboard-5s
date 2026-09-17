@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -3743,7 +3744,7 @@ function reportMesRef(){
 
 // Gráfico de linha em SVG puro (imprime sempre, não depende do Chart.js)
 function reportLineSVG(medias,w,h){
-  const padL=34,padR=16,padT=20,padB=26;
+  const padL=42,padR=18,padT=24,padB=30;
   const yMin=10,yMax=20;
   const iw=w-padL-padR, ih=h-padT-padB;
   const X=i=>padL+(iw*i/11);
@@ -3751,10 +3752,10 @@ function reportLineSVG(medias,w,h){
   let g='';
   for(let v=yMin;v<=yMax;v+=2){
     g+=`<line x1="${padL}" y1="${Y(v).toFixed(1)}" x2="${w-padR}" y2="${Y(v).toFixed(1)}" stroke="#EFECE8" stroke-width="1"/>`;
-    g+=`<text x="${padL-6}" y="${(Y(v)+3.5).toFixed(1)}" font-size="9" fill="#8A8078" font-weight="700" text-anchor="end">${v}</text>`;
+    g+=`<text x="${padL-6}" y="${(Y(v)+3.5).toFixed(1)}" font-size="12" fill="#8A8078" font-weight="700" text-anchor="end">${v}</text>`;
   }
   g+=`<line x1="${padL}" y1="${Y(META).toFixed(1)}" x2="${w-padR}" y2="${Y(META).toFixed(1)}" stroke="#2E7D32" stroke-width="1.3" stroke-dasharray="6,4"/>`;
-  g+=`<text x="${w-padR}" y="${(Y(META)-5).toFixed(1)}" font-size="9" fill="#2E7D32" font-weight="700" text-anchor="end">META ${META}</text>`;
+  g+=`<text x="${w-padR}" y="${(Y(META)-5).toFixed(1)}" font-size="12" fill="#2E7D32" font-weight="700" text-anchor="end">META ${META}</text>`;
   let seg=[];
   const segPath=pts=>`<polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="#C8102E" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>`;
   medias.forEach((v,i)=>{
@@ -3763,12 +3764,12 @@ function reportLineSVG(medias,w,h){
   });
   if(seg.length>1) g+=segPath(seg);
   medias.forEach((v,i)=>{
-    g+=`<text x="${X(i).toFixed(1)}" y="${h-8}" font-size="10" fill="#8A8078" font-weight="700" text-anchor="middle">${ABBR[i]}</text>`;
+    g+=`<text x="${X(i).toFixed(1)}" y="${h-8}" font-size="13" fill="#8A8078" font-weight="700" text-anchor="middle">${ABBR[i]}</text>`;
     if(v===null||v===undefined) return;
-    g+=`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.8" fill="#C8102E" stroke="#fff" stroke-width="1.5"/>`;
-    g+=`<text x="${X(i).toFixed(1)}" y="${(Y(v)-9).toFixed(1)}" font-size="9.5" fill="#2A2725" font-weight="900" text-anchor="middle">${v.toFixed(1)}</text>`;
+    g+=`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="4.4" fill="#C8102E" stroke="#fff" stroke-width="1.6"/>`;
+    g+=`<text x="${X(i).toFixed(1)}" y="${(Y(v)-9).toFixed(1)}" font-size="12.5" fill="#2A2725" font-weight="900" text-anchor="middle">${v.toFixed(1)}</text>`;
   });
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="width:100%;height:100%;display:block">${g}</svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:${h}px;display:block">${g}</svg>`;
 }
 
 function gerarReport(){
@@ -3807,26 +3808,29 @@ function gerarReport(){
   const dMes=(nota!==null&&antNota!==null)?+(nota-antNota).toFixed(1):null;
   const gap=nota!==null?+(nota-META).toFixed(1):null;
 
-  const chip=(txt,ok)=>`<span style="display:block;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:700;
+  const chip=(txt,ok)=>`<span style="display:block;padding:6px 8px;border-radius:20px;font-size:11.5px;font-weight:700;
     background:${ok?'rgba(46,125,50,.09)':'rgba(192,57,43,.09)'};color:${ok?'#1E7E34':'#C0392B'};
     border:1px solid ${ok?'rgba(46,125,50,.25)':'rgba(192,57,43,.25)'};flex:1;text-align:center;white-space:nowrap">${txt}</span>`;
 
   const kpiCard=(lbl,val,sub,cor)=>`<div style="flex:1;min-width:0;height:100%;background:#fff;border:1px solid ${BORDER};border-radius:3px;
-    padding:12px 14px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);display:flex;flex-direction:column;justify-content:center">
+    padding:13px 16px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);display:flex;flex-direction:column;justify-content:center">
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${cor}"></div>
-    <div style="font-size:9px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:${MUTED};margin-bottom:4px">${lbl}</div>
-    <div style="font-size:19px;font-weight:900;line-height:1.15;color:${cor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${val}</div>
-    <div style="font-size:10px;color:${MUTED};margin-top:3px">${sub}</div></div>`;
+    <div style="font-size:12.5px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:${MUTED};margin-bottom:7px">${lbl}</div>
+    <div style="font-size:22px;font-weight:900;line-height:1.25;color:${cor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${val}</div>
+    <div style="font-size:13px;color:${MUTED};margin-top:6px">${sub}</div></div>`;
 
   // ── Sensos ────────────────────────────────────────────────────────
+  // No relatório, "Autodisciplina" é abreviado para "Disciplina": o nome
+  // longo estourava a coluna e escrevia por cima da legenda.
+  const REPORT_SENSOS=['Utilização','Organização','Limpeza','Padronização','Disciplina'];
   const sensos=calcSensoMedias(mi);
   const sensoHTML=sensos.map((p,k)=>{
     const cor=pctColor(p);
-    return `<div style="display:flex;align-items:center;gap:9px">
-      <span style="width:92px;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:${MUTED}">${SENSO_NOMES[k]}</span>
-      <div style="flex:1;height:9px;background:#EDEAE6;border-radius:5px;overflow:hidden">
-        <div style="width:${p}%;height:100%;background:${cor};border-radius:5px"></div></div>
-      <span style="width:38px;text-align:right;font-size:14px;font-weight:900;color:${cor}">${p}%</span></div>`;
+    return `<div style="display:flex;align-items:center;gap:12px;height:26px;flex-shrink:0">
+      <span style="width:104px;flex-shrink:0;font-size:12.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:${MUTED};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${REPORT_SENSOS[k]}</span>
+      <div style="flex:1;min-width:0;height:13px;background:#EDEAE6;border-radius:7px;overflow:hidden">
+        <div style="width:${p}%;height:100%;background:${cor};border-radius:7px"></div></div>
+      <span style="width:50px;flex-shrink:0;text-align:right;font-size:18px;font-weight:900;color:${cor}">${p}%</span></div>`;
   }).join('');
 
   // ── Evolução do ano ───────────────────────────────────────────────
@@ -3852,26 +3856,26 @@ function gerarReport(){
       const n=vals[si],ant=antVals[si],rk=n>0;
       const d=(n>0&&ant>0)?Math.round(n-ant):null;
       const bg=pos%2?'#FAFAF9':'#fff';
-      const pc=rk&&pos<3?`<span style="font-size:19px">${MD[pos]}</span>`
-        :rk?`<b style="font-size:13px;color:${MUTED}">#${pos+1}</b>`
-        :`<span style="color:#CCC;font-size:13px">–</span>`;
+      const pc=rk&&pos<3?`<span style="font-size:24px">${MD[pos]}</span>`
+        :rk?`<b style="font-size:16px;color:${MUTED}">#${pos+1}</b>`
+        :`<span style="color:#CCC;font-size:16px">–</span>`;
       const c=rk?sc(n):null;
-      const nc=rk?`<span style="background:${c.bg};color:${c.fg};border:1px solid ${c.bd};border-radius:2px;padding:2px 8px;font-size:15px;font-weight:900">${Math.round(n)}</span>`
+      const nc=rk?`<span style="background:${c.bg};color:${c.fg};border:1px solid ${c.bd};border-radius:2px;padding:3px 10px;font-size:19px;font-weight:900">${Math.round(n)}</span>`
                 : `<span style="color:#CCC">–</span>`;
-      const ac=`<span style="color:#999;font-size:13px;font-weight:700">${(mi>0&&ant>0)?Math.round(ant):'–'}</span>`;
+      const ac=`<span style="color:#999;font-size:16px;font-weight:700">${(mi>0&&ant>0)?Math.round(ant):'–'}</span>`;
       let badge;
-      if(!rk) badge=`<span style="background:#F0F0F0;color:#BBB;padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:700">sem dados</span>`;
-      else if(mi===0) badge=`<span style="background:#F0F0F0;color:#AAA;padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:700">1º mês</span>`;
-      else if(d===null) badge=`<span style="background:#F0F0F0;color:#AAA;padding:2px 8px;border-radius:10px;font-size:10.5px;font-weight:700">–</span>`;
-      else if(d>0) badge=`<span style="background:#E8F5E9;color:#1B5E20;border:1px solid #A5D6A7;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:700">▲ +${d} pts</span>`;
-      else if(d<0) badge=`<span style="background:#FFEBEE;color:#B71C1C;border:1px solid #FFCDD2;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:700">▼ ${Math.abs(d)} pts</span>`;
-      else badge=`<span style="background:#F0F0F0;color:#666;border:1px solid #DDD;padding:2px 9px;border-radius:10px;font-size:11.5px;font-weight:700">→ Estável</span>`;
+      if(!rk) badge=`<span style="background:#F0F0F0;color:#BBB;padding:3px 10px;border-radius:10px;font-size:12.5px;font-weight:700">sem dados</span>`;
+      else if(mi===0) badge=`<span style="background:#F0F0F0;color:#AAA;padding:3px 10px;border-radius:10px;font-size:12.5px;font-weight:700">1º mês</span>`;
+      else if(d===null) badge=`<span style="background:#F0F0F0;color:#AAA;padding:3px 10px;border-radius:10px;font-size:12.5px;font-weight:700">–</span>`;
+      else if(d>0) badge=`<span style="background:#E8F5E9;color:#1B5E20;border:1px solid #A5D6A7;padding:3px 11px;border-radius:10px;font-size:13.5px;font-weight:700">▲ +${d} pts</span>`;
+      else if(d<0) badge=`<span style="background:#FFEBEE;color:#B71C1C;border:1px solid #FFCDD2;padding:3px 11px;border-radius:10px;font-size:13.5px;font-weight:700">▼ ${Math.abs(d)} pts</span>`;
+      else badge=`<span style="background:#F0F0F0;color:#666;border:1px solid #DDD;padding:3px 11px;border-radius:10px;font-size:13.5px;font-weight:700">→ Estável</span>`;
       return `<tr style="background:${bg}">
-        <td style="text-align:center;padding:2.5px 3px;border-bottom:1px solid #F0EDEA">${pc}</td>
-        <td style="padding:3px 7px;border-bottom:1px solid #F0EDEA;font-size:13px;font-weight:${rk&&pos<3?700:400};color:#2A2725;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0">${SECTORS[si]}</td>
-        <td style="text-align:center;padding:2.5px 2px;border-bottom:1px solid #F0EDEA">${ac}</td>
-        <td style="text-align:center;padding:2.5px 3px;border-bottom:1px solid #F0EDEA">${nc}</td>
-        <td style="text-align:center;padding:2.5px 3px;border-bottom:1px solid #F0EDEA">${badge}</td>
+        <td style="text-align:center;padding:5px 3px;border-bottom:1px solid #F0EDEA">${pc}</td>
+        <td style="padding:5px 9px;border-bottom:1px solid #F0EDEA;font-size:16.5px;font-weight:${rk&&pos<3?700:400};color:#2A2725;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0">${SECTORS[si]}</td>
+        <td style="text-align:center;padding:5px 2px;border-bottom:1px solid #F0EDEA">${ac}</td>
+        <td style="text-align:center;padding:5px 3px;border-bottom:1px solid #F0EDEA">${nc}</td>
+        <td style="text-align:center;padding:5px 3px;border-bottom:1px solid #F0EDEA">${badge}</td>
       </tr>`;
     }).join('');
   }
@@ -3880,10 +3884,10 @@ function gerarReport(){
   const col2=sorted.slice(meio).map((si,i)=>({si,pos:i+meio}));
   const rankHead=`<tr>
     ${['Pos.','Setor',mi>0?'← '+ABBR[mi-1]:'–',ABBR[mi],'Variação'].map((h,i)=>
-      `<th style="background:${i===3?RED:DARK};color:#fff;font-size:10.5px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:6px 3px;text-align:${i===1?'left':'center'};border-bottom:2px solid ${RED}">${h}</th>`
+      `<th style="background:${i===3?RED:DARK};color:#fff;font-size:13px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:8px 3px;text-align:${i===1?'left':'center'};border-bottom:2px solid ${RED}">${h}</th>`
     ).join('')}</tr>`;
   const rankTable=rows=>`<table style="flex:1;height:100%;border-collapse:collapse;table-layout:fixed;border:1px solid ${BORDER}">
-    <colgroup><col style="width:38px"><col><col style="width:40px"><col style="width:48px"><col style="width:92px"></colgroup>
+    <colgroup><col style="width:46px"><col><col style="width:48px"><col style="width:60px"><col style="width:112px"></colgroup>
     <thead>${rankHead}</thead><tbody>${rows}</tbody></table>`;
 
   // ── Pódio (top 3) com o mascote SIDI segurando o troféu ───────────
@@ -3894,10 +3898,10 @@ function gerarReport(){
   const podium=podOrder.map((s,i)=>{
     if(!s||!s.n) return `<div style="flex:1"></div>`;
     return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:0;height:100%">
-      <div style="font-size:22px;line-height:1">${MD[i===0?1:i===1?0:2]}</div>
-      <div style="text-align:center;font-size:13px;font-weight:700;color:${DARK};line-height:1.2;margin:3px 0 2px;padding:0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${s.n}</div>
-      <div style="font-size:13px;color:${RED};font-weight:900;margin-bottom:5px">${s.pts} pts</div>
-      <div style="width:92%;height:${podH[i]};background:${RED};border-radius:3px 3px 0 0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:38px;font-weight:900;text-shadow:0 1px 3px rgba(0,0,0,.3)">${podLabel[i]}</div>
+      <div style="font-size:26px;line-height:1">${MD[i===0?1:i===1?0:2]}</div>
+      <div style="text-align:center;font-size:14px;font-weight:700;color:${DARK};line-height:1.25;margin:4px 0 2px;padding:0 3px;width:100%;overflow-wrap:break-word;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:35px">${s.n}</div>
+      <div style="font-size:15px;color:${RED};font-weight:900;margin-bottom:6px">${s.pts} pts</div>
+      <div style="width:92%;height:${podH[i]};background:${RED};border-radius:3px 3px 0 0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:46px;font-weight:900;text-shadow:0 1px 3px rgba(0,0,0,.3)">${podLabel[i]}</div>
     </div>`;
   }).join('');
 
@@ -3911,10 +3915,10 @@ function gerarReport(){
     const conf=has?d.conf:0, perg=has?d.perg:area.perguntas;
     const p=has?conf/perg:null;
     const cor=p===null?'#BBB':p>=0.83?'#1E7E34':p>=0.67?'#9A6B0A':'#C0392B';
-    return `<div style="display:flex;align-items:center;gap:7px;padding:3px 0;border-bottom:1px solid #F4F2F0">
-      <span style="flex:1;min-width:0;font-size:9px;font-weight:700;letter-spacing:.2px;text-transform:uppercase;color:${MUTED};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${area.nome}</span>
-      <div style="width:44px;height:5px;background:#EDEAE6;border-radius:3px;overflow:hidden;flex-shrink:0"><div style="width:${p!==null?Math.round(p*100):0}%;height:100%;background:${cor}"></div></div>
-      <span style="width:34px;text-align:right;font-size:12px;font-weight:900;color:${cor};flex-shrink:0">${has?conf:'–'}<span style="font-size:8.5px;font-weight:400;color:${MUTED}">/${perg}</span></span>
+    return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #F4F2F0">
+      <span style="flex:1;min-width:0;font-size:11px;font-weight:700;letter-spacing:.2px;text-transform:uppercase;color:${MUTED};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${area.nome}</span>
+      <div style="width:58px;height:6px;background:#EDEAE6;border-radius:3px;overflow:hidden;flex-shrink:0"><div style="width:${p!==null?Math.round(p*100):0}%;height:100%;background:${cor}"></div></div>
+      <span style="width:42px;text-align:right;font-size:14px;font-weight:900;color:${cor};flex-shrink:0">${has?conf:'–'}<span style="font-size:10px;font-weight:400;color:${MUTED}">/${perg}</span></span>
     </div>`;
   }).join(''):'';
 
@@ -3923,17 +3927,17 @@ function gerarReport(){
 
   // ── Card padronizado (mesmo cabeçalho, mesma moldura em todos) ────
   const card=(tit,inner,h)=>`<div style="display:flex;flex-direction:column;${h?'height:'+h+'px;':'flex:1;'}min-height:0;background:#fff;border:1px solid ${BORDER};border-radius:3px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07)">
-    <div style="flex-shrink:0;background:${DARK};color:#fff;padding:5px 12px;font-size:9px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;border-bottom:2px solid ${RED}">${tit}</div>
+    <div style="flex-shrink:0;background:${DARK};color:#fff;padding:9px 16px;font-size:15px;font-family:'Outfit',sans-serif;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2px solid ${RED}">${tit}</div>
     <div style="flex:1;min-height:0;padding:11px 13px;display:flex;flex-direction:column">${inner}</div>
   </div>`;
 
   const conteudo=`
   <div style="height:100%;display:flex;flex-direction:column">
 
-    <div style="flex-shrink:0;background:${DARK};border-bottom:3px solid ${RED};height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 26px">
+    <div style="flex-shrink:0;background:${DARK};border-bottom:3px solid ${RED};height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 26px">
       <div>
-        <div style="color:#fff;font-size:17px;font-weight:900;letter-spacing:3px;text-transform:uppercase;font-family:'Outfit',sans-serif">Relatório 5S — ${MONTHS[mi]} ${ano}</div>
-        <div style="color:rgba(255,255,255,.5);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-top:3px">Melhoria Contínua · Programa 5S</div>
+        <div style="color:#fff;font-size:24px;font-weight:900;letter-spacing:3.5px;text-transform:uppercase;font-family:'Outfit',sans-serif">Relatório 5S — ${MONTHS[mi]} ${ano}</div>
+        <div style="color:rgba(255,255,255,.5);font-size:10.5px;letter-spacing:2.2px;text-transform:uppercase;margin-top:4px">Melhoria Contínua · Programa 5S</div>
       </div>
       <div style="display:flex;align-items:center;gap:14px">
         <span style="color:rgba(255,255,255,.45);font-size:9px;letter-spacing:1.4px">SIDI | Solução Inovação Dedicação Inspiração</span>
@@ -3944,7 +3948,7 @@ function gerarReport(){
     <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;padding:14px 26px 12px">
 
       <!-- 1. LEITURA RÁPIDA -->
-      <div style="flex-shrink:0;height:84px;display:flex;gap:12px">
+      <div style="flex-shrink:0;height:96px;display:flex;gap:12px">
         ${kpiCard('Média Geral',kM,kMsub,kMok?GREEN:RED)}
         ${kpiCard('Destaque do Mês',kD,kDsub,GREEN)}
         ${kpiCard('Requer Atenção',kA,kAsub,RED)}
@@ -3955,12 +3959,12 @@ function gerarReport(){
       <div style="flex:1;min-height:0;display:flex;gap:12px">
 
         <div style="width:33%;display:flex;flex-direction:column;gap:12px;min-height:0">
-          ${card('1 · Resultado Geral da Empresa',`
+          ${card('1 · Resultado Mensal da Empresa',`
             <div style="flex:1;display:flex;align-items:center;gap:16px">
-              <div style="width:150px;height:90px;flex-shrink:0">${gaugeSVG(pct)}</div>
+              <div style="width:130px;height:78px;flex-shrink:0">${gaugeSVG(pct)}</div>
               <div style="flex:1;min-width:0">
-                <div style="font-size:42px;font-weight:900;line-height:.95;color:${corNota}">${nota!==null?pct+'%':'–'}</div>
-                <div style="font-size:11.5px;color:${MUTED};font-weight:700;margin-top:6px;line-height:1.4">
+                <div style="font-size:40px;font-weight:900;line-height:.95;color:${corNota}">${nota!==null?pct+'%':'–'}</div>
+                <div style="font-size:13px;color:${MUTED};font-weight:700;margin-top:7px;line-height:1.45">
                   ${nota!==null?'média <b style="color:#2A2725">'+nota.toFixed(1)+'</b> de 20 pontos<br>'+valid.length+' setores auditados':'nenhum setor auditado'}</div>
               </div>
             </div>
@@ -3968,22 +3972,22 @@ function gerarReport(){
               ${nota!==null?chip('Meta '+META+' pts',true):''}
               ${gap!==null?chip((gap>=0?'+':'')+gap+' vs meta',gap>=0):''}
               ${dMes!==null?chip((dMes>=0?'▲ +':'▼ ')+dMes+' vs '+MONTHS[mi-1],dMes>=0):''}
-            </div>`,186)}
+            </div>`,192)}
 
-          ${card('2 · Desempenho por Senso',`
-            <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between">${sensoHTML}</div>
-            <div style="font-size:9px;color:${MUTED};padding-top:6px">% médio de conformidade por senso entre os setores auditados</div>`)}
+          ${card('2 · Desempenho Mensal por Senso',`
+            <div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly;overflow:hidden">${sensoHTML}</div>
+            <div style="flex-shrink:0;height:28px;display:flex;align-items:flex-end;font-size:10.5px;line-height:1.25;color:${MUTED};border-top:1px solid #F2F0EE;margin-top:6px;padding-top:7px">% médio de conformidade por senso entre os setores auditados</div>`,235)}
 
           ${card('3 · Acompanhamento do Ano',`
-            <div style="display:flex;gap:6px;font-size:9.5px;font-weight:700;color:${MUTED};margin-bottom:2px">
-              <span>Média mensal da empresa (10–20)</span>
+            <div style="display:flex;gap:6px;font-size:11.5px;font-weight:700;color:${MUTED};margin-bottom:2px">
+              <span>Média mensal da empresa · escala 10–20</span>
               <span style="margin-left:auto">${melhor!==null?'Melhor: <b style="color:#2A2725">'+melhor.toFixed(1)+'</b>':''}${varAno!==null?' · Ano: <b style="color:'+(varAno>=0?'#1E7E34':'#C0392B')+'">'+(varAno>=0?'+':'')+varAno+'</b>':''}</span>
             </div>
-            <div style="flex:1;min-height:0;margin-top:4px">${reportLineSVG(medias,480,200)}</div>`,236)}
+            <div style="flex:1;min-height:0;margin-top:2px">${reportLineSVG(medias,520,100)}</div>`,182)}
         </div>
 
         <div style="flex:1;min-width:0;display:flex;flex-direction:column;min-height:0">
-          ${card('4 · Ranking dos Setores — '+MONTHS[mi]+(mi>0?' (variação vs '+MONTHS[mi-1]+')':''),`
+          ${card('4 · Ranking Mensal dos Setores'+(mi>0?' — variação vs '+MONTHS[mi-1]:''),`
             <div style="flex:1;min-height:0;display:flex;gap:12px">
               ${rankTable(rankRows(col1))}
               ${rankTable(rankRows(col2))}
@@ -3992,9 +3996,9 @@ function gerarReport(){
       </div>
 
       <!-- 3. RECONHECIMENTO + ÁREAS COMUNS -->
-      <div style="flex-shrink:0;height:268px;display:flex;gap:12px">
+      <div style="flex-shrink:0;height:236px;display:flex;gap:12px">
         <div style="width:38%;display:flex;flex-direction:column;min-height:0">
-          ${card('5 · Setor Destaque do Mês — '+(kD!=='–'?kD+' · '+kDsub:'—'),`
+          ${card('5 · Setor Destaque do Mês'+(kD!=='–'?' — '+kD:''),`
             <div id="fotoWrap" style="flex:1;min-height:0;margin:-11px -13px;overflow:hidden;position:relative">
               ${fotoSrc
                 ? `<img id="fotoDestaque" src="${fotoSrc}" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;transform-origin:center center">`
@@ -4007,7 +4011,7 @@ function gerarReport(){
           ${card('6 · Pódio do Mês',`
             <div style="flex:1;min-height:0;display:flex;align-items:flex-end;gap:10px">
               <div style="flex:1;display:flex;align-items:flex-end;gap:4px;height:100%">${podium}</div>
-              <img src="${SIDI_TROFEU}" style="width:58px;object-fit:contain;align-self:flex-end;margin-bottom:2px">
+              <img src="${SIDI_TROFEU}" style="width:72px;object-fit:contain;align-self:flex-end;margin-bottom:2px">
             </div>`)}
         </div>
 
@@ -4020,9 +4024,9 @@ function gerarReport(){
       </div>
 
       <!-- RODAPÉ -->
-      <div style="flex-shrink:0;height:24px;display:flex;align-items:center;gap:8px;font-size:9px;font-weight:700;color:${MUTED}">
+      <div style="flex-shrink:0;height:26px;display:flex;align-items:center;gap:9px;font-size:10.5px;font-weight:700;color:${MUTED}">
         <span>Legenda:</span>
-        <span style="background:#FEF0F0;color:#C0392B;border:1px solid #F5C6C6;padding:2px 9px;border-radius:2px">Ruim ≤ 13</span>
+        <span style="background:#FEF0F0;color:#C0392B;border:1px solid #F5C6C6;padding:3px 10px;border-radius:2px">Ruim ≤ 13</span>
         <span style="background:#FEF9EC;color:#9A6B0A;border:1px solid #F5E4A0;padding:2px 9px;border-radius:2px">Regular 14–17</span>
         <span style="background:#F0FAF0;color:#1E7E34;border:1px solid #B2DFB4;padding:2px 9px;border-radius:2px">Bom ≥ 18 ✔ Meta</span>
         <span style="margin-left:auto">Inova Sistemas Eletrônicos · Emitido em ${new Date().toLocaleDateString('pt-BR')}</span>
@@ -4037,15 +4041,22 @@ function gerarReport(){
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Outfit:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
-  @page{size:A3 landscape;margin:0}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   html,body{background:#fff;font-family:'Lato',sans-serif;color:#2A2725}
   #page{width:1587px;height:1123px;overflow:hidden;background:#F7F6F4;position:relative}
+  #page.f169{width:1920px;height:1080px}
+  /* A folha mantém SEMPRE a mesma altura de composição (1123px). No modo 16:9
+     ela só fica mais larga (1996px) e é reduzida uniformemente para 1920x1080,
+     por isso nada estica, nada é cortado e as fontes ficam quase do mesmo tamanho. */
+  #sheet{width:1587px;height:1123px;transform-origin:top left;background:#F7F6F4}
   @media screen{body{background:#333;display:flex;flex-direction:column;align-items:center;padding:16px 24px 24px}
-    #page{box-shadow:0 4px 28px rgba(0,0,0,.45)}}
-  #barra{width:1587px;background:#fff;border-radius:4px;padding:10px 16px;margin-bottom:14px;
+    #page{box-shadow:0 4px 28px rgba(0,0,0,.45);transform-origin:top center}}
+  #barra{background:#fff;border-radius:4px;padding:10px 16px;margin-bottom:14px;
     display:flex;align-items:center;gap:16px;font-size:12px;font-family:'Lato',sans-serif;
-    box-shadow:0 2px 12px rgba(0,0,0,.35);flex-wrap:wrap}
+    box-shadow:0 2px 12px rgba(0,0,0,.35);flex-wrap:wrap;max-width:100%}
+  #barra select{border:1px solid #D8D4D0;border-radius:3px;padding:6px 10px;font-family:'Lato',sans-serif;
+    font-size:12px;font-weight:700;color:#3D3935;background:#fff;cursor:pointer}
+  #barra .sep{width:1px;height:24px;background:#E6E2DE}
   #barra b{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:#8A8078;font-family:'Outfit',sans-serif}
   #barra label{display:flex;align-items:center;gap:7px;color:#3D3935;font-weight:700;font-size:11px}
   #barra label span{min-width:38px;color:#C8102E;font-weight:900}
@@ -4056,7 +4067,14 @@ function gerarReport(){
   @media print{#barra{display:none!important}
     body{background:#fff;padding:0;display:block}}
 </style></head><body>
+<style id="pageSize">@page{size:A3 landscape;margin:0}</style>
 <div id="barra">
+  <b>Formato</b>
+  <select id="cFormato">
+    <option value="a3" selected>A3 paisagem (impressão)</option>
+    <option value="169">16:9 — slide 1920×1080</option>
+  </select>
+  <span class="sep"></span>
   <b>Ajustar foto do destaque</b>
   <label>Zoom <input type="range" id="cZoom" min="100" max="300" value="100"><span id="vZoom">100%</span></label>
   <label>Horizontal <input type="range" id="cX" min="0" max="100" value="50"></label>
@@ -4065,7 +4083,7 @@ function gerarReport(){
   <span style="flex:1"></span>
   <button id="cPrint">Gerar PDF / Imprimir</button>
 </div>
-<div id="page">${conteudo}</div>
+<div id="page"><div id="sheet">${conteudo}</div></div>
 <script>
   var img=document.getElementById('fotoDestaque');
   var z=document.getElementById('cZoom'),x=document.getElementById('cX'),y=document.getElementById('cY');
@@ -4086,6 +4104,45 @@ function gerarReport(){
   [z,x,y].forEach(function(e){ e.addEventListener('input',apply); });
   document.getElementById('cReset').onclick=function(){ z.value=100;x.value=50;y.value=50;apply(); };
   document.getElementById('cPrint').onclick=function(){ window.print(); };
+
+  // ── Formato: A3 paisagem (impressão) ou 16:9 (slide 1920x1080) ──
+  var page=document.getElementById('page');
+  var sheet=document.getElementById('sheet');
+  var estilo=document.getElementById('pageSize');
+  var fmt=document.getElementById('cFormato');
+  var ALTURA=1123;            // altura de composição, igual nos dois formatos
+  var LARG_A3=1587;           // A3 paisagem @96dpi
+  var LARG_169=1996;          // largura que, reduzida, dá exatamente 1920x1080
+
+  function aplicaFormato(){
+    var s169 = fmt.value==='169';
+    var larg = s169 ? LARG_169 : LARG_A3;
+    var k    = s169 ? (1080/ALTURA) : 1;   // escala uniforme, sem distorção
+    sheet.style.width  = larg+'px';
+    sheet.style.height = ALTURA+'px';
+    sheet.style.transform = 'scale('+k+')';
+    if(s169){
+      page.classList.add('f169');
+      estilo.textContent='@page{size:508mm 285.75mm;margin:0}'; // 1920x1080 @96dpi
+    } else {
+      page.classList.remove('f169');
+      estilo.textContent='@page{size:A3 landscape;margin:0}';
+    }
+  }
+  function ajustaEscala(){
+    // encaixa a pré-visualização na largura da janela, sem distorcer
+    var disponivel=window.innerWidth-80;
+    var s169=page.classList.contains('f169');
+    var largura=s169?1920:1587, altura=s169?1080:1123;
+    var k=Math.min(1,disponivel/largura);
+    page.style.transform='scale('+k+')';
+    page.style.marginBottom=(-(1-k)*altura)+'px';
+    document.getElementById('barra').style.width=Math.round(largura*k)+'px';
+  }
+  function trocaFormato(){ aplicaFormato(); ajustaEscala(); }
+  fmt.addEventListener('change',trocaFormato);
+  window.addEventListener('resize',ajustaEscala);
+  trocaFormato();
   apply();
 <\/script>
 </body></html>`);
