@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -665,6 +666,15 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
     <div id="pd-lab-body" style="display:flex;flex-wrap:wrap"></div>
   </div>
 
+  <!-- ─── OFICINA MECÂNICA COMPARTILHADA NO TOPO DO PLACAR ─── -->
+  <div id="oficina-wrap" style="display:none;margin-bottom:20px;background:#fff;border:1px solid var(--border);border-radius:3px;overflow:hidden;box-shadow:var(--shadow)">
+    <div style="background:var(--dark);border-bottom:2px solid var(--red);padding:12px 16px">
+      <span style="font-size:13px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff">Oficina Mecânica</span>
+      <span style="font-size:10px;color:rgba(255,255,255,.45);margin-left:10px">compartilhado · soma com Métodos e Processos para fechar 20 perguntas</span>
+    </div>
+    <div id="oficina-body" style="display:flex;flex-wrap:wrap"></div>
+  </div>
+
   <div class="placar-table">
     <table class="pt" id="placarTable">
       <thead id="placarHead"></thead>
@@ -803,9 +813,6 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
         </svg>
         Report
       </button>
-      <input type="file" id="reportFotoInput" accept="image/*" style="display:none" onchange="setReportFoto(this)">
-      <button class="hbtn" id="reportFotoBtn" onclick="document.getElementById('reportFotoInput').click()"
-        title="Foto do setor vencedor que aparece no relatório" style="border-color:#1565C0;color:#1565C0">📷 Foto</button>
       <div id="gVisaoChips" style="display:flex;gap:7px;flex-wrap:wrap;margin-left:auto"></div>
     </div>
 
@@ -1112,28 +1119,48 @@ const NEW_FORMULA_START_MONTH = 7; // Agosto/2026
 const PD_LAB_NOME = 'P&D - Áreas Comuns e Laboratório';
 const PD_LAB_COMBINA = ['P&D - Industrial','P&D - RAID','P&D - HIT'];
 const PD_10_SOZINHO = ['P&D - Documentação','P&D - Software'];
+// A partir deste mês (índice 0-based; 9 = Outubro/2026), P&D - Documentação e
+// P&D - Software deixam de ser "10 sozinho" e passam a ter as 20 perguntas
+// próprias (4 por senso), igual a qualquer setor comum — sem combinar com o
+// laboratório. Meses anteriores a este continuam com a regra antiga (10 perguntas).
+const PD_10_SOZINHO_END_MONTH = 9; // Outubro/2026
 
-// Conformidades do laboratório compartilhado por mês: [S1,S2,S3,S4,S5], 0 a 2 cada
-let PD_LAB_SCORES = {0:[0,0,0,0,0],1:[0,0,0,0,0],2:[0,0,0,0,0],3:[0,0,0,0,0],
+// ════════════════════════════════════════════════════════════════════
+// OFICINA MECÂNICA — compartilhado com Métodos e Processos, a partir de
+// Outubro/2026 (mesmo padrão do Laboratório de P&D). Métodos e Processos
+// fica com 15 perguntas próprias (3 por senso) e Oficina Mecânica com 5
+// perguntas (1 por senso), somando 20 no total — não aparece sozinha no
+// ranking, só combinada dentro de Métodos e Processos.
+// ════════════════════════════════════════════════════════════════════
+const OFICINA_NOME = 'Oficina Mecânica';
+const OFICINA_COMBINA = ['Métodos e Processos'];
+let OFICINA_SCORES = {0:[0,0,0,0,0],1:[0,0,0,0,0],2:[0,0,0,0,0],3:[0,0,0,0,0],
   4:[0,0,0,0,0],5:[0,0,0,0,0],6:[0,0,0,0,0],7:[0,0,0,0,0],
   8:[0,0,0,0,0],9:[0,0,0,0,0],10:[0,0,0,0,0],11:[0,0,0,0,0]};
 
-// Máximo de conformidade por senso daquele setor (própria auditoria, sem contar o lab)
-function sensosMaxPorSenso(sectorName){
-  if(PD_LAB_COMBINA.indexOf(sectorName)>=0 || PD_10_SOZINHO.indexOf(sectorName)>=0) return 2;
+// Máximo de conformidade por senso daquele setor (própria auditoria, sem contar o lab/oficina)
+function sensosMaxPorSenso(sectorName,mi){
+  if(OFICINA_COMBINA.indexOf(sectorName)>=0) return 3; // Métodos e Processos: 15 perguntas próprias / 5 sensos
+  const isPd10Sozinho = PD_10_SOZINHO.indexOf(sectorName)>=0 && (mi===undefined || mi<PD_10_SOZINHO_END_MONTH);
+  if(PD_LAB_COMBINA.indexOf(sectorName)>=0 || isPd10Sozinho) return 2;
   return 4;
 }
-// ss "efetivo" usado no cálculo e no desempate: soma com o laboratório quando aplicável
+// ss "efetivo" usado no cálculo e no desempate: soma com o laboratório/oficina quando aplicável
 function sensosEfetivo(mi,sectorName,ownSS){
   if(PD_LAB_COMBINA.indexOf(sectorName)>=0){
     const lab=PD_LAB_SCORES[mi]||[0,0,0,0,0];
     return [0,1,2,3,4].map(k=>(ownSS[k]||0)+(lab[k]||0));
   }
+  if(OFICINA_COMBINA.indexOf(sectorName)>=0){
+    const of=OFICINA_SCORES[mi]||[0,0,0,0,0];
+    return [0,1,2,3,4].map(k=>(ownSS[k]||0)+(of[k]||0));
+  }
   return ownSS;
 }
-// Divisor do bloco Sensos: 10 para os 2 setores isolados, 20 para todo o resto
-function sensosDivisorPara(sectorName){
-  if(PD_10_SOZINHO.indexOf(sectorName)>=0) return 10;
+// Divisor do bloco Sensos: 10 para os setores isolados (até a data de virada), 20 para todo o resto
+function sensosDivisorPara(sectorName,mi){
+  const isPd10Sozinho = PD_10_SOZINHO.indexOf(sectorName)>=0 && (mi===undefined || mi<PD_10_SOZINHO_END_MONTH);
+  if(isPd10Sozinho) return 10;
   return 20;
 }
 
@@ -1145,10 +1172,11 @@ let AREAS_COMUNS = {
   copa:              { nome:'Copa',              perguntas:6 },
   cafe_subsolo:      { nome:'Café Subsolo',      perguntas:6 },
   cafe_producao:     { nome:'Café Produção',     perguntas:6 },
-  banheiro_adm:      { nome:'Banheiro Adm',      perguntas:3 },
-  banheiro_producao: { nome:'Banheiro Produção', perguntas:3 },
-  banheiro_subsolo:  { nome:'Banheiro Subsolo',  perguntas:3 },
-  banheiro_smt:      { nome:'Banheiro SMT',      perguntas:3 },
+  banheiro_adm:      { nome:'Banheiro Adm',      perguntas:8 },
+  banheiro_producao: { nome:'Banheiro Produção', perguntas:8 },
+  banheiro_subsolo:  { nome:'Banheiro Subsolo',  perguntas:8 },
+  banheiro_smt:      { nome:'Banheiro SMT',      perguntas:8 },
+  fresa:             { nome:'Fresa',             perguntas:3 },
 };
 
 // Relação setor (por NOME, estável mesmo se a ordem/índice mudar) → áreas comuns usadas
@@ -1166,8 +1194,8 @@ let SECTOR_AC_MAP = {
   'Montagem de Placas':        ['cafe_producao','banheiro_smt'],
   'Assistência Técnica':       ['cafe_subsolo','banheiro_subsolo'],
   'Chicote':                   ['cafe_subsolo','banheiro_subsolo'],
-  'Usinagem':                  ['cafe_subsolo','banheiro_subsolo'],
-  'Métodos e Processos':       ['cafe_subsolo','banheiro_subsolo'],
+  'Usinagem':                  ['cafe_subsolo','banheiro_subsolo','fresa'],
+  'Métodos e Processos':       ['cafe_subsolo','banheiro_subsolo','fresa'],
   'P&D - Documentação':        ['cafe_subsolo','banheiro_subsolo'],
   'P&D - RAID':                ['cafe_subsolo','banheiro_subsolo'],
   'P&D - Industrial':          ['cafe_subsolo','banheiro_subsolo'],
@@ -1373,6 +1401,18 @@ function processarCsvImportado(rows, mi){
       return;
     }
 
+    if(subsetor===OFICINA_NOME){
+      const contagemOf={};
+      SENSO_ORDEM_CSV.forEach(s=>contagemOf[s]=0);
+      qs.forEach(q=>{
+        const ident=q['identificacao'];
+        if(ident in contagemOf && q['pontuacao']==='Conforme') contagemOf[ident]++;
+      });
+      OFICINA_SCORES[mi]=SENSO_ORDEM_CSV.map(s=>contagemOf[s]);
+      acAtualizadas.push(`${OFICINA_NOME} (compartilhado): [${OFICINA_SCORES[mi].join(',')}]`);
+      return;
+    }
+
     const nome=SUBSETOR_ALIAS_CSV[subsetor]||subsetor;
     const si=SECTORS.indexOf(nome);
     if(si<0){
@@ -1419,6 +1459,7 @@ async function binLoad(){
       if(d.SECTOR_AC_MAP)SECTOR_AC_MAP=d.SECTOR_AC_MAP;
       if(d.AC_DATA)AC_DATA=d.AC_DATA;
       if(d.PD_LAB_SCORES)PD_LAB_SCORES=d.PD_LAB_SCORES;
+      if(d.OFICINA_SCORES)OFICINA_SCORES=d.OFICINA_SCORES;
     }
   }catch(e){}
   // Buscar dados atualizados da API em segundo plano
@@ -1434,15 +1475,16 @@ async function binLoad(){
     if(d.record.SECTOR_AC_MAP) SECTOR_AC_MAP = d.record.SECTOR_AC_MAP;
     if(d.record.AC_DATA)       AC_DATA       = d.record.AC_DATA;
     if(d.record.PD_LAB_SCORES) PD_LAB_SCORES = d.record.PD_LAB_SCORES;
+    if(d.record.OFICINA_SCORES) OFICINA_SCORES = d.record.OFICINA_SCORES;
     migrarAcLegado(d.record); // compatibilidade com o formato antigo (Café/Copa antes de Ago)
     N = SECTORS.length;
     // Atualizar cache com dados frescos
-    try{localStorage.setItem('inova5s_cache',JSON.stringify({SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES}));}catch(e){}
+    try{localStorage.setItem('inova5s_cache',JSON.stringify({SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES,OFICINA_SCORES}));}catch(e){}
     return true;
   }catch(e){return SECTORS.length>0;}
 }
 async function binSave(){
-  const data={SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES};
+  const data={SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES,OFICINA_SCORES};
   if(!BIN_ID){
     const r=await fetch('https://api.jsonbin.io/v3/b',{
       method:'POST',
@@ -1606,7 +1648,7 @@ function computeSectorResult(mi,si){
     return {total:calcTotal(ownSS),sensos:null,ac:null,isNew:false};
   }
   const ss=sensosEfetivo(mi,sec,ownSS);
-  const divisor=sensosDivisorPara(sec);
+  const divisor=sensosDivisorPara(sec,mi);
   const sensos=sensosPoints(ss,divisor);
   const ac=acPointsForSector(mi,sec);
   const total=sensos+(ac||0);
@@ -1735,6 +1777,7 @@ function buildPlacar(){
 
   buildAcPlacar(mi); // bloco de Áreas Comuns no topo (por área)
   buildPdLabPlacar(mi); // bloco do laboratório compartilhado de P&D
+  buildOficinaPlacar(mi); // bloco da oficina mecânica compartilhada com Métodos e Processos
 
   // Rebuild thead dinamicamente
   const thead=document.getElementById('placarHead');
@@ -1755,10 +1798,11 @@ function buildPlacar(){
     const r=computeSectorResult(mi,si);
     const total=r.total>0?Math.round(r.total*100)/100:0;
     const tr=document.createElement('tr');
-    const maxSenso=isNew?sensosMaxPorSenso(sec):4;
+    const maxSenso=isNew?sensosMaxPorSenso(sec,mi):4;
     const combina=isNew&&PD_LAB_COMBINA.indexOf(sec)>=0;
+    const combinaOficina=isNew&&OFICINA_COMBINA.indexOf(sec)>=0;
 
-    let cells = `<td class="pt-s">${sec}${combina?' <small style="color:var(--muted);font-weight:400">(+lab)</small>':''}</td>`;
+    let cells = `<td class="pt-s">${sec}${combina?' <small style="color:var(--muted);font-weight:400">(+lab)</small>':''}${combinaOficina?' <small style="color:var(--muted);font-weight:400">(+oficina)</small>':''}</td>`;
 
     for(let s=0;s<5;s++){
       const v=ss[s]||0;
@@ -1818,6 +1862,38 @@ function onPdLabInput(s,input){
   setStat('placarStatus','✏️ Alterações não salvas...','warn');
 }
 
+function buildOficinaPlacar(mi){
+  const wrap=document.getElementById('oficina-wrap');
+  const body=document.getElementById('oficina-body');
+  if(!wrap||!body) return;
+  const isNew=mi>=NEW_FORMULA_START_MONTH;
+  if(!isNew){ wrap.style.display='none'; return; }
+  wrap.style.display='block';
+  const ss=OFICINA_SCORES[mi]||[0,0,0,0,0];
+  const labels=['1º S','2º S','3º S','4º S','5º S'];
+  body.innerHTML=labels.map((lbl,s)=>{
+    const v=ss[s]||0;
+    return `<div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">${lbl}</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="1" value="${v||''}" placeholder="0"
+          class="sinput" style="width:48px;font-size:15px;font-weight:900"
+          ${editMode?'':'readonly'}
+          oninput="onOficinaInput(${s},this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 1</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function onOficinaInput(s,input){
+  const mi=parseInt(document.getElementById('placarMonthSel').value);
+  const v=Math.min(1,Math.max(0,parseInt(input.value)||0));
+  if(!OFICINA_SCORES[mi]) OFICINA_SCORES[mi]=[0,0,0,0,0];
+  OFICINA_SCORES[mi][s]=v;
+  recalcAllSectorsAC(mi); // recalcula Métodos e Processos, que depende da oficina
+  setStat('placarStatus','✏️ Alterações não salvas...','warn');
+}
+
 function recalcAllSectorsAC(mi){
   const curMi=parseInt(document.getElementById('placarMonthSel').value);
   if(curMi!==mi) return;
@@ -1852,7 +1928,7 @@ function onSInput(si,s,input){
   const mi=parseInt(document.getElementById('placarMonthSel').value);
   const sec=SECTORS[si];
   const isNew=mi>=NEW_FORMULA_START_MONTH;
-  const maxSenso=isNew?sensosMaxPorSenso(sec):4;
+  const maxSenso=isNew?sensosMaxPorSenso(sec,mi):4;
   const v=Math.min(maxSenso,Math.max(0,parseInt(input.value)||0));
   if(!S_SCORES[mi][si]) S_SCORES[mi][si]=[0,0,0,0,0,0];
   S_SCORES[mi][si][s]=v;
@@ -1908,7 +1984,7 @@ function cancelEdit(){
 }
 function saveDraft(){
   try{
-    localStorage.setItem('inova5s_draft',JSON.stringify({SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES}));
+    localStorage.setItem('inova5s_draft',JSON.stringify({SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES,OFICINA_SCORES}));
     showToast('📝 Rascunho salvo! Clique em Publicar para enviar para todos.','warn');
   }catch(e){
     showToast('❌ Erro ao salvar rascunho: '+e.message,'err');
@@ -2153,7 +2229,9 @@ function maxEfetivoPorSenso(mi,nome){
   if(mi<NEW_FORMULA_START_MONTH) return 4;
   // Fórmula nova: P&D que soma o laboratório fecha 4 (2 próprias + 2 do lab)
   if(PD_LAB_COMBINA.indexOf(nome)>=0) return 4;
-  return sensosMaxPorSenso(nome);
+  // Métodos e Processos que soma a Oficina Mecânica fecha 4 (3 próprias + 1 da oficina)
+  if(OFICINA_COMBINA.indexOf(nome)>=0) return 4;
+  return sensosMaxPorSenso(nome,mi);
 }
 function calcSensoMedias(mi){
   const somas=[0,0,0,0,0],counts=[0,0,0,0,0];
@@ -3778,31 +3856,12 @@ function gerarReport(){
   const RED='#C8102E',DARK='#3D3935',GREEN='#2E7D32',MUTED='#8A8078',BORDER='#E0DDD9';
 
   const vals=SCORES[mi]||[];
-  const antVals=mi>0?(SCORES[mi-1]||[]):[];
   const valid=vals.filter(v=>v>0);
   const nota=valid.length?valid.reduce((a,b)=>a+b,0)/valid.length:null;
   const pct=nota!==null?Math.round(nota/20*100):0;
   const corNota=nota===null?MUTED:pctColor(pct);
 
-  // ── KPIs (mesma lógica da aba Divulgação) ─────────────────────────
-  let kM='–',kMsub='Sem dados',kMok=false,kD='–',kDsub='',kA='–',kAsub='',kE='–',kEsub='';
-  if(valid.length){
-    kM=nota.toFixed(1)+' / 20'; kMok=nota>=META;
-    kMsub=kMok?'✔ Acima da meta (≥ '+META+')':'⚠ Abaixo da meta ('+META+')';
-    const maxV=Math.max(...valid),minV=Math.min(...valid);
-    const bI=vals.map((v,i)=>i).filter(i=>vals[i]===maxV).sort((a,b)=>compareRanking(mi,a,b))[0];
-    const wI=vals.map((v,i)=>i).filter(i=>vals[i]===minV).sort((a,b)=>compareRanking(mi,b,a))[0];
-    kD=SECTORS[bI]; kDsub='Pontuação: '+Math.round(maxV)+' / 20';
-    kA=SECTORS[wI]; kAsub='Pontuação: '+Math.round(minV)+' / 20';
-    if(mi===0){ kEsub='Primeiro mês do ano'; }
-    else{
-      const dl=vals.map((v,i)=>{const a=antVals[i];return(v>0&&a>0)?{i,d:v-a}:{i,d:-999};}).sort((a,b)=>b.d-a.d);
-      const dR=Math.round(dl[0].d);
-      if(dR>0){kE=SECTORS[dl[0].i];kEsub='▲ '+dR+' pts vs '+MONTHS[mi-1];}
-      else{kE='–';kEsub='Nenhuma evolução positiva';}
-    }
-  }
-
+  const antVals=mi>0?(SCORES[mi-1]||[]):[];
   const antValid=antVals.filter(v=>v>0);
   const antNota=antValid.length?antValid.reduce((a,b)=>a+b,0)/antValid.length:null;
   const dMes=(nota!==null&&antNota!==null)?+(nota-antNota).toFixed(1):null;
@@ -3812,25 +3871,16 @@ function gerarReport(){
     background:${ok?'rgba(46,125,50,.09)':'rgba(192,57,43,.09)'};color:${ok?'#1E7E34':'#C0392B'};
     border:1px solid ${ok?'rgba(46,125,50,.25)':'rgba(192,57,43,.25)'};flex:1;text-align:center;white-space:nowrap">${txt}</span>`;
 
-  const kpiCard=(lbl,val,sub,cor)=>`<div style="flex:1;min-width:0;height:100%;background:#fff;border:1px solid ${BORDER};border-radius:3px;
-    padding:13px 16px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);display:flex;flex-direction:column;justify-content:center">
-    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${cor}"></div>
-    <div style="font-size:12.5px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:${MUTED};margin-bottom:7px">${lbl}</div>
-    <div style="font-size:22px;font-weight:900;line-height:1.25;color:${cor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${val}</div>
-    <div style="font-size:13px;color:${MUTED};margin-top:6px">${sub}</div></div>`;
-
   // ── Sensos ────────────────────────────────────────────────────────
-  // No relatório, "Autodisciplina" é abreviado para "Disciplina": o nome
-  // longo estourava a coluna e escrevia por cima da legenda.
   const REPORT_SENSOS=['Utilização','Organização','Limpeza','Padronização','Disciplina'];
   const sensos=calcSensoMedias(mi);
   const sensoHTML=sensos.map((p,k)=>{
     const cor=pctColor(p);
-    return `<div style="display:flex;align-items:center;gap:12px;height:26px;flex-shrink:0">
-      <span style="width:104px;flex-shrink:0;font-size:12.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:${MUTED};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${REPORT_SENSOS[k]}</span>
-      <div style="flex:1;min-width:0;height:13px;background:#EDEAE6;border-radius:7px;overflow:hidden">
-        <div style="width:${p}%;height:100%;background:${cor};border-radius:7px"></div></div>
-      <span style="width:50px;flex-shrink:0;text-align:right;font-size:18px;font-weight:900;color:${cor}">${p}%</span></div>`;
+    return `<div style="display:flex;align-items:center;gap:14px;height:40px;flex-shrink:0">
+      <span style="width:150px;flex-shrink:0;font-size:15px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:${MUTED};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${REPORT_SENSOS[k]}</span>
+      <div style="flex:1;min-width:0;height:18px;background:#EDEAE6;border-radius:9px;overflow:hidden">
+        <div style="width:${p}%;height:100%;background:${cor};border-radius:9px"></div></div>
+      <span style="width:66px;flex-shrink:0;text-align:right;font-size:24px;font-weight:900;color:${cor}">${p}%</span></div>`;
   }).join('');
 
   // ── Evolução do ano ───────────────────────────────────────────────
@@ -3842,93 +3892,10 @@ function gerarReport(){
   const melhor=validos.length?Math.max(...validos):null;
   const varAno=validos.length>1?+(validos[validos.length-1]-validos[0]).toFixed(1):null;
 
-  // ── Ranking (formato da aba Divulgação) ───────────────────────────
-  const sorted=[
-    ...SECTORS.map((_,i)=>i).filter(i=>vals[i]>0).sort((a,b)=>compareRanking(mi,a,b)),
-    ...SECTORS.map((_,i)=>i).filter(i=>!vals[i])
-  ];
-  const sc=v=>v>=18?{bg:'#F0FAF0',fg:'#1E7E34',bd:'#B2DFB4'}
-            :v>=14?{bg:'#FEF9EC',fg:'#9A6B0A',bd:'#F5E4A0'}
-                  :{bg:'#FEF0F0',fg:'#C0392B',bd:'#F5C6C6'};
-  const MD=['🥇','🥈','🥉'];
-  function rankRows(items){
-    return items.map(({si,pos})=>{
-      const n=vals[si],ant=antVals[si],rk=n>0;
-      const d=(n>0&&ant>0)?Math.round(n-ant):null;
-      const bg=pos%2?'#FAFAF9':'#fff';
-      const pc=rk&&pos<3?`<span style="font-size:24px">${MD[pos]}</span>`
-        :rk?`<b style="font-size:16px;color:${MUTED}">#${pos+1}</b>`
-        :`<span style="color:#CCC;font-size:16px">–</span>`;
-      const c=rk?sc(n):null;
-      const nc=rk?`<span style="background:${c.bg};color:${c.fg};border:1px solid ${c.bd};border-radius:2px;padding:3px 10px;font-size:19px;font-weight:900">${Math.round(n)}</span>`
-                : `<span style="color:#CCC">–</span>`;
-      const ac=`<span style="color:#999;font-size:16px;font-weight:700">${(mi>0&&ant>0)?Math.round(ant):'–'}</span>`;
-      let badge;
-      if(!rk) badge=`<span style="background:#F0F0F0;color:#BBB;padding:3px 10px;border-radius:10px;font-size:12.5px;font-weight:700">sem dados</span>`;
-      else if(mi===0) badge=`<span style="background:#F0F0F0;color:#AAA;padding:3px 10px;border-radius:10px;font-size:12.5px;font-weight:700">1º mês</span>`;
-      else if(d===null) badge=`<span style="background:#F0F0F0;color:#AAA;padding:3px 10px;border-radius:10px;font-size:12.5px;font-weight:700">–</span>`;
-      else if(d>0) badge=`<span style="background:#E8F5E9;color:#1B5E20;border:1px solid #A5D6A7;padding:3px 11px;border-radius:10px;font-size:13.5px;font-weight:700">▲ +${d} pts</span>`;
-      else if(d<0) badge=`<span style="background:#FFEBEE;color:#B71C1C;border:1px solid #FFCDD2;padding:3px 11px;border-radius:10px;font-size:13.5px;font-weight:700">▼ ${Math.abs(d)} pts</span>`;
-      else badge=`<span style="background:#F0F0F0;color:#666;border:1px solid #DDD;padding:3px 11px;border-radius:10px;font-size:13.5px;font-weight:700">→ Estável</span>`;
-      return `<tr style="background:${bg}">
-        <td style="text-align:center;padding:5px 3px;border-bottom:1px solid #F0EDEA">${pc}</td>
-        <td style="padding:5px 9px;border-bottom:1px solid #F0EDEA;font-size:16.5px;font-weight:${rk&&pos<3?700:400};color:#2A2725;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0">${SECTORS[si]}</td>
-        <td style="text-align:center;padding:5px 2px;border-bottom:1px solid #F0EDEA">${ac}</td>
-        <td style="text-align:center;padding:5px 3px;border-bottom:1px solid #F0EDEA">${nc}</td>
-        <td style="text-align:center;padding:5px 3px;border-bottom:1px solid #F0EDEA">${badge}</td>
-      </tr>`;
-    }).join('');
-  }
-  const meio=Math.ceil(sorted.length/2);
-  const col1=sorted.slice(0,meio).map((si,i)=>({si,pos:i}));
-  const col2=sorted.slice(meio).map((si,i)=>({si,pos:i+meio}));
-  const rankHead=`<tr>
-    ${['Pos.','Setor',mi>0?'← '+ABBR[mi-1]:'–',ABBR[mi],'Variação'].map((h,i)=>
-      `<th style="background:${i===3?RED:DARK};color:#fff;font-size:13px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:8px 3px;text-align:${i===1?'left':'center'};border-bottom:2px solid ${RED}">${h}</th>`
-    ).join('')}</tr>`;
-  const rankTable=rows=>`<table style="flex:1;height:100%;border-collapse:collapse;table-layout:fixed;border:1px solid ${BORDER}">
-    <colgroup><col style="width:46px"><col><col style="width:48px"><col style="width:60px"><col style="width:112px"></colgroup>
-    <thead>${rankHead}</thead><tbody>${rows}</tbody></table>`;
-
-  // ── Pódio (top 3) com o mascote SIDI segurando o troféu ───────────
-  const top3=sorted.slice(0,3).filter(si=>vals[si]>0).map(si=>({n:SECTORS[si],pts:Math.round(vals[si])}));
-  const podOrder=[top3[1],top3[0],top3[2]];
-  const podH=['58%','86%','42%'];
-  const podLabel=['2','1','3'];
-  const podium=podOrder.map((s,i)=>{
-    if(!s||!s.n) return `<div style="flex:1"></div>`;
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:0;height:100%">
-      <div style="font-size:26px;line-height:1">${MD[i===0?1:i===1?0:2]}</div>
-      <div style="text-align:center;font-size:14px;font-weight:700;color:${DARK};line-height:1.25;margin:4px 0 2px;padding:0 3px;width:100%;overflow-wrap:break-word;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:35px">${s.n}</div>
-      <div style="font-size:15px;color:${RED};font-weight:900;margin-bottom:6px">${s.pts} pts</div>
-      <div style="width:92%;height:${podH[i]};background:${RED};border-radius:3px 3px 0 0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:46px;font-weight:900;text-shadow:0 1px 3px rgba(0,0,0,.3)">${podLabel[i]}</div>
-    </div>`;
-  }).join('');
-
-  // ── Áreas Comuns ──────────────────────────────────────────────────
-  const acData=AC_DATA[mi]||{};
-  const acKeys=Object.keys(AREAS_COMUNS);
-  const acHasAny=acKeys.some(k=>acData[k]);
-  const acHTML=acHasAny?acKeys.map(k=>{
-    const area=AREAS_COMUNS[k],d=acData[k];
-    const has=!!(d&&d.perg>0);
-    const conf=has?d.conf:0, perg=has?d.perg:area.perguntas;
-    const p=has?conf/perg:null;
-    const cor=p===null?'#BBB':p>=0.83?'#1E7E34':p>=0.67?'#9A6B0A':'#C0392B';
-    return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #F4F2F0">
-      <span style="flex:1;min-width:0;font-size:11px;font-weight:700;letter-spacing:.2px;text-transform:uppercase;color:${MUTED};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${area.nome}</span>
-      <div style="width:58px;height:6px;background:#EDEAE6;border-radius:3px;overflow:hidden;flex-shrink:0"><div style="width:${p!==null?Math.round(p*100):0}%;height:100%;background:${cor}"></div></div>
-      <span style="width:42px;text-align:right;font-size:14px;font-weight:900;color:${cor};flex-shrink:0">${has?conf:'–'}<span style="font-size:10px;font-weight:400;color:${MUTED}">/${perg}</span></span>
-    </div>`;
-  }).join(''):'';
-
-
-  const fotoSrc = reportPhotoUrl || tvPhotoUrl;
-
   // ── Card padronizado (mesmo cabeçalho, mesma moldura em todos) ────
   const card=(tit,inner,h)=>`<div style="display:flex;flex-direction:column;${h?'height:'+h+'px;':'flex:1;'}min-height:0;background:#fff;border:1px solid ${BORDER};border-radius:3px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07)">
-    <div style="flex-shrink:0;background:${DARK};color:#fff;padding:9px 16px;font-size:15px;font-family:'Outfit',sans-serif;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2px solid ${RED}">${tit}</div>
-    <div style="flex:1;min-height:0;padding:11px 13px;display:flex;flex-direction:column">${inner}</div>
+    <div style="flex-shrink:0;background:${DARK};color:#fff;padding:12px 20px;font-size:18px;font-family:'Outfit',sans-serif;font-weight:900;letter-spacing:1.8px;text-transform:uppercase;border-bottom:2px solid ${RED}">${tit}</div>
+    <div style="flex:1;min-height:0;padding:20px 26px;display:flex;flex-direction:column">${inner}</div>
   </div>`;
 
   const conteudo=`
@@ -3937,7 +3904,7 @@ function gerarReport(){
     <div style="flex-shrink:0;background:${DARK};border-bottom:3px solid ${RED};height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 26px">
       <div>
         <div style="color:#fff;font-size:24px;font-weight:900;letter-spacing:3.5px;text-transform:uppercase;font-family:'Outfit',sans-serif">Relatório 5S — ${MONTHS[mi]} ${ano}</div>
-        <div style="color:rgba(255,255,255,.5);font-size:10.5px;letter-spacing:2.2px;text-transform:uppercase;margin-top:4px">Melhoria Contínua · Programa 5S</div>
+        <div style="color:rgba(255,255,255,.5);font-size:10.5px;letter-spacing:2.2px;text-transform:uppercase;margin-top:4px">Melhoria Contínua · Evolução da Empresa</div>
       </div>
       <div style="display:flex;align-items:center;gap:14px">
         <span style="color:rgba(255,255,255,.45);font-size:9px;letter-spacing:1.4px">SIDI | Solução Inovação Dedicação Inspiração</span>
@@ -3945,90 +3912,34 @@ function gerarReport(){
       </div>
     </div>
 
-    <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;padding:14px 26px 12px">
+    <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:18px;padding:22px 30px 20px">
 
-      <!-- 1. LEITURA RÁPIDA -->
-      <div style="flex-shrink:0;height:96px;display:flex;gap:12px">
-        ${kpiCard('Média Geral',kM,kMsub,kMok?GREEN:RED)}
-        ${kpiCard('Destaque do Mês',kD,kDsub,GREEN)}
-        ${kpiCard('Requer Atenção',kA,kAsub,RED)}
-        ${kpiCard('Maior Evolução',kE,kEsub,'#1565C0')}
-      </div>
-
-      <!-- 2. DIAGNÓSTICO (esq.) + RANKING (dir.) -->
-      <div style="flex:1;min-height:0;display:flex;gap:12px">
-
-        <div style="width:33%;display:flex;flex-direction:column;gap:12px;min-height:0">
-          ${card('1 · Resultado Mensal da Empresa',`
-            <div style="flex:1;display:flex;align-items:center;gap:16px">
-              <div style="width:130px;height:78px;flex-shrink:0">${gaugeSVG(pct)}</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-size:40px;font-weight:900;line-height:.95;color:${corNota}">${nota!==null?pct+'%':'–'}</div>
-                <div style="font-size:13px;color:${MUTED};font-weight:700;margin-top:7px;line-height:1.45">
-                  ${nota!==null?'média <b style="color:#2A2725">'+nota.toFixed(1)+'</b> de 20 pontos<br>'+valid.length+' setores auditados':'nenhum setor auditado'}</div>
-              </div>
-            </div>
-            <div style="flex-shrink:0;display:flex;gap:6px;padding-top:10px;border-top:1px solid #F2F0EE;margin-top:8px">
-              ${nota!==null?chip('Meta '+META+' pts',true):''}
-              ${gap!==null?chip((gap>=0?'+':'')+gap+' vs meta',gap>=0):''}
-              ${dMes!==null?chip((dMes>=0?'▲ +':'▼ ')+dMes+' vs '+MONTHS[mi-1],dMes>=0):''}
-            </div>`,192)}
-
-          ${card('2 · Desempenho Mensal por Senso',`
-            <div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly;overflow:hidden">${sensoHTML}</div>
-            <div style="flex-shrink:0;height:28px;display:flex;align-items:flex-end;font-size:10.5px;line-height:1.25;color:${MUTED};border-top:1px solid #F2F0EE;margin-top:6px;padding-top:7px">% médio de conformidade por senso entre os setores auditados</div>`,235)}
-
-          ${card('3 · Acompanhamento do Ano',`
-            <div style="display:flex;gap:6px;font-size:11.5px;font-weight:700;color:${MUTED};margin-bottom:2px">
-              <span>Média mensal da empresa · escala 10–20</span>
-              <span style="margin-left:auto">${melhor!==null?'Melhor: <b style="color:#2A2725">'+melhor.toFixed(1)+'</b>':''}${varAno!==null?' · Ano: <b style="color:'+(varAno>=0?'#1E7E34':'#C0392B')+'">'+(varAno>=0?'+':'')+varAno+'</b>':''}</span>
-            </div>
-            <div style="flex:1;min-height:0;margin-top:2px">${reportLineSVG(medias,520,100)}</div>`,182)}
+      ${card('1 · Resultado Mensal da Empresa',`
+        <div style="flex:1;display:flex;align-items:center;gap:30px">
+          <div style="width:220px;height:132px;flex-shrink:0">${gaugeSVG(pct)}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:60px;font-weight:900;line-height:.95;color:${corNota}">${nota!==null?pct+'%':'–'}</div>
+            <div style="font-size:17px;color:${MUTED};font-weight:700;margin-top:12px;line-height:1.5">
+              ${nota!==null?'média <b style="color:#2A2725">'+nota.toFixed(1)+'</b> de 20 pontos<br>'+valid.length+' setores auditados':'nenhum setor auditado'}</div>
+          </div>
         </div>
+        <div style="flex-shrink:0;display:flex;gap:10px;padding-top:16px;border-top:1px solid #F2F0EE;margin-top:14px">
+          ${nota!==null?chip('Meta '+META+' pts',true):''}
+          ${gap!==null?chip((gap>=0?'+':'')+gap+' vs meta',gap>=0):''}
+          ${dMes!==null?chip((dMes>=0?'▲ +':'▼ ')+dMes+' vs '+MONTHS[mi-1],dMes>=0):''}
+        </div>`,240)}
 
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;min-height:0">
-          ${card('4 · Ranking Mensal dos Setores'+(mi>0?' — variação vs '+MONTHS[mi-1]:''),`
-            <div style="flex:1;min-height:0;display:flex;gap:12px">
-              ${rankTable(rankRows(col1))}
-              ${rankTable(rankRows(col2))}
-            </div>`)}
+      ${card('2 · Desempenho Mensal por Senso',`
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly;overflow:hidden">${sensoHTML}</div>`,260)}
+
+      ${card('3 · Acompanhamento do Ano — Evolução da Média da Empresa',`
+        <div style="display:flex;gap:10px;font-size:14px;font-weight:700;color:${MUTED};margin-bottom:6px">
+          <span>Média mensal da empresa · escala 10–20</span>
+          <span style="margin-left:auto">${melhor!==null?'Melhor: <b style="color:#2A2725">'+melhor.toFixed(1)+'</b>':''}${varAno!==null?' · Ano: <b style="color:'+(varAno>=0?'#1E7E34':'#C0392B')+'">'+(varAno>=0?'+':'')+varAno+'</b>':''}</span>
         </div>
-      </div>
+        <div style="flex:1;min-height:0;margin-top:4px">${reportLineSVG(medias,900,260)}</div>`)}
 
-      <!-- 3. RECONHECIMENTO + ÁREAS COMUNS -->
-      <div style="flex-shrink:0;height:236px;display:flex;gap:12px">
-        <div style="width:38%;display:flex;flex-direction:column;min-height:0">
-          ${card('5 · Setor Destaque do Mês'+(kD!=='–'?' — '+kD:''),`
-            <div id="fotoWrap" style="flex:1;min-height:0;margin:-11px -13px;overflow:hidden;position:relative">
-              ${fotoSrc
-                ? `<img id="fotoDestaque" src="${fotoSrc}" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;transform-origin:center center">`
-                : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:${MUTED};font-size:10px;background:#FAFAF9">
-                     <span style="font-size:28px">📷</span>Foto do setor vencedor</div>`}
-            </div>`)}
-        </div>
-
-        <div style="width:34%;display:flex;flex-direction:column;min-height:0">
-          ${card('6 · Pódio do Mês',`
-            <div style="flex:1;min-height:0;display:flex;align-items:flex-end;gap:10px">
-              <div style="flex:1;display:flex;align-items:flex-end;gap:4px;height:100%">${podium}</div>
-              <img src="${SIDI_TROFEU}" style="width:72px;object-fit:contain;align-self:flex-end;margin-bottom:2px">
-            </div>`)}
-        </div>
-
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;min-height:0">
-          ${card('7 · Áreas Comuns',
-            acHasAny
-              ? `<div style="flex:1;display:flex;flex-direction:column;justify-content:space-between">${acHTML}</div>`
-              : `<div style="flex:1;display:flex;align-items:center;justify-content:center;color:${MUTED};font-size:10px">Sem lançamentos de áreas comuns neste mês</div>`)}
-        </div>
-      </div>
-
-      <!-- RODAPÉ -->
-      <div style="flex-shrink:0;height:26px;display:flex;align-items:center;gap:9px;font-size:10.5px;font-weight:700;color:${MUTED}">
-        <span>Legenda:</span>
-        <span style="background:#FEF0F0;color:#C0392B;border:1px solid #F5C6C6;padding:3px 10px;border-radius:2px">Ruim ≤ 13</span>
-        <span style="background:#FEF9EC;color:#9A6B0A;border:1px solid #F5E4A0;padding:2px 9px;border-radius:2px">Regular 14–17</span>
-        <span style="background:#F0FAF0;color:#1E7E34;border:1px solid #B2DFB4;padding:2px 9px;border-radius:2px">Bom ≥ 18 ✔ Meta</span>
+      <div style="flex-shrink:0;height:24px;display:flex;align-items:center;gap:9px;font-size:10.5px;font-weight:700;color:${MUTED}">
         <span style="margin-left:auto">Inova Sistemas Eletrônicos · Emitido em ${new Date().toLocaleDateString('pt-BR')}</span>
       </div>
     </div>
@@ -4167,6 +4078,7 @@ async function init(){
       if(d.SECTOR_AC_MAP) SECTOR_AC_MAP=d.SECTOR_AC_MAP;
       if(d.AC_DATA) AC_DATA=d.AC_DATA;
       if(d.PD_LAB_SCORES) PD_LAB_SCORES=d.PD_LAB_SCORES;
+      if(d.OFICINA_SCORES) OFICINA_SCORES=d.OFICINA_SCORES;
       setStat('placarStatus','📝 Rascunho pendente carregado. Entre em edição e clique "Publicar" para atualizar para todos.','warn');
     }catch(e){}
   }
