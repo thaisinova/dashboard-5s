@@ -1,14 +1,10 @@
-
-
-
-
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0096)file:///C:/Users/Terminal/Downloads/Dashboard%205S%20%E2%80%93%20Inova%202026%20(corrigido).html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard 5S – Inova 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Outfit:wght@600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -476,14 +472,13 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
 }
 </style>
 </head>
-<div id="tv-print-target" style="display:none;position:fixed;inset:0;width:100%;height:100%;z-index:99999;overflow:hidden"></div>
-<body>
+<body><div id="tv-print-target" style="display:none;position:fixed;inset:0;width:100%;height:100%;z-index:99999;overflow:hidden"></div>
+
 
 <!-- ─── HEADER ─────────────────────────────────────────────────────── -->
 <header>
   <div class="logo">
-    <img src="https://www.inova.ind.br/assets/img/logoInova.png" alt="Inova"
-         onerror="this.style.display='none'">
+    <img src="https://www.inova.ind.br/assets/img/logoInova.png" alt="Inova" onerror="this.style.display='none'">
     <div class="logo-sep"></div>
     <div class="logo-info">
       <h1>Dashboard 5S</h1>
@@ -493,7 +488,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
     <div style="display:flex;flex-direction:column;justify-content:center">
       <span style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px">Ano</span>
       <select id="anoSel" onchange="updateAno()" style="background:var(--dark);border:1px solid rgba(255,255,255,.3);color:#fff;font-family:Lato,sans-serif;font-size:14px;font-weight:700;cursor:pointer;padding:5px 10px;border-radius:2px;appearance:none;-webkit-appearance:none;min-width:75px;text-align:center;outline:none">
-        <option value="2026" selected>2026</option>
+        <option value="2026" selected="">2026</option>
         <option value="2027">2027</option>
         <option value="2028">2028</option>
         <option value="2029">2029</option>
@@ -506,36 +501,36 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
     <button class="hbt active" onclick="showTab('mensal')">📅 Mensal</button>
     <button class="hbt" onclick="showTab('trimestral')">📊 Trimestral</button>
     <button class="hbt" onclick="showTab('graficos')">📈 Gráficos</button>
-    <button class="hbt hbt-admin" style="display:none" onclick="showTab('placar')">📋 Placar</button>
-    <button class="hbt hbt-admin" style="display:none" onclick="showTab('anual')">🏆 Anual</button>
-    <button class="hbt hbt-admin" style="display:none" onclick="openTV()">📺 Divulgação</button>
-    <button class="hbt hbt-admin" style="display:none" onclick="showTab('cadastro')">🗂️ Cadastro</button>
+    <button class="hbt hbt-admin" style="display: none;" onclick="showTab('placar')">📋 Placar</button>
+    <button class="hbt hbt-admin" style="display: none;" onclick="showTab('anual')">🏆 Anual</button>
+    <button class="hbt hbt-admin" style="display: none;" onclick="openTV()">📺 Divulgação</button>
+    <button class="hbt hbt-admin" style="display: none;" onclick="showTab('cadastro')">🗂️ Cadastro</button>
   </div>
 
   <div class="hcontrols">
     <button class="hbtn" id="adminLockBtn" onclick="openAdminGate()" title="Acesso Administrador" style="padding:7px 10px;font-size:13px">🔒</button>
     <button class="hbtn" id="pdfBtn" onclick="smartExport()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14 2 14 8 20 8"/>
-        <line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/>
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="12" y1="18" x2="12" y2="12"></line><polyline points="9 15 12 18 15 15"></polyline>
       </svg>
       <span id="pdfBtnLabel">PDF</span>
     </button>
     <button class="hbtn" onclick="exportExcel()" style="border-color:#1B7A3E;color:#1B7A3E">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14 2 14 8 20 8"/>
-        <polyline points="8 13 12 17 16 13"/><line x1="12" y1="17" x2="12" y2="7"/>
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <polyline points="8 13 12 17 16 13"></polyline><line x1="12" y1="17" x2="12" y2="7"></line>
       </svg>
       Excel
     </button>
-    <div class="sel-wrap" id="mensal-sel-wrap">
+    <div class="sel-wrap" id="mensal-sel-wrap" style="display: flex;">
       <label>Mês</label>
       <select id="monthSel" onchange="updateMensal()">
         <option value="0">Janeiro</option>
         <option value="1">Fevereiro</option>
-        <option value="2" selected>Março</option>
+        <option value="2" selected="">Março</option>
         <option value="3">Abril</option>
         <option value="4">Maio</option>
         <option value="5">Junho</option>
@@ -556,8 +551,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
   <div class="pwd-modal">
     <h3>🔒 Acesso Restrito</h3>
     <p>Digite a senha para editar os dados do Placar</p>
-    <input type="password" class="pwd-input" id="pwdInput" placeholder="Senha"
-           onkeydown="if(event.key==='Enter')checkPwd()">
+    <input type="password" class="pwd-input" id="pwdInput" placeholder="Senha" onkeydown="if(event.key==='Enter')checkPwd()">
     <div class="pwd-error" id="pwdError"></div>
     <div class="pwd-btns">
       <button class="btn-cancel" onclick="closePwd()">Cancelar</button>
@@ -571,8 +565,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
   <div class="pwd-modal">
     <h3>🔒 Acesso Administrador</h3>
     <p>Digite a senha para exibir as abas administrativas</p>
-    <input type="password" class="pwd-input" id="adminGateInput" placeholder="Senha"
-           onkeydown="if(event.key==='Enter')checkAdminGate()">
+    <input type="password" class="pwd-input" id="adminGateInput" placeholder="Senha" onkeydown="if(event.key==='Enter')checkAdminGate()">
     <div class="pwd-error" id="adminGateError"></div>
     <div class="pwd-btns">
       <button class="btn-cancel" onclick="closeAdminGate()">Cancelar</button>
@@ -590,8 +583,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
     <div style="font-size:32px;margin-bottom:10px">🔒</div>
     <h3 style="font-size:16px;font-weight:900;margin-bottom:6px;color:var(--txt)">Acesso Restrito</h3>
     <p style="font-size:12px;color:var(--muted);margin-bottom:18px">Digite a senha para acessar o Placar</p>
-    <input type="password" id="placarTabPwdInput" class="pwd-input" placeholder="Senha" style="width:100%;margin-bottom:8px"
-      onkeydown="if(event.key==='Enter')checkPlacarTabPwd()">
+    <input type="password" id="placarTabPwdInput" class="pwd-input" placeholder="Senha" style="width:100%;margin-bottom:8px" onkeydown="if(event.key==='Enter')checkPlacarTabPwd()">
     <div id="placarTabPwdError" class="pwd-error"></div>
     <div style="display:flex;gap:8px;justify-content:center">
       <button class="hbtn" onclick="showTab('mensal')">Cancelar</button>
@@ -600,7 +592,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
   </div>
 </div>
 
-<div id="placar-main" class="main">
+<div id="placar-main" class="main" style="display: block;">
 
   <div class="placar-header">
     <div>
@@ -613,7 +605,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
         <select id="placarMonthSel" onchange="buildPlacar()">
           <option value="0">Janeiro</option>
           <option value="1">Fevereiro</option>
-          <option value="2" selected>Março</option>
+          <option value="2" selected="">Março</option>
           <option value="3">Abril</option>
           <option value="4">Maio</option>
           <option value="5">Junho</option>
@@ -625,26 +617,26 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
           <option value="11">Dezembro</option>
         </select>
       </div>
-      <button class="hbtn" id="editBtn" onclick="requestEdit()" style="border-color:var(--red);color:var(--red)">
+      <button class="hbtn" id="editBtn" onclick="requestEdit()" style="border-color: var(--red); color: var(--red);">
         ✏️ Editar
       </button>
-      <button class="hbtn" id="importCsvBtn" onclick="document.getElementById('csvImportInput').click()" style="display:none;border-color:#1565C0;color:#1565C0">
+      <button class="hbtn" id="importCsvBtn" onclick="document.getElementById('csvImportInput').click()" style="border-color: rgb(21, 101, 192); color: rgb(21, 101, 192); display: none;">
         📥 Importar CSV
       </button>
       <input type="file" id="csvImportInput" accept=".csv" style="display:none" onchange="handleCsvImport(this.files[0])">
-      <button class="hbtn" id="draftBtn" onclick="saveDraft()" style="display:none;background:#1565C0;border-color:#1565C0;color:#fff">
+      <button class="hbtn" id="draftBtn" onclick="saveDraft()" style="background: rgb(21, 101, 192); border-color: rgb(21, 101, 192); color: rgb(255, 255, 255); display: none;">
         📝 Rascunho
       </button>
-      <button class="hbtn" id="publishBtn" onclick="savePlacar()" style="display:none;background:var(--green);border-color:var(--green);color:#fff">
+      <button class="hbtn" id="publishBtn" onclick="savePlacar()" style="background: var(--green); border-color: var(--green); color: rgb(255, 255, 255); display: none;">
         🚀 Publicar
       </button>
-      <button class="hbtn" id="cancelBtn" onclick="cancelEdit()" style="display:none;border-color:var(--muted);color:var(--muted)">
+      <button class="hbtn" id="cancelBtn" onclick="cancelEdit()" style="border-color: var(--muted); color: var(--muted); display: none;">
         Cancelar
       </button>
     </div>
   </div>
 
-  <div id="placarLockMsg" class="locked-overlay">
+  <div id="placarLockMsg" class="locked-overlay" style="display: flex;">
     🔒 Modo visualização — clique em <strong style="margin:0 4px">Editar</strong> e insira a senha para modificar os dados
   </div>
 
@@ -652,33 +644,144 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
   <div id="ac-placar-wrap" style="margin-bottom:20px;background:#fff;border:1px solid var(--border);border-radius:3px;overflow:hidden;box-shadow:var(--shadow)">
     <div style="background:var(--dark);border-bottom:2px solid var(--red);padding:12px 16px">
       <span style="font-size:13px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff">Áreas Comuns</span>
-      <span style="font-size:10px;color:rgba(255,255,255,.45);margin-left:10px" id="ac-placar-subtitle"></span>
+      <span style="font-size:10px;color:rgba(255,255,255,.45);margin-left:10px" id="ac-placar-subtitle">peso total 6 pontos por setor, dividido pelas perguntas de todas as áreas que ele usa</span>
     </div>
-    <div id="ac-placar-body" style="display:flex;flex-wrap:wrap"></div>
+    <div id="ac-placar-body" style="display:flex;flex-wrap:wrap"><div style="flex:1;min-width:130px;padding:12px 14px;border-right:1px solid var(--border);;border-bottom:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="Copa">Copa</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="6" value="6" placeholder="–" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onAcAreaInput(8,'copa',this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 6</span>
+      </div>
+    </div><div style="flex:1;min-width:130px;padding:12px 14px;border-right:1px solid var(--border);;border-bottom:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="Café Subsolo">Café Subsolo</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="6" value="6" placeholder="–" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onAcAreaInput(8,'cafe_subsolo',this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 6</span>
+      </div>
+    </div><div style="flex:1;min-width:130px;padding:12px 14px;border-right:1px solid var(--border);;border-bottom:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="Café Produção">Café Produção</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="6" value="5" placeholder="–" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onAcAreaInput(8,'cafe_producao',this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 6</span>
+      </div>
+    </div><div style="flex:1;min-width:130px;padding:12px 14px;border-right:1px solid var(--border);;border-bottom:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="Banheiro Adm">Banheiro Adm</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="3" value="3" placeholder="–" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onAcAreaInput(8,'banheiro_adm',this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 3</span>
+      </div>
+    </div><div style="flex:1;min-width:130px;padding:12px 14px;border-right:1px solid var(--border);;border-bottom:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="Banheiro Produção">Banheiro Produção</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="3" value="2" placeholder="–" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onAcAreaInput(8,'banheiro_producao',this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 3</span>
+      </div>
+    </div><div style="flex:1;min-width:130px;padding:12px 14px;border-right:1px solid var(--border);;border-bottom:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="Banheiro Subsolo">Banheiro Subsolo</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="3" value="2" placeholder="–" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onAcAreaInput(8,'banheiro_subsolo',this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 3</span>
+      </div>
+    </div><div style="flex:1;min-width:130px;padding:12px 14px;border-right:1px solid var(--border);border-right:none;border-bottom:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="Banheiro SMT">Banheiro SMT</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="3" value="2" placeholder="–" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onAcAreaInput(8,'banheiro_smt',this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 3</span>
+      </div>
+    </div></div>
   </div>
 
   <!-- ─── P&D LABORATÓRIO COMPARTILHADO NO TOPO DO PLACAR ─── -->
-  <div id="pd-lab-wrap" style="display:none;margin-bottom:20px;background:#fff;border:1px solid var(--border);border-radius:3px;overflow:hidden;box-shadow:var(--shadow)">
+  <div id="pd-lab-wrap" style="display: block; margin-bottom: 20px; background: rgb(255, 255, 255); border: 1px solid var(--border); border-radius: 3px; overflow: hidden; box-shadow: var(--shadow);">
     <div style="background:var(--dark);border-bottom:2px solid var(--red);padding:12px 16px">
-      <span style="font-size:13px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff">P&D - Áreas Comuns e Laboratório</span>
+      <span style="font-size:13px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff">P&amp;D - Áreas Comuns e Laboratório</span>
       <span style="font-size:10px;color:rgba(255,255,255,.45);margin-left:10px">compartilhado · soma com Industrial, RAID e HIT para fechar 20 perguntas</span>
     </div>
-    <div id="pd-lab-body" style="display:flex;flex-wrap:wrap"></div>
+    <div id="pd-lab-body" style="display:flex;flex-wrap:wrap"><div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">1º S</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="2" value="2" placeholder="0" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onPdLabInput(0,this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 2</span>
+      </div>
+    </div><div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">2º S</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="2" value="1" placeholder="0" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onPdLabInput(1,this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 2</span>
+      </div>
+    </div><div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">3º S</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="2" value="2" placeholder="0" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onPdLabInput(2,this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 2</span>
+      </div>
+    </div><div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">4º S</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="2" value="2" placeholder="0" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onPdLabInput(3,this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 2</span>
+      </div>
+    </div><div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">5º S</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="2" value="2" placeholder="0" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onPdLabInput(4,this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 2</span>
+      </div>
+    </div></div>
   </div>
 
   <!-- ─── OFICINA MECÂNICA COMPARTILHADA NO TOPO DO PLACAR ─── -->
-  <div id="oficina-wrap" style="display:none;margin-bottom:20px;background:#fff;border:1px solid var(--border);border-radius:3px;overflow:hidden;box-shadow:var(--shadow)">
+  <div id="oficina-wrap" style="display: none; margin-bottom: 20px; background: rgb(255, 255, 255); border: 1px solid var(--border); border-radius: 3px; overflow: hidden; box-shadow: var(--shadow);">
     <div style="background:var(--dark);border-bottom:2px solid var(--red);padding:12px 16px">
       <span style="font-size:13px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff">Oficina Mecânica</span>
       <span style="font-size:10px;color:rgba(255,255,255,.45);margin-left:10px">compartilhado · soma com Métodos e Processos para fechar 20 perguntas</span>
     </div>
-    <div id="oficina-body" style="display:flex;flex-wrap:wrap"></div>
+    <div id="oficina-body" style="display:flex;flex-wrap:wrap"><div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">1º S</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="1" value="" placeholder="0" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onOficinaInput(0,this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 1</span>
+      </div>
+    </div><div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">2º S</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="1" value="" placeholder="0" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onOficinaInput(1,this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 1</span>
+      </div>
+    </div><div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">3º S</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="1" value="" placeholder="0" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onOficinaInput(2,this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 1</span>
+      </div>
+    </div><div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">4º S</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="1" value="" placeholder="0" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onOficinaInput(3,this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 1</span>
+      </div>
+    </div><div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">5º S</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="1" value="" placeholder="0" class="sinput" style="width:48px;font-size:15px;font-weight:900" readonly="" oninput="onOficinaInput(4,this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 1</span>
+      </div>
+    </div></div>
   </div>
 
   <div class="placar-table">
     <table class="pt" id="placarTable">
-      <thead id="placarHead"></thead>
-      <tbody id="placarBody"></tbody>
+      <thead id="placarHead"><tr>
+    <th class="pt-s">Setor</th>
+    <th>1º S<br><small style="font-weight:400;opacity:.6">Utilização</small></th>
+    <th>2º S<br><small style="font-weight:400;opacity:.6">Organização</small></th>
+    <th>3º S<br><small style="font-weight:400;opacity:.6">Limpeza</small></th>
+    <th>4º S<br><small style="font-weight:400;opacity:.6">Padronização</small></th>
+    <th>5º S<br><small style="font-weight:400;opacity:.6">Autodisciplina</small></th>
+    <th>Áreas Comuns<br><small style="font-weight:400;opacity:.6">calculado · máx. 6</small></th>
+    <th style="background:#4A4540">Total</th>
+  </tr></thead>
+      <tbody id="placarBody"><tr><td class="pt-s">PPCPM</td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_0_0" readonly="" oninput="onSInput(0,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_0_1" readonly="" oninput="onSInput(0,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_0_2" readonly="" oninput="onSInput(0,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_0_3" readonly="" oninput="onSInput(0,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_0_4" readonly="" oninput="onSInput(0,4,this)"></td><td id="ac_0" style="font-size:13px"><span style="font-weight:700">6 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_0" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">20</td></tr><tr><td class="pt-s">Qualidade e Meio Ambiente</td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_1_0" readonly="" oninput="onSInput(1,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_1_1" readonly="" oninput="onSInput(1,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_1_2" readonly="" oninput="onSInput(1,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_1_3" readonly="" oninput="onSInput(1,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_1_4" readonly="" oninput="onSInput(1,4,this)"></td><td id="ac_1" style="font-size:13px"><span style="font-weight:700">6 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_1" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">20</td></tr><tr><td class="pt-s">RH</td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_2_0" readonly="" oninput="onSInput(2,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_2_1" readonly="" oninput="onSInput(2,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_2_2" readonly="" oninput="onSInput(2,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_2_3" readonly="" oninput="onSInput(2,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_2_4" readonly="" oninput="onSInput(2,4,this)"></td><td id="ac_2" style="font-size:13px"><span style="font-weight:700">6 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_2" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">19.3</td></tr><tr><td class="pt-s">Controladoria</td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_3_0" readonly="" oninput="onSInput(3,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_3_1" readonly="" oninput="onSInput(3,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_3_2" readonly="" oninput="onSInput(3,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_3_3" readonly="" oninput="onSInput(3,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_3_4" readonly="" oninput="onSInput(3,4,this)"></td><td id="ac_3" style="font-size:13px"><span style="font-weight:700">6 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_3" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">20</td></tr><tr><td class="pt-s">Comercial</td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_4_0" readonly="" oninput="onSInput(4,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="2" id="si_4_1" readonly="" oninput="onSInput(4,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_4_2" readonly="" oninput="onSInput(4,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_4_3" readonly="" oninput="onSInput(4,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_4_4" readonly="" oninput="onSInput(4,4,this)"></td><td id="ac_4" style="font-size:13px"><span style="font-weight:700">6 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_4" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">17.2</td></tr><tr><td class="pt-s">TI</td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_5_0" readonly="" oninput="onSInput(5,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_5_1" readonly="" oninput="onSInput(5,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_5_2" readonly="" oninput="onSInput(5,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_5_3" readonly="" oninput="onSInput(5,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_5_4" readonly="" oninput="onSInput(5,4,this)"></td><td id="ac_5" style="font-size:13px"><span style="font-weight:700">6 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_5" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">17.9</td></tr><tr><td class="pt-s">Logística</td><td><input class="sinput" type="number" min="0" max="4" value="2" id="si_6_0" readonly="" oninput="onSInput(6,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="2" id="si_6_1" readonly="" oninput="onSInput(6,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_6_2" readonly="" oninput="onSInput(6,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_6_3" readonly="" oninput="onSInput(6,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_6_4" readonly="" oninput="onSInput(6,4,this)"></td><td id="ac_6" style="font-size:13px"><span style="font-weight:700">4 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_6" style="background:#FEF9EC;color:#9A6B0A;font-weight:900;font-size:15px">14.5</td></tr><tr><td class="pt-s">MTA - Industrial</td><td><input class="sinput" type="number" min="0" max="4" value="2" id="si_7_0" readonly="" oninput="onSInput(7,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="2" id="si_7_1" readonly="" oninput="onSInput(7,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_7_2" readonly="" oninput="onSInput(7,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="2" id="si_7_3" readonly="" oninput="onSInput(7,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_7_4" readonly="" oninput="onSInput(7,4,this)"></td><td id="ac_7" style="font-size:13px"><span style="font-weight:700">4 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_7" style="background:#FEF9EC;color:#9A6B0A;font-weight:900;font-size:15px">13.1</td></tr><tr><td class="pt-s">MTA - Resfriar</td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_8_0" readonly="" oninput="onSInput(8,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_8_1" readonly="" oninput="onSInput(8,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_8_2" readonly="" oninput="onSInput(8,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_8_3" readonly="" oninput="onSInput(8,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_8_4" readonly="" oninput="onSInput(8,4,this)"></td><td id="ac_8" style="font-size:13px"><span style="font-weight:700">4 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_8" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">18</td></tr><tr><td class="pt-s">MTA - Automotivo</td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_9_0" readonly="" oninput="onSInput(9,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_9_1" readonly="" oninput="onSInput(9,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_9_2" readonly="" oninput="onSInput(9,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_9_3" readonly="" oninput="onSInput(9,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_9_4" readonly="" oninput="onSInput(9,4,this)"></td><td id="ac_9" style="font-size:13px"><span style="font-weight:700">4 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_9" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">17.3</td></tr><tr><td class="pt-s">Montagem de Placas</td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_10_0" readonly="" oninput="onSInput(10,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_10_1" readonly="" oninput="onSInput(10,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_10_2" readonly="" oninput="onSInput(10,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_10_3" readonly="" oninput="onSInput(10,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_10_4" readonly="" oninput="onSInput(10,4,this)"></td><td id="ac_10" style="font-size:13px"><span style="font-weight:700">4 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_10" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">18</td></tr><tr><td class="pt-s">Assistência Técnica</td><td><input class="sinput" type="number" min="0" max="4" value="2" id="si_11_0" readonly="" oninput="onSInput(11,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_11_1" readonly="" oninput="onSInput(11,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_11_2" readonly="" oninput="onSInput(11,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_11_3" readonly="" oninput="onSInput(11,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_11_4" readonly="" oninput="onSInput(11,4,this)"></td><td id="ac_11" style="font-size:13px"><span style="font-weight:700">5 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_11" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">17.6</td></tr><tr><td class="pt-s">Chicote</td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_12_0" readonly="" oninput="onSInput(12,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_12_1" readonly="" oninput="onSInput(12,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_12_2" readonly="" oninput="onSInput(12,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_12_3" readonly="" oninput="onSInput(12,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_12_4" readonly="" oninput="onSInput(12,4,this)"></td><td id="ac_12" style="font-size:13px"><span style="font-weight:700">5 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_12" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">18.3</td></tr><tr><td class="pt-s">Usinagem</td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_13_0" readonly="" oninput="onSInput(13,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_13_1" readonly="" oninput="onSInput(13,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_13_2" readonly="" oninput="onSInput(13,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_13_3" readonly="" oninput="onSInput(13,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_13_4" readonly="" oninput="onSInput(13,4,this)"></td><td id="ac_13" style="font-size:13px"><span style="font-weight:700">5 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_13" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">18.3</td></tr><tr><td class="pt-s">Métodos e Processos</td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_14_0" readonly="" oninput="onSInput(14,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_14_1" readonly="" oninput="onSInput(14,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_14_2" readonly="" oninput="onSInput(14,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_14_3" readonly="" oninput="onSInput(14,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="3" id="si_14_4" readonly="" oninput="onSInput(14,4,this)"></td><td id="ac_14" style="font-size:13px"><span style="font-weight:700">5 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_14" style="background:#FEF9EC;color:#9A6B0A;font-weight:900;font-size:15px">15.5</td></tr><tr><td class="pt-s">P&amp;D - Documentação</td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_15_0" readonly="" oninput="onSInput(15,0,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_15_1" readonly="" oninput="onSInput(15,1,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_15_2" readonly="" oninput="onSInput(15,2,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_15_3" readonly="" oninput="onSInput(15,3,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_15_4" readonly="" oninput="onSInput(15,4,this)"></td><td id="ac_15" style="font-size:13px"><span style="font-weight:700">5 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_15" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">17.6</td></tr><tr><td class="pt-s">P&amp;D - RAID <small style="color:var(--muted);font-weight:400">(+lab)</small></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_16_0" readonly="" oninput="onSInput(16,0,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_16_1" readonly="" oninput="onSInput(16,1,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_16_2" readonly="" oninput="onSInput(16,2,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_16_3" readonly="" oninput="onSInput(16,3,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_16_4" readonly="" oninput="onSInput(16,4,this)"></td><td id="ac_16" style="font-size:13px"><span style="font-weight:700">5 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_16" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">17.6</td></tr><tr><td class="pt-s">P&amp;D - Industrial <small style="color:var(--muted);font-weight:400">(+lab)</small></td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_17_0" readonly="" oninput="onSInput(17,0,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_17_1" readonly="" oninput="onSInput(17,1,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_17_2" readonly="" oninput="onSInput(17,2,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_17_3" readonly="" oninput="onSInput(17,3,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_17_4" readonly="" oninput="onSInput(17,4,this)"></td><td id="ac_17" style="font-size:13px"><span style="font-weight:700">5 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_17" style="background:#FEF9EC;color:#9A6B0A;font-weight:900;font-size:15px">15.5</td></tr><tr><td class="pt-s">P&amp;D - Software</td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_18_0" readonly="" oninput="onSInput(18,0,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_18_1" readonly="" oninput="onSInput(18,1,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_18_2" readonly="" oninput="onSInput(18,2,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_18_3" readonly="" oninput="onSInput(18,3,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_18_4" readonly="" oninput="onSInput(18,4,this)"></td><td id="ac_18" style="font-size:13px"><span style="font-weight:700">5 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_18" style="background:#FEF9EC;color:#9A6B0A;font-weight:900;font-size:15px">13.4</td></tr><tr><td class="pt-s">P&amp;D - HIT <small style="color:var(--muted);font-weight:400">(+lab)</small></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_19_0" readonly="" oninput="onSInput(19,0,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_19_1" readonly="" oninput="onSInput(19,1,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_19_2" readonly="" oninput="onSInput(19,2,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="1" id="si_19_3" readonly="" oninput="onSInput(19,3,this)"></td><td><input class="sinput" type="number" min="0" max="2" value="2" id="si_19_4" readonly="" oninput="onSInput(19,4,this)"></td><td id="ac_19" style="font-size:13px"><span style="font-weight:700">5 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_19" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">17.6</td></tr><tr><td class="pt-s">Manutenção</td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_20_0" readonly="" oninput="onSInput(20,0,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_20_1" readonly="" oninput="onSInput(20,1,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_20_2" readonly="" oninput="onSInput(20,2,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_20_3" readonly="" oninput="onSInput(20,3,this)"></td><td><input class="sinput" type="number" min="0" max="4" value="4" id="si_20_4" readonly="" oninput="onSInput(20,4,this)"></td><td id="ac_20" style="font-size:13px"><span style="font-weight:700">5 <small style="color:var(--muted);font-weight:400">/ 6</small></span></td><td class="pt-total" id="tot_20" style="background:#F0FAF0;color:#1E7E34;font-weight:900;font-size:15px">19</td></tr></tbody>
     </table>
   </div>
 
@@ -689,44 +792,44 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
     <span style="background:#F0FAF0;color:#1E7E34;border:1px solid #B2DFB4;font-size:11px;font-weight:700;padding:3px 12px;border-radius:2px">Bom — ≥ 18 ✔ Meta</span>
   </div>
 
-  <div class="sync-bar"><span id="placarStatus"></span></div>
+  <div class="sync-bar"><span id="placarStatus" style="color: var(--amber);">✏️ Alterações não salvas...</span></div>
 </div>
 </div>
-</div>
+
 
 <!-- ─── TAB: MENSAL ──────────────────────────────────────────────────── -->
 <div class="tab-panel active" id="tab-mensal">
 <div class="main">
 
-  <section class="section">
+  <section class="section fade">
     <div class="slabel">Indicadores do Mês <span class="stag">Meta ≥ 18</span></div>
     <div class="kpis">
       <div class="card c-dk">
         <div class="card-lbl">Média Geral</div>
-        <div class="card-val" id="k-avg">–</div>
-        <div class="card-sub" id="k-avg-s"></div>
+        <div class="card-val" id="k-avg">17.4 / 20</div>
+        <div class="card-sub warn" id="k-avg-s">⚠ Abaixo da meta (18)</div>
       </div>
       <div class="card c-gn">
         <div class="card-lbl">Destaque do Mês</div>
-        <div class="card-val gn" id="k-best" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:22px">–</div>
-        <div class="card-sub" id="k-best-s"></div>
+        <div class="card-val gn" id="k-best" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:22px">Qualidade e Meio Ambiente</div>
+        <div class="card-sub" id="k-best-s">Pontuação: 20 / 20</div>
       </div>
       <div class="card c-rd">
         <div class="card-lbl">Requer Atenção</div>
-        <div class="card-val rd" id="k-worst" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:22px">–</div>
-        <div class="card-sub" id="k-worst-s"></div>
+        <div class="card-val rd" id="k-worst" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:22px">MTA - Industrial</div>
+        <div class="card-sub" id="k-worst-s">Pontuação: 13 / 20</div>
       </div>
       <div class="card c-bl">
         <div class="card-lbl">Maior Evolução</div>
-        <div class="card-val bl" id="k-evo" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:22px">–</div>
-        <div class="card-sub" id="k-evo-s"></div>
+        <div class="card-val bl" id="k-evo" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:22px">MTA - Resfriar</div>
+        <div class="card-sub up" id="k-evo-s">▲ 1 pts vs Agosto</div>
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="slabel" id="rank-lbl">Ranking</div>
-    <div class="rank-wrap"><table class="rank" id="ranking"></table></div>
+  <section class="section fade">
+    <div class="slabel" id="rank-lbl">Ranking — Setembro (vs Agosto)</div>
+    <div class="rank-wrap"><table class="rank" id="ranking"><thead><tr><th class="">Pos.</th><th class="">Setor</th><th class="tc">← Ago</th><th class="th-nota">Pontuação — Setembro</th><th class="tc">Variação</th></tr></thead><tbody><tr class="rank-1"><td><span class="pos-icon">🥇</span></td><td style="font-weight: 700; font-size: 14px;">Qualidade e Meio Ambiente</td><td class="td-ant">20</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">20</td><td class="td-tend"><span class="badge b-eq">→ Estável</span></td></tr><tr class="rank-2"><td><span class="pos-icon">🥈</span></td><td style="font-weight: 700; font-size: 14px;">PPCPM</td><td class="td-ant">20</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">20</td><td class="td-tend"><span class="badge b-eq">→ Estável</span></td></tr><tr class="rank-3"><td><span class="pos-icon">🥉</span></td><td style="font-weight: 700; font-size: 14px;">Controladoria</td><td class="td-ant">20</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">20</td><td class="td-tend"><span class="badge b-eq">→ Estável</span></td></tr><tr><td><span class="pos-num ">#4</span></td><td style="font-weight: 500; font-size: 14px;">RH</td><td class="td-ant">19</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">19</td><td class="td-tend"><span class="badge b-eq">→ Estável</span></td></tr><tr><td><span class="pos-num ">#5</span></td><td style="font-weight: 500; font-size: 14px;">Manutenção</td><td class="td-ant">19</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">19</td><td class="td-tend"><span class="badge b-eq">→ Estável</span></td></tr><tr><td><span class="pos-num ">#6</span></td><td style="font-weight: 500; font-size: 14px;">Usinagem</td><td class="td-ant">18</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">18</td><td class="td-tend"><span class="badge b-up">▲ 1 pts</span></td></tr><tr><td><span class="pos-num ">#7</span></td><td style="font-weight: 500; font-size: 14px;">Chicote</td><td class="td-ant">18</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">18</td><td class="td-tend"><span class="badge b-eq">→ Estável</span></td></tr><tr><td><span class="pos-num ">#8</span></td><td style="font-weight: 500; font-size: 14px;">Montagem de Placas</td><td class="td-ant">19</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">18</td><td class="td-tend"><span class="badge b-down">▼ 1 pts</span></td></tr><tr><td><span class="pos-num ">#9</span></td><td style="font-weight: 500; font-size: 14px;">MTA - Resfriar</td><td class="td-ant">17</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">18</td><td class="td-tend"><span class="badge b-up">▲ 1 pts</span></td></tr><tr><td><span class="pos-num ">#10</span></td><td style="font-weight: 500; font-size: 14px;">TI</td><td class="td-ant">20</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">18</td><td class="td-tend"><span class="badge b-down">▼ 2 pts</span></td></tr><tr><td><span class="pos-num ">#11</span></td><td style="font-weight: 500; font-size: 14px;">Assistência Técnica</td><td class="td-ant">18</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">18</td><td class="td-tend"><span class="badge b-down">▼ 1 pts</span></td></tr><tr><td><span class="pos-num ">#12</span></td><td style="font-weight: 500; font-size: 14px;">P&amp;D - HIT</td><td class="td-ant">17</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">18</td><td class="td-tend"><span class="badge b-up">▲ 1 pts</span></td></tr><tr><td><span class="pos-num ">#13</span></td><td style="font-weight: 500; font-size: 14px;">P&amp;D - RAID</td><td class="td-ant">17</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">18</td><td class="td-tend"><span class="badge b-up">▲ 1 pts</span></td></tr><tr><td><span class="pos-num ">#14</span></td><td style="font-weight: 500; font-size: 14px;">P&amp;D - Documentação</td><td class="td-ant">18</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">18</td><td class="td-tend"><span class="badge b-eq">→ Estável</span></td></tr><tr><td><span class="pos-num ">#15</span></td><td style="font-weight: 500; font-size: 14px;">MTA - Automotivo</td><td class="td-ant">17</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">17</td><td class="td-tend"><span class="badge b-eq">→ Estável</span></td></tr><tr><td><span class="pos-num ">#16</span></td><td style="font-weight: 500; font-size: 14px;">Comercial</td><td class="td-ant">19</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900; border: 1px solid rgb(178, 223, 180);">17</td><td class="td-tend"><span class="badge b-down">▼ 2 pts</span></td></tr><tr><td><span class="pos-num ">#17</span></td><td style="font-weight: 500; font-size: 14px;">Métodos e Processos</td><td class="td-ant">18</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900; border: 1px solid rgb(245, 228, 160);">16</td><td class="td-tend"><span class="badge b-down">▼ 2 pts</span></td></tr><tr><td><span class="pos-num ">#18</span></td><td style="font-weight: 500; font-size: 14px;">P&amp;D - Industrial</td><td class="td-ant">17</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900; border: 1px solid rgb(245, 228, 160);">16</td><td class="td-tend"><span class="badge b-down">▼ 1 pts</span></td></tr><tr><td><span class="pos-num ">#19</span></td><td style="font-weight: 500; font-size: 14px;">Logística</td><td class="td-ant">18</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900; border: 1px solid rgb(245, 228, 160);">15</td><td class="td-tend"><span class="badge b-down">▼ 4 pts</span></td></tr><tr><td><span class="pos-num ">#20</span></td><td style="font-weight: 500; font-size: 14px;">P&amp;D - Software</td><td class="td-ant">18</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900; border: 1px solid rgb(245, 228, 160);">13</td><td class="td-tend"><span class="badge b-down">▼ 4 pts</span></td></tr><tr><td><span class="pos-num ">#21</span></td><td style="font-weight: 500; font-size: 14px;">MTA - Industrial</td><td class="td-ant">18</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900; border: 1px solid rgb(245, 228, 160);">13</td><td class="td-tend"><span class="badge b-down">▼ 5 pts</span></td></tr></tbody></table></div>
     <div class="legend" style="margin-top:10px">
       <span style="background:#FEF0F0;color:#C0392B;border:1px solid #F5C6C6">Ruim — ≤ 13</span>
       <span style="background:#FEF9EC;color:#9A6B0A;border:1px solid #F5E4A0">Regular — 14 a 17</span>
@@ -736,18 +839,88 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
   </section>
 
   <!-- ─── ÁREAS COMUNS NA ABA MENSAL ─── -->
-  <section class="section" id="ac-mensal-section">
+  <section class="section fade" id="ac-mensal-section">
     <div class="slabel">Áreas Comuns <span style="font-size:9px;background:rgba(61,57,53,.08);color:var(--muted);border:1px solid var(--border);padding:2px 8px;border-radius:2px;margin-left:4px">pontuação separada · não entra no ranking</span></div>
-    <div id="ac-mensal-cards" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px"></div>
+    <div id="ac-mensal-cards" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px"><div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
+    
+    <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px" title="Copa">Copa</div>
+    <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px">
+      <span style="font-size:16px;font-weight:900;color:#1E7E34">6</span>
+      <span style="font-size:10px;color:var(--muted)">/ 6</span>
+    </div>
+    <div style="background:#E0DDD9;border-radius:2px;height:4px;overflow:hidden">
+      <div style="width:100%;height:100%;background:#22c55e;border-radius:2px"></div>
+    </div>
+  </div><div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
+    
+    <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px" title="Café Subsolo">Café Subsolo</div>
+    <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px">
+      <span style="font-size:16px;font-weight:900;color:#1E7E34">6</span>
+      <span style="font-size:10px;color:var(--muted)">/ 6</span>
+    </div>
+    <div style="background:#E0DDD9;border-radius:2px;height:4px;overflow:hidden">
+      <div style="width:100%;height:100%;background:#22c55e;border-radius:2px"></div>
+    </div>
+  </div><div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
+    
+    <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px" title="Café Produção">Café Produção</div>
+    <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px">
+      <span style="font-size:16px;font-weight:900;color:#1E7E34">5</span>
+      <span style="font-size:10px;color:var(--muted)">/ 6</span>
+    </div>
+    <div style="background:#E0DDD9;border-radius:2px;height:4px;overflow:hidden">
+      <div style="width:83%;height:100%;background:#22c55e;border-radius:2px"></div>
+    </div>
+  </div><div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
+    
+    <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px" title="Banheiro Adm">Banheiro Adm</div>
+    <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px">
+      <span style="font-size:16px;font-weight:900;color:#1E7E34">3</span>
+      <span style="font-size:10px;color:var(--muted)">/ 3</span>
+    </div>
+    <div style="background:#E0DDD9;border-radius:2px;height:4px;overflow:hidden">
+      <div style="width:100%;height:100%;background:#22c55e;border-radius:2px"></div>
+    </div>
+  </div><div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
+    
+    <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px" title="Banheiro Produção">Banheiro Produção</div>
+    <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px">
+      <span style="font-size:16px;font-weight:900;color:#C0392B">2</span>
+      <span style="font-size:10px;color:var(--muted)">/ 3</span>
+    </div>
+    <div style="background:#E0DDD9;border-radius:2px;height:4px;overflow:hidden">
+      <div style="width:67%;height:100%;background:#C8102E;border-radius:2px"></div>
+    </div>
+  </div><div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
+    
+    <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px" title="Banheiro Subsolo">Banheiro Subsolo</div>
+    <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px">
+      <span style="font-size:16px;font-weight:900;color:#C0392B">2</span>
+      <span style="font-size:10px;color:var(--muted)">/ 3</span>
+    </div>
+    <div style="background:#E0DDD9;border-radius:2px;height:4px;overflow:hidden">
+      <div style="width:67%;height:100%;background:#C8102E;border-radius:2px"></div>
+    </div>
+  </div><div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
+    
+    <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px" title="Banheiro SMT">Banheiro SMT</div>
+    <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px">
+      <span style="font-size:16px;font-weight:900;color:#C0392B">2</span>
+      <span style="font-size:10px;color:var(--muted)">/ 3</span>
+    </div>
+    <div style="background:#E0DDD9;border-radius:2px;height:4px;overflow:hidden">
+      <div style="width:67%;height:100%;background:#C8102E;border-radius:2px"></div>
+    </div>
+  </div></div>
   </section>
 
-  <section class="section hm-section-print">
+  <section class="section hm-section-print fade">
     <div class="print-hm-header" style="display:none">
       <span>Heatmap — Pontuação Mensal por Setor (máx. 20)</span>
       <em id="printHmTitle">Março · 2026</em>
     </div>
     <div class="slabel">Heatmap — Pontuação Mensal por Setor (máx. 20)</div>
-    <div class="hm-wrap"><table class="hm" id="heatmap"></table></div>
+    <div class="hm-wrap"><table class="hm" id="heatmap"><thead><tr><th class="th-s">Setor</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th class="th-sel">Set</th><th>Out</th><th>Nov</th><th>Dez</th><th class="th-a" style="min-width:70px;color:#fff">Média</th><th class="th-a" style="min-width:110px;letter-spacing:1px;color:#fff">Variação</th></tr></thead><tbody><tr><td class="td-s">PPCPM</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">20</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a above-meta">19</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">▆</span><span style="color:#E89B1A">▃</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">Qualidade e Meio Ambiente</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">20</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a above-meta">19</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">█</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">RH</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 240, 240); color: rgb(192, 57, 43);">13</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">15</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">19</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">17</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">▆</span><span style="color:#C8102E">▁</span><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▂</span><span style="color:#2E7D32">▇</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">Controladoria</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">20</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a above-meta">19</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">█</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">Comercial</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">17</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a above-meta">18</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">█</span><span style="color:#E89B1A">▃</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">▇</span><span style="color:#E89B1A">▃</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">TI</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">18</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a above-meta">18</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">▇</span><span style="color:#E89B1A">▃</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#E89B1A">▃</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">Logística</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">15</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">18</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">█</span><span style="color:#E89B1A">▃</span><span style="color:#2E7D32">▇</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">█</span><span style="color:#E89B1A">▂</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">MTA - Industrial</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">15</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">13</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">18</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▇</span><span style="color:#E89B1A">▂</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">█</span><span style="color:#E89B1A">▂</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">MTA - Resfriar</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">18</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">18</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">█</span><span style="color:#E89B1A">▃</span><span style="color:#2E7D32">▇</span><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">▆</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">MTA - Automotivo</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 240, 240); color: rgb(192, 57, 43);">13</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">17</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">17</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#E89B1A">▃</span><span style="color:#C8102E">▁</span><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">Montagem de Placas</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">20</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 240, 240); color: rgb(192, 57, 43);">13</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">18</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">17</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▂</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">▆</span><span style="color:#E89B1A">▄</span><span style="color:#C8102E">▁</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">Assistência Técnica</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">18</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">17</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#E89B1A">▃</span><span style="color:#2E7D32">▆</span><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▃</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">Chicote</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">18</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a above-meta">18</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">Usinagem</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">18</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a above-meta">18</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">Métodos e Processos</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">16</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">16</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▂</span><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▂</span><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▃</span><span style="color:#2E7D32">█</span><span style="color:#E89B1A">▃</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">P&amp;D - Documentação</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">18</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">16</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▂</span><span style="color:#E89B1A">▂</span><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▂</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">█</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">P&amp;D - RAID</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(254, 240, 240); color: rgb(192, 57, 43);">11</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(254, 240, 240); color: rgb(192, 57, 43);">13</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">15</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">18</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">15</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▂</span><span style="color:#E89B1A">▂</span><span style="color:#C8102E">▁</span><span style="color:#E89B1A">▂</span><span style="color:#C8102E">▁</span><span style="color:#E89B1A">▂</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">P&amp;D - Industrial</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(254, 240, 240); color: rgb(192, 57, 43);">13</td><td style="background: rgb(254, 240, 240); color: rgb(192, 57, 43);">13</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">16</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">15</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▂</span><span style="color:#C8102E">▁</span><span style="color:#C8102E">▁</span><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▃</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">P&amp;D - Software</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">15</td><td style="background: rgb(254, 240, 240); color: rgb(192, 57, 43);">13</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">13</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">15</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▂</span><span style="color:#C8102E">▁</span><span style="color:#E89B1A">▃</span><span style="color:#E89B1A">▂</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">█</span><span style="color:#E89B1A">▂</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">P&amp;D - HIT</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">15</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">14</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">16</td><td style="background: rgb(254, 240, 240); color: rgb(192, 57, 43);">12</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">18</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a below-meta">16</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▄</span><span style="color:#E89B1A">▂</span><span style="color:#E89B1A">▂</span><span style="color:#E89B1A">▃</span><span style="color:#C8102E">▁</span><span style="color:#2E7D32">▆</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">█</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr><tr><td class="td-s">Manutenção</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(254, 249, 236); color: rgb(154, 107, 10);">17</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">18</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52);">19</td><td style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); outline: rgba(255, 255, 255, 0.7) solid 2px; outline-offset: -2px;">19</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-e">–</td><td class="td-a above-meta">18</td><td class="td-a" style="font-size: 13px; letter-spacing: 2px; font-family: monospace; min-width: 110px; text-align: left; padding-left: 10px;"><span style="color:#2E7D32">▆</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▆</span><span style="color:#E89B1A">▄</span><span style="color:#2E7D32">▆</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▇</span><span style="color:#2E7D32">▇</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span><span style="color:#DDD">·</span></td></tr></tbody></table></div>
     <div class="legend">
       <span style="background:#FEF0F0;color:#C0392B;border:1px solid #F5C6C6">Ruim — ≤ 13</span>
       <span style="background:#FEF9EC;color:#9A6B0A;border:1px solid #F5E4A0">Regular — 14 a 17</span>
@@ -756,12 +929,12 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
     </div>
   </section>
 
-  <section class="section">
-    <div class="slabel" id="chart-lbl">Gráfico comparativo</div>
-    <div class="chart-box"><canvas id="barChart"></canvas></div>
+  <section class="section fade">
+    <div class="slabel" id="chart-lbl">Gráfico — Agosto (cinza) × Setembro (vermelho)</div>
+    <div class="chart-box"><canvas id="barChart" style="height: 504px; box-sizing: border-box; display: block; width: 1233px;" width="1233" height="504"></canvas></div>
   </section>
 
-  <div class="sync-bar"><span id="syncStatus"></span></div>
+  <div class="sync-bar"><span id="syncStatus" style="color: var(--green);">✅ Dados carregados.</span></div>
 </div>
 </div>
 
@@ -771,18 +944,447 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
 
   <section class="section">
     <div class="slabel">KPIs Trimestrais — Soma das pontuações dos meses</div>
-    <div class="kpis" id="tri-kpis"></div>
+    <div class="kpis" id="tri-kpis"><div class="card c-rd">
+      <div class="card-lbl">1º Trimestre · Jan + Fev + Mar</div>
+      <div class="card-val">52 <span style="font-size:16px;font-weight:400;color:var(--muted)">/ 60</span></div>
+      <div class="card-sub warn">⚠ Abaixo da meta (54)</div></div><div class="card c-gn">
+      <div class="card-lbl">2º Trimestre · Abr + Mai + Jun</div>
+      <div class="card-val">51 <span style="font-size:16px;font-weight:400;color:var(--muted)">/ 60</span></div>
+      <div class="card-sub warn">⚠ Abaixo da meta (54)</div></div><div class="card c-bl">
+      <div class="card-lbl">3º Trimestre · Jul + Ago + Set</div>
+      <div class="card-val">53 <span style="font-size:16px;font-weight:400;color:var(--muted)">/ 60</span></div>
+      <div class="card-sub warn">⚠ Abaixo da meta (54)</div></div><div class="card c-dk">
+      <div class="card-lbl">4º Trimestre · Out + Nov + Dez</div>
+      <div class="card-val">–</div>
+      <div class="card-sub ">Sem dados</div></div></div>
   </section>
 
   <section class="section">
     <div class="slabel">Rankings por Trimestre</div>
-    <div class="tri-grid" id="tri-grid"></div>
+    <div class="tri-grid" id="tri-grid"><div class="tri-card"><div class="tri-head">
+      <div><h3>1º Trimestre</h3><div class="tri-months">Janeiro · Fevereiro · Março</div></div>
+      <div style="text-align:right;line-height:1.2">
+        <div style="font-size:15px;font-weight:900;color:#C8102E">52</div>
+        <div style="font-size:9px;color:rgba(255,255,255,.5);letter-spacing:1px">/ 60</div>
+      </div>
+    </div><div class="tri-body"><table class="tri-rank"><tr class="rank-1">
+          <td style="width:44px;font-size:28px">🥇</td>
+          <td style="font-weight:700;font-size:13px">Controladoria</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">58</td></tr><tr class="rank-2">
+          <td style="width:44px;font-size:28px">🥈</td>
+          <td style="font-weight:700;font-size:13px">Qualidade e Meio Ambiente</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">56</td></tr><tr class="rank-3">
+          <td style="width:44px;font-size:28px">🥉</td>
+          <td style="font-weight:700;font-size:13px">MTA - Industrial</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">56</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#4</span></td>
+          <td style="font-weight:400;font-size:13px">Comercial</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">56</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#5</span></td>
+          <td style="font-weight:400;font-size:13px">MTA - Automotivo</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">56</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#6</span></td>
+          <td style="font-weight:400;font-size:13px">Logística</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">56</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#7</span></td>
+          <td style="font-weight:400;font-size:13px">Chicote</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">55</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#8</span></td>
+          <td style="font-weight:400;font-size:13px">Usinagem</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">55</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#9</span></td>
+          <td style="font-weight:400;font-size:13px">MTA - Resfriar</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">55</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#10</span></td>
+          <td style="font-weight:400;font-size:13px">PPCPM</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">54</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#11</span></td>
+          <td style="font-weight:400;font-size:13px">Manutenção</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">53</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#12</span></td>
+          <td style="font-weight:400;font-size:13px">TI</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">53</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#13</span></td>
+          <td style="font-weight:400;font-size:13px">Assistência Técnica</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">51</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#14</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - Industrial</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">50</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#15</span></td>
+          <td style="font-weight:400;font-size:13px">Montagem de Placas</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">50</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#16</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - HIT</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">49</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#17</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - Documentação</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">48</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#18</span></td>
+          <td style="font-weight:400;font-size:13px">RH</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">48</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#19</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - Software</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">47</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#20</span></td>
+          <td style="font-weight:400;font-size:13px">Métodos e Processos</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">47</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#21</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - RAID</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">45</td></tr></table></div></div><div class="tri-card"><div class="tri-head">
+      <div><h3>2º Trimestre</h3><div class="tri-months">Abril · Maio · Junho</div></div>
+      <div style="text-align:right;line-height:1.2">
+        <div style="font-size:15px;font-weight:900;color:#C8102E">51</div>
+        <div style="font-size:9px;color:rgba(255,255,255,.5);letter-spacing:1px">/ 60</div>
+      </div>
+    </div><div class="tri-body"><table class="tri-rank"><tr class="rank-1">
+          <td style="width:44px;font-size:28px">🥇</td>
+          <td style="font-weight:700;font-size:13px">Qualidade e Meio Ambiente</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">58</td></tr><tr class="rank-2">
+          <td style="width:44px;font-size:28px">🥈</td>
+          <td style="font-weight:700;font-size:13px">Chicote</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">56</td></tr><tr class="rank-3">
+          <td style="width:44px;font-size:28px">🥉</td>
+          <td style="font-weight:700;font-size:13px">Controladoria</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">56</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#4</span></td>
+          <td style="font-weight:400;font-size:13px">TI</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">56</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#5</span></td>
+          <td style="font-weight:400;font-size:13px">Usinagem</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">55</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#6</span></td>
+          <td style="font-weight:400;font-size:13px">Comercial</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">55</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#7</span></td>
+          <td style="font-weight:400;font-size:13px">Logística</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">55</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#8</span></td>
+          <td style="font-weight:400;font-size:13px">PPCPM</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">55</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#9</span></td>
+          <td style="font-weight:400;font-size:13px">MTA - Resfriar</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">55</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#10</span></td>
+          <td style="font-weight:400;font-size:13px">Montagem de Placas</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">55</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#11</span></td>
+          <td style="font-weight:400;font-size:13px">MTA - Industrial</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">53</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#12</span></td>
+          <td style="font-weight:400;font-size:13px">Manutenção</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">53</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#13</span></td>
+          <td style="font-weight:400;font-size:13px">Assistência Técnica</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">51</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#14</span></td>
+          <td style="font-weight:400;font-size:13px">RH</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">50</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#15</span></td>
+          <td style="font-weight:400;font-size:13px">MTA - Automotivo</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">47</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#16</span></td>
+          <td style="font-weight:400;font-size:13px">Métodos e Processos</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">46</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#17</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - Documentação</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">44</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#18</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - Software</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">43</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#19</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - HIT</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">42</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#20</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - Industrial</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">40</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#21</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - RAID</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">38</td></tr></table></div></div><div class="tri-card"><div class="tri-head">
+      <div><h3>3º Trimestre</h3><div class="tri-months">Julho · Agosto · Setembro</div></div>
+      <div style="text-align:right;line-height:1.2">
+        <div style="font-size:15px;font-weight:900;color:#C8102E">53</div>
+        <div style="font-size:9px;color:rgba(255,255,255,.5);letter-spacing:1px">/ 60</div>
+      </div>
+    </div><div class="tri-body"><table class="tri-rank"><tr class="rank-1">
+          <td style="width:44px;font-size:28px">🥇</td>
+          <td style="font-weight:700;font-size:13px">Qualidade e Meio Ambiente</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">59</td></tr><tr class="rank-2">
+          <td style="width:44px;font-size:28px">🥈</td>
+          <td style="font-weight:700;font-size:13px">PPCPM</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">59</td></tr><tr class="rank-3">
+          <td style="width:44px;font-size:28px">🥉</td>
+          <td style="font-weight:700;font-size:13px">Manutenção</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">57</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#4</span></td>
+          <td style="font-weight:400;font-size:13px">Controladoria</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">57</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#5</span></td>
+          <td style="font-weight:400;font-size:13px">RH</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">56</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#6</span></td>
+          <td style="font-weight:400;font-size:13px">Comercial</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">55</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#7</span></td>
+          <td style="font-weight:400;font-size:13px">Usinagem</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">54</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#8</span></td>
+          <td style="font-weight:400;font-size:13px">Assistência Técnica</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">54</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#9</span></td>
+          <td style="font-weight:400;font-size:13px">TI</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">54</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#10</span></td>
+          <td style="font-weight:400;font-size:13px">Chicote</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">54</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#11</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - HIT</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">53</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#12</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - Documentação</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">52</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#13</span></td>
+          <td style="font-weight:400;font-size:13px">MTA - Resfriar</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">52</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#14</span></td>
+          <td style="font-weight:400;font-size:13px">MTA - Automotivo</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">51</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#15</span></td>
+          <td style="font-weight:400;font-size:13px">Montagem de Placas</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">50</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#16</span></td>
+          <td style="font-weight:400;font-size:13px">Logística</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">50</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#17</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - RAID</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">50</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#18</span></td>
+          <td style="font-weight:400;font-size:13px">Métodos e Processos</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">49</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#19</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - Software</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">49</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#20</span></td>
+          <td style="font-weight:400;font-size:13px">MTA - Industrial</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">49</td></tr><tr>
+          <td style="width:44px;font-size:28px"><span style="color:var(--muted);font-size:13px;font-weight:700">#21</span></td>
+          <td style="font-weight:400;font-size:13px">P&amp;D - Industrial</td>
+          <td style="text-align:right;font-weight:700;font-size:15px">48</td></tr></table></div></div><div class="tri-card"><div class="tri-head">
+      <div><h3>4º Trimestre</h3><div class="tri-months">Outubro · Novembro · Dezembro</div></div>
+      <div style="text-align:right;line-height:1.2">
+        <div style="font-size:15px;font-weight:900;color:#C8102E">–</div>
+        <div style="font-size:9px;color:rgba(255,255,255,.5);letter-spacing:1px"></div>
+      </div>
+    </div><div class="tri-body"><div class="tri-no-data">Sem dados para este trimestre</div></div></div></div>
   </section>
 
   <!-- ─── ÁREAS COMUNS NO TRIMESTRAL ─── -->
   <section class="section" id="ac-tri-section">
     <div class="slabel">Áreas Comuns <span style="font-size:9px;background:rgba(61,57,53,.08);color:var(--muted);border:1px solid var(--border);padding:2px 8px;border-radius:2px;margin-left:4px">pontuação separada · não entra no ranking</span></div>
-    <div id="ac-tri-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px"></div>
+    <div id="ac-tri-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px"><div class="card c-dk" style="border-top:3px solid var(--dark)">
+      <div class="card-lbl">1º Trimestre</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:10px">Jan · Fev · Mar</div>
+      <div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Copa</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">16</span>
+          <span style="font-size:10px;color:var(--muted)">/ 18</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:89%;height:100%;background:#22c55e;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Café Subsolo</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">13</span>
+          <span style="font-size:10px;color:var(--muted)">/ 18</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:72%;height:100%;background:#f59e0b;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Café Produção</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">16</span>
+          <span style="font-size:10px;color:var(--muted)">/ 18</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:89%;height:100%;background:#22c55e;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro Adm</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">–</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:0%;height:100%;background:#ccc;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro Produção</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">–</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:0%;height:100%;background:#ccc;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro Subsolo</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">–</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:0%;height:100%;background:#ccc;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro SMT</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">–</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:0%;height:100%;background:#ccc;border-radius:3px"></div>
+          </div>
+        </div>
+      </div>
+    </div><div class="card c-dk" style="border-top:3px solid var(--dark)">
+      <div class="card-lbl">2º Trimestre</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:10px">Abr · Mai · Jun</div>
+      <div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Copa</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">16</span>
+          <span style="font-size:10px;color:var(--muted)">/ 18</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:89%;height:100%;background:#22c55e;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Café Subsolo</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">15</span>
+          <span style="font-size:10px;color:var(--muted)">/ 18</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:83%;height:100%;background:#22c55e;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Café Produção</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">15</span>
+          <span style="font-size:10px;color:var(--muted)">/ 18</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:83%;height:100%;background:#22c55e;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro Adm</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">–</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:0%;height:100%;background:#ccc;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro Produção</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">–</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:0%;height:100%;background:#ccc;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro Subsolo</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">–</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:0%;height:100%;background:#ccc;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro SMT</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">–</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:0%;height:100%;background:#ccc;border-radius:3px"></div>
+          </div>
+        </div>
+      </div>
+    </div><div class="card c-dk" style="border-top:3px solid var(--dark)">
+      <div class="card-lbl">3º Trimestre</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:10px">Jul · Ago · Set</div>
+      <div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Copa</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">17</span>
+          <span style="font-size:10px;color:var(--muted)">/ 18</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:94%;height:100%;background:#22c55e;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Café Subsolo</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">16</span>
+          <span style="font-size:10px;color:var(--muted)">/ 18</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:89%;height:100%;background:#22c55e;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Café Produção</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">14</span>
+          <span style="font-size:10px;color:var(--muted)">/ 18</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:78%;height:100%;background:#f59e0b;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro Adm</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">3</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:100%;height:100%;background:#22c55e;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro Produção</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">2</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:67%;height:100%;background:#C8102E;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro Subsolo</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">2</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:67%;height:100%;background:#C8102E;border-radius:3px"></div>
+          </div>
+        </div>
+      </div><div style="margin-bottom:6px">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px">Banheiro SMT</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:15px;font-weight:900;color:var(--txt);min-width:28px">2</span>
+          <span style="font-size:10px;color:var(--muted)">/ 3</span>
+          <div style="flex:1;background:#E0DDD9;border-radius:3px;height:5px;overflow:hidden">
+            <div style="width:67%;height:100%;background:#C8102E;border-radius:3px"></div>
+          </div>
+        </div>
+      </div>
+    </div><div class="card c-dk" style="border-top:3px solid var(--dark)">
+        <div class="card-lbl">4º Trimestre</div>
+        <div class="card-val" style="font-size:16px;color:var(--muted)">Sem dados</div>
+      </div></div>
   </section>
 
 </div>
@@ -804,12 +1406,11 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
         <option value="8">Setembro</option><option value="9">Outubro</option>
         <option value="10">Novembro</option><option value="11">Dezembro</option>
       </select>
-      <button class="hbtn" onclick="gerarReport()" title="Gerar relatório A3 (uma página) para a Direção"
-        style="border-color:var(--red);color:var(--red);background:#fff">
+      <button class="hbtn" onclick="gerarReport()" title="Gerar relatório A3 (uma página) para a Direção" style="border-color:var(--red);color:var(--red);background:#fff">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/>
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="12" y1="18" x2="12" y2="12"></line><polyline points="9 15 12 18 15 15"></polyline>
         </svg>
         Report
       </button>
@@ -837,17 +1438,17 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
     <div class="g-panel" style="margin-top:14px">
       <div class="g-panel-t">Distribuição dos Setores por Faixa</div>
       <div style="display:flex;height:26px;border-radius:4px;overflow:hidden;background:#EDEAE6">
-        <div id="faixaBom"     style="background:#2E7D32;transition:width .4s ease"></div>
+        <div id="faixaBom" style="background:#2E7D32;transition:width .4s ease"></div>
         <div id="faixaRegular" style="background:#D9A441;transition:width .4s ease"></div>
-        <div id="faixaRuim"    style="background:#C0392B;transition:width .4s ease"></div>
+        <div id="faixaRuim" style="background:#C0392B;transition:width .4s ease"></div>
       </div>
       <div style="display:flex;gap:22px;margin-top:11px;flex-wrap:wrap">
         <span class="g-chip" style="background:rgba(46,125,50,.08);color:#1E7E34;border:1px solid rgba(46,125,50,.22)">
-          Na meta (&ge;18): <strong id="faixaBomN">0</strong></span>
+          Na meta (≥18): <strong id="faixaBomN">0</strong></span>
         <span class="g-chip" style="background:rgba(217,164,65,.1);color:#9A6B0A;border:1px solid rgba(217,164,65,.28)">
           Atenção (14 a 17): <strong id="faixaRegularN">0</strong></span>
         <span class="g-chip" style="background:rgba(192,57,43,.08);color:#C0392B;border:1px solid rgba(192,57,43,.22)">
-          Crítico (&le;13): <strong id="faixaRuimN">0</strong></span>
+          Crítico (≤13): <strong id="faixaRuimN">0</strong></span>
       </div>
     </div>
   </section>
@@ -899,8 +1500,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
     <div style="font-size:32px;margin-bottom:10px">🔒</div>
     <h3 style="font-size:16px;font-weight:900;margin-bottom:6px;color:var(--txt)">Acesso Restrito</h3>
     <p style="font-size:12px;color:var(--muted);margin-bottom:18px">Digite a senha para acessar o ranking anual</p>
-    <input type="password" id="anualPwdInput" class="pwd-input" placeholder="Senha" style="width:100%;margin-bottom:8px"
-      onkeydown="if(event.key==='Enter')checkAnualPwd()">
+    <input type="password" id="anualPwdInput" class="pwd-input" placeholder="Senha" style="width:100%;margin-bottom:8px" onkeydown="if(event.key==='Enter')checkAnualPwd()">
     <div id="anualPwdError" class="pwd-error"></div>
     <div style="display:flex;gap:8px;justify-content:center">
       <button class="hbtn" onclick="showTab('mensal')">Cancelar</button>
@@ -910,17 +1510,25 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
 </div>
 
 <!-- Anual content -->
-<div id="anual-content">
+<div id="anual-content" style="display: block;">
 <div class="main">
 
   <section class="section">
     <div class="slabel">Resumo Anual <span class="ano-label">2026</span></div>
-    <div class="anual-kpis" id="anual-kpis"></div>
+    <div class="anual-kpis" id="anual-kpis"><div class="card c-dk"><div class="card-lbl">Meses Auditados</div>
+      <div class="card-val ">9 / 12</div>
+      <div class="card-sub">Em 2026</div></div><div class="card c-gn"><div class="card-lbl">Destaque do Ano (Acumulado)</div>
+      <div class="card-val gn">Qualidade e Meio Ambiente</div>
+      <div class="card-sub">Total: 173 pts em 9 meses</div></div><div class="card c-rd"><div class="card-lbl">Requer Atenção (Acumulado)</div>
+      <div class="card-val rd">P&amp;D - RAID</div>
+      <div class="card-sub">Total: 133 pts em 9 meses</div></div><div class="card c-bl"><div class="card-lbl">Média Mensal da Empresa</div>
+      <div class="card-val bl">17.3 / 20</div>
+      <div class="card-sub">⚠ Abaixo da meta (18)</div></div></div>
   </section>
 
   <section class="section">
     <div class="slabel">Ranking Anual — Pontuação Acumulada</div>
-    <div class="rank-wrap"><table class="rank" id="anual-ranking"></table></div>
+    <div class="rank-wrap"><table class="rank" id="anual-ranking"><thead><tr><th class="">Pos.</th><th class="">Setor</th><th class="th-nota">Pontuação Acumulada</th><th class="tc">Média Mensal</th><th class="tc">Meses Auditados</th></tr></thead><tbody><tr class="rank-1"><td style="font-size: 28px; text-align: center; width: 56px;">🥇</td><td style="font-weight: 700;">Qualidade e Meio Ambiente</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">173</td><td class="td-ant">19.2</td><td class="td-ant">9</td></tr><tr class="rank-2"><td style="font-size: 28px; text-align: center; width: 56px;">🥈</td><td style="font-weight: 700;">Controladoria</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">171</td><td class="td-ant">19.0</td><td class="td-ant">9</td></tr><tr class="rank-3"><td style="font-size: 28px; text-align: center; width: 56px;">🥉</td><td style="font-weight: 700;">PPCPM</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">168</td><td class="td-ant">18.7</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#4</span></td><td style="font-weight: 400;">Comercial</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">166</td><td class="td-ant">18.4</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#5</span></td><td style="font-weight: 400;">Chicote</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">165</td><td class="td-ant">18.3</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#6</span></td><td style="font-weight: 400;">Usinagem</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">164</td><td class="td-ant">18.2</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#7</span></td><td style="font-weight: 400;">Manutenção</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">163</td><td class="td-ant">18.1</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#8</span></td><td style="font-weight: 400;">TI</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">163</td><td class="td-ant">18.1</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#9</span></td><td style="font-weight: 400;">MTA - Resfriar</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">162</td><td class="td-ant">18.0</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#10</span></td><td style="font-weight: 400;">Logística</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">161</td><td class="td-ant">17.9</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#11</span></td><td style="font-weight: 400;">MTA - Industrial</td><td class="td-nota" style="background: rgb(240, 250, 240); color: rgb(30, 126, 52); font-weight: 900;">158</td><td class="td-ant">17.5</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#12</span></td><td style="font-weight: 400;">Assistência Técnica</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900;">156</td><td class="td-ant">17.3</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#13</span></td><td style="font-weight: 400;">Montagem de Placas</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900;">155</td><td class="td-ant">17.2</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#14</span></td><td style="font-weight: 400;">MTA - Automotivo</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900;">154</td><td class="td-ant">17.1</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#15</span></td><td style="font-weight: 400;">RH</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900;">154</td><td class="td-ant">17.1</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#16</span></td><td style="font-weight: 400;">P&amp;D - Documentação</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900;">144</td><td class="td-ant">16.0</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#17</span></td><td style="font-weight: 400;">P&amp;D - HIT</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900;">144</td><td class="td-ant">15.9</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#18</span></td><td style="font-weight: 400;">Métodos e Processos</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900;">142</td><td class="td-ant">15.8</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#19</span></td><td style="font-weight: 400;">P&amp;D - Software</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900;">139</td><td class="td-ant">15.4</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#20</span></td><td style="font-weight: 400;">P&amp;D - Industrial</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900;">138</td><td class="td-ant">15.4</td><td class="td-ant">9</td></tr><tr><td style="font-size: 28px; text-align: center; width: 56px;"><span class="pos-num">#21</span></td><td style="font-weight: 400;">P&amp;D - RAID</td><td class="td-nota" style="background: rgb(254, 249, 236); color: rgb(154, 107, 10); font-weight: 900;">133</td><td class="td-ant">14.7</td><td class="td-ant">9</td></tr></tbody></table></div>
   </section>
 
   <!-- ─── ÁREAS COMUNS NO ANUAL ─── -->
@@ -931,7 +1539,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
 
   <section class="section">
     <div class="slabel">Evolução Mensal — Média Geral da Empresa</div>
-    <div class="chart-box"><canvas id="anualChart"></canvas></div>
+    <div class="chart-box"><canvas id="anualChart" style="height: 0px; box-sizing: border-box; display: block; width: 0px;" width="0" height="0"></canvas></div>
   </section>
 
 </div>
@@ -944,13 +1552,12 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
 <div class="tab-panel" id="tab-tv">
 
 <!-- Lock overlay -->
-<div id="tv-lock" style="display:flex;align-items:center;justify-content:center;min-height:60vh">
+<div id="tv-lock" style="display: none; align-items: center; justify-content: center; min-height: 60vh;">
   <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:32px 40px;text-align:center;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,.08)">
     <div style="font-size:32px;margin-bottom:10px">🔒</div>
     <h3 style="font-size:16px;font-weight:900;margin-bottom:6px;color:var(--txt)">Acesso Restrito</h3>
     <p style="font-size:12px;color:var(--muted);margin-bottom:18px">Digite a senha para acessar o slide de divulgação</p>
-    <input type="password" id="tvPwdInput" class="pwd-input" placeholder="Senha" style="width:100%;margin-bottom:8px"
-      onkeydown="if(event.key==='Enter')checkTVPwd()">
+    <input type="password" id="tvPwdInput" class="pwd-input" placeholder="Senha" style="width:100%;margin-bottom:8px" onkeydown="if(event.key==='Enter')checkTVPwd()">
     <div id="tvPwdError" class="pwd-error"></div>
     <div style="display:flex;gap:8px;justify-content:center">
       <button class="hbtn" onclick="showTab('mensal')">Cancelar</button>
@@ -960,7 +1567,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
 </div>
 
 <!-- Divulgação content -->
-<div id="tv-content" style="display:none">
+<div id="tv-content" style="display: none;">
 <div class="main">
   <section class="section">
     <div style="display:flex;gap:6px;margin-bottom:10px;align-items:center">
@@ -968,7 +1575,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
       <div style="width:1px;height:24px;background:var(--border);margin:0 4px"></div>
       <button id="tvTab-mensal" onclick="switchTVSubTab('mensal')" class="hbtn" style="background:var(--red);border-color:var(--red);color:#fff">📅 Mensal</button>
       <button id="tvTab-trimestral" onclick="switchTVSubTab('trimestral')" class="hbtn">📊 Trimestral</button>
-      <button class="hbtn" style="opacity:.35;cursor:not-allowed" disabled>🏆 Anual (em breve)</button>
+      <button class="hbtn" style="opacity:.35;cursor:not-allowed" disabled="">🏆 Anual (em breve)</button>
     </div>
     <div id="tv-mensal-ctrl" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px">
       <div style="display:flex;align-items:center;gap:8px">
@@ -1026,8 +1633,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
     <div style="font-size:32px;margin-bottom:10px">🔒</div>
     <h3 style="font-size:16px;font-weight:900;margin-bottom:6px;color:var(--txt)">Acesso Restrito</h3>
     <p style="font-size:12px;color:var(--muted);margin-bottom:18px">Digite a senha para acessar o Cadastro</p>
-    <input type="password" id="cadastroPwdInput" class="pwd-input" placeholder="Senha" style="width:100%;margin-bottom:8px"
-      onkeydown="if(event.key==='Enter')checkCadastroPwd()">
+    <input type="password" id="cadastroPwdInput" class="pwd-input" placeholder="Senha" style="width:100%;margin-bottom:8px" onkeydown="if(event.key==='Enter')checkCadastroPwd()">
     <div id="cadastroPwdError" class="pwd-error"></div>
     <div style="display:flex;gap:8px;justify-content:center">
       <button class="hbtn" onclick="showTab('mensal')">Cancelar</button>
@@ -1036,7 +1642,7 @@ footer { text-align:center; padding:18px; font-size:9px; font-weight:300; color:
   </div>
 </div>
 
-<div id="cadastro-main" class="main" style="display:none">
+<div id="cadastro-main" class="main" style="display: none;">
 
   <div class="placar-header">
     <div>
@@ -1134,13 +1740,14 @@ const PD_10_SOZINHO_END_MONTH = 9; // Outubro/2026
 // ════════════════════════════════════════════════════════════════════
 const OFICINA_NOME = 'Oficina Mecânica';
 const OFICINA_COMBINA = ['Métodos e Processos'];
+const OFICINA_START_MONTH = 9; // Oficina só soma com Métodos a partir de Outubro/2026
 let OFICINA_SCORES = {0:[0,0,0,0,0],1:[0,0,0,0,0],2:[0,0,0,0,0],3:[0,0,0,0,0],
   4:[0,0,0,0,0],5:[0,0,0,0,0],6:[0,0,0,0,0],7:[0,0,0,0,0],
   8:[0,0,0,0,0],9:[0,0,0,0,0],10:[0,0,0,0,0],11:[0,0,0,0,0]};
 
 // Máximo de conformidade por senso daquele setor (própria auditoria, sem contar o lab/oficina)
 function sensosMaxPorSenso(sectorName,mi){
-  if(OFICINA_COMBINA.indexOf(sectorName)>=0) return 3; // Métodos e Processos: 15 perguntas próprias / 5 sensos
+  if(OFICINA_COMBINA.indexOf(sectorName)>=0 && (mi===undefined || mi>=OFICINA_START_MONTH)) return 3; // Métodos: 15 próprias (a partir de Out)
   const isPd10Sozinho = PD_10_SOZINHO.indexOf(sectorName)>=0 && (mi===undefined || mi<PD_10_SOZINHO_END_MONTH);
   if(PD_LAB_COMBINA.indexOf(sectorName)>=0 || isPd10Sozinho) return 2;
   return 4;
@@ -1151,7 +1758,7 @@ function sensosEfetivo(mi,sectorName,ownSS){
     const lab=PD_LAB_SCORES[mi]||[0,0,0,0,0];
     return [0,1,2,3,4].map(k=>(ownSS[k]||0)+(lab[k]||0));
   }
-  if(OFICINA_COMBINA.indexOf(sectorName)>=0){
+  if(OFICINA_COMBINA.indexOf(sectorName)>=0 && mi>=OFICINA_START_MONTH){
     const of=OFICINA_SCORES[mi]||[0,0,0,0,0];
     return [0,1,2,3,4].map(k=>(ownSS[k]||0)+(of[k]||0));
   }
@@ -1538,6 +2145,7 @@ function avg(arr){const v=arr.filter(x=>x>0);return v.length?v.reduce((a,b)=>a+b
 //    laboratório de P&D quando aplicável, igual ao UpdateIf do Power Apps)
 //  - pontuacaoPassada: total do mês anterior
 // ════════════════════════════════════════════════════════════════════
+const TIEBREAK_LOOKBACK_MONTHS = 6; // desempate olha até 6 meses para trás
 function tieBreakVector(mi,si){
   const sectorName=SECTORS[si];
   const ownSS=(S_SCORES[mi]&&S_SCORES[mi][si])?S_SCORES[mi][si]:[0,0,0,0,0,0];
@@ -1556,9 +2164,9 @@ function tieBreakVector(mi,si){
   const criterio=(SCORES[mi]||[])[si]||0;
   const ss=sensosEfetivo(mi,sectorName,ownSS);
   const somaConformes=ss[0]+ss[1]+ss[2]+ss[3]+ss[4];
-  const pontuacaoPassada1=mi>0?Math.round((SCORES[mi-1]||[])[si]||0):0;
-  const pontuacaoPassada2=mi>1?Math.round((SCORES[mi-2]||[])[si]||0):0;
-  return [somaFinal,criterio,somaConformes,pontuacaoPassada1,pontuacaoPassada2];
+  const passadas=[];
+  for(let k=1;k<=TIEBREAK_LOOKBACK_MONTHS;k++) passadas.push(mi-k>=0?Math.round((SCORES[mi-k]||[])[si]||0):0);
+  return [somaFinal,criterio,somaConformes,...passadas];
 }
 function compareRanking(mi,siA,siB){
   const va=tieBreakVector(mi,siA), vb=tieBreakVector(mi,siB);
@@ -1597,9 +2205,9 @@ function tieBreakVectorPeriod(months,si){
     somaConformes+=ss[0]+ss[1]+ss[2]+ss[3]+ss[4];
   });
   const firstMonth=Math.min(...months);
-  const pontuacaoPassada1=firstMonth>0?Math.round((SCORES[firstMonth-1]||[])[si]||0):0;
-  const pontuacaoPassada2=firstMonth>1?Math.round((SCORES[firstMonth-2]||[])[si]||0):0;
-  return [somaFinal,totalExato,somaConformes,pontuacaoPassada1,pontuacaoPassada2];
+  const passadas=[];
+  for(let k=1;k<=TIEBREAK_LOOKBACK_MONTHS;k++) passadas.push(firstMonth-k>=0?Math.round((SCORES[firstMonth-k]||[])[si]||0):0);
+  return [somaFinal,totalExato,somaConformes,...passadas];
 }
 function compareRankingPeriod(months,siA,siB){
   const va=tieBreakVectorPeriod(months,siA), vb=tieBreakVectorPeriod(months,siB);
@@ -1629,6 +2237,20 @@ function sensosPoints(ss,divisor){
 // Bloco Áreas Comuns: desconto fixo, NÃO proporcional às perguntas (confirmado
 // contra a fórmula real do Power Apps: Max(0; 6 - total de não conformidades das
 // áreas que o setor usa). Cada não conformidade tira 1 ponto dos 6, travado em 0.
+// Setembro/2026 em diante: NC das Áreas Comuns normalizada para 6 e arredondada (igual ao Power Apps)
+const AC_NORMALIZADO_START_MONTH = 8;
+// Exibição da nota com 1 casa decimal a partir de Setembro/2026 (meses anteriores: inteiro)
+const DECIMAL_START_MONTH = 8;
+function fmtNota(v,mi){
+  if(!(v>0)) return '–';
+  if(mi>=DECIMAL_START_MONTH) return (Math.round(v*10)/10).toFixed(1).replace('.',',');
+  return String(Math.round(v));
+}
+function fmtDelta(d,mi){
+  if(mi>=DECIMAL_START_MONTH) return (Math.round(Math.abs(d)*10)/10).toFixed(1).replace('.',',');
+  return String(Math.abs(Math.round(d)));
+}
+function deltaArred(d,mi){ return mi>=DECIMAL_START_MONTH?Math.round(d*10)/10:Math.round(d); }
 function acPointsForSector(mi,sectorName){
   const areas=SECTOR_AC_MAP[sectorName]||[];
   const monthData=AC_DATA[mi]||{};
@@ -1638,7 +2260,24 @@ function acPointsForSector(mi,sectorName){
     if(d&&d.perg>0){ totalNaoConf+=(d.perg-(d.conf||0)); any=true; }
   });
   if(!any) return null;
+  if(mi>=AC_NORMALIZADO_START_MONTH){
+    let totalPerg=0;
+    areas.forEach(key=>{ const d=monthData[key]; if(d&&d.perg>0) totalPerg+=d.perg; });
+    const nc=totalPerg>0?Math.round(totalNaoConf*6/totalPerg):0;
+    return Math.max(0,6-nc);
+  }
   return Math.max(0,6-totalNaoConf);
+}
+// Recalcula as notas guardadas a partir de Setembro com a fórmula atual (igual ao app)
+function recalcularNotasDesde(miIni){
+  for(let mi=miIni;mi<12;mi++){
+    if(!SCORES[mi]) continue;
+    SECTORS.forEach((_,si)=>{
+      if(!(SCORES[mi][si]>0)) return;
+      const r=computeSectorResult(mi,si);
+      SCORES[mi][si]=r.total>0?Math.round(r.total*100)/100:0;
+    });
+  }
 }
 // Resultado completo de um setor num mês: qual fórmula vale, e as partes.
 function computeSectorResult(mi,si){
@@ -1800,7 +2439,7 @@ function buildPlacar(){
     const tr=document.createElement('tr');
     const maxSenso=isNew?sensosMaxPorSenso(sec,mi):4;
     const combina=isNew&&PD_LAB_COMBINA.indexOf(sec)>=0;
-    const combinaOficina=isNew&&OFICINA_COMBINA.indexOf(sec)>=0;
+    const combinaOficina=(mi>=OFICINA_START_MONTH)&&OFICINA_COMBINA.indexOf(sec)>=0;
 
     let cells = `<td class="pt-s">${sec}${combina?' <small style="color:var(--muted);font-weight:400">(+lab)</small>':''}${combinaOficina?' <small style="color:var(--muted);font-weight:400">(+oficina)</small>':''}</td>`;
 
@@ -1866,7 +2505,7 @@ function buildOficinaPlacar(mi){
   const wrap=document.getElementById('oficina-wrap');
   const body=document.getElementById('oficina-body');
   if(!wrap||!body) return;
-  const isNew=mi>=NEW_FORMULA_START_MONTH;
+  const isNew=mi>=OFICINA_START_MONTH;
   if(!isNew){ wrap.style.display='none'; return; }
   wrap.style.display='block';
   const ss=OFICINA_SCORES[mi]||[0,0,0,0,0];
@@ -2028,9 +2667,9 @@ function updateKPIs(mi){
   if(mean>=META){as.textContent='✔ Acima da meta (≥ '+META+')';as.className='card-sub ok';}
   else          {as.textContent='⚠ Abaixo da meta ('+META+')'; as.className='card-sub warn';}
   document.getElementById('k-best').textContent =SECTORS[bestI];
-  document.getElementById('k-best-s').textContent='Pontuação: '+Math.round(maxV)+' / 20';
+  document.getElementById('k-best-s').textContent='Pontuação: '+fmtNota(maxV,mi)+' / 20';
   document.getElementById('k-worst').textContent =SECTORS[worstI];
-  document.getElementById('k-worst-s').textContent='Pontuação: '+Math.round(minV)+' / 20';
+  document.getElementById('k-worst-s').textContent='Pontuação: '+fmtNota(minV,mi)+' / 20';
   const evo=document.getElementById('k-evo'),evs=document.getElementById('k-evo-s');
   if(mi===0){evo.textContent='–';evs.textContent='Primeiro mês';return;}
   const deltas=vals.map((v,i)=>{const a=(SCORES[mi-1]||[])[i];return(v>0&&a>0)?{i,d:v-a}:{i,d:-999};}).sort((a,b)=>b.d-a.d);
@@ -2116,17 +2755,17 @@ function buildRanking(mi){
     tdS.style.fontWeight=pos<3&&rk?'700':'500';
     tdS.style.fontSize='14px';
     const tdA=Object.assign(tr.insertCell(),{className:'td-ant'});
-    tdA.textContent=(mi>0&&ant>0)?Math.round(ant):'–';
+    tdA.textContent=(mi>0&&ant>0)?fmtNota(ant,mi-1):'–';
     const tdN=Object.assign(tr.insertCell(),{className:'td-nota'});
-    if(nota>0){const c=scoreColor(nota);tdN.style.background=c.bg;tdN.style.color=c.fg;tdN.style.fontWeight='900';tdN.style.border='1px solid '+(c.border||c.bg);tdN.textContent=Math.round(nota);}
+    if(nota>0){const c=scoreColor(nota);tdN.style.background=c.bg;tdN.style.color=c.fg;tdN.style.fontWeight='900';tdN.style.border='1px solid '+(c.border||c.bg);tdN.textContent=fmtNota(nota,mi);}
     else{tdN.textContent='–';tdN.style.color='#CCC';}
     const tdT=Object.assign(tr.insertCell(),{className:'td-tend'});
-    const deltaR=delta!==null?Math.round(delta):null;
+    const deltaR=delta!==null?deltaArred(delta,mi):null;
     if(!rk)         tdT.innerHTML='<span class="badge b-na">sem dados</span>';
     else if(mi===0) tdT.innerHTML='<span class="badge b-na">primeiro mês</span>';
     else if(deltaR===null) tdT.innerHTML='<span class="badge b-na">–</span>';
-    else if(deltaR>0) tdT.innerHTML=`<span class="badge b-up">▲ ${deltaR} pts</span>`;
-    else if(deltaR<0) tdT.innerHTML=`<span class="badge b-down">▼ ${Math.abs(deltaR)} pts</span>`;
+    else if(deltaR>0) tdT.innerHTML=`<span class="badge b-up">▲ ${fmtDelta(deltaR,mi)} pts</span>`;
+    else if(deltaR<0) tdT.innerHTML=`<span class="badge b-down">▼ ${fmtDelta(deltaR,mi)} pts</span>`;
     else             tdT.innerHTML=`<span class="badge b-eq">→ Estável</span>`;
   });
 }
@@ -2230,7 +2869,7 @@ function maxEfetivoPorSenso(mi,nome){
   // Fórmula nova: P&D que soma o laboratório fecha 4 (2 próprias + 2 do lab)
   if(PD_LAB_COMBINA.indexOf(nome)>=0) return 4;
   // Métodos e Processos que soma a Oficina Mecânica fecha 4 (3 próprias + 1 da oficina)
-  if(OFICINA_COMBINA.indexOf(nome)>=0) return 4;
+  if(OFICINA_COMBINA.indexOf(nome)>=0 && mi>=OFICINA_START_MONTH) return 4;
   return sensosMaxPorSenso(nome,mi);
 }
 function calcSensoMedias(mi){
@@ -2933,8 +3572,8 @@ function buildTV(){
     const maxV=Math.max(...valid),minV=Math.min(...valid);
     const bI=vals.map((v,i)=>i).filter(i=>vals[i]===maxV).sort((a,b)=>compareRanking(mi,a,b))[0];
     const wI=vals.map((v,i)=>i).filter(i=>vals[i]===minV).sort((a,b)=>compareRanking(mi,b,a))[0];
-    kD=SECTORS[bI]; kDsub='Pontuação: '+Math.round(maxV)+'/20';
-    kA=SECTORS[wI]; kAsub='Pontuação: '+Math.round(minV)+'/20';
+    kD=SECTORS[bI]; kDsub='Pontuação: '+fmtNota(maxV,mi)+'/20';
+    kA=SECTORS[wI]; kAsub='Pontuação: '+fmtNota(minV,mi)+'/20';
     if(mi===0){kEsub='Primeiro mês';}
     else{
       const dl=vals.map((v,i)=>{const a=antVals[i];return(v>0&&a>0)?{i,d:v-a}:{i,d:-999};}).sort((a,b)=>b.d-a.d);
@@ -2963,8 +3602,8 @@ function buildTV(){
   function rankCol(items){
     return items.map(({si,pos})=>{
       const nota=vals[si],ant=antVals[si],rk=nota>0;
-      const delta=(nota>0&&ant>0)?Math.round(nota-ant):null;
-      const notaR=Math.round(nota),antR=Math.round(ant);
+      const delta=(nota>0&&ant>0)?deltaArred(nota-ant,mi):null;
+      const notaR=fmtNota(nota,mi),antR=fmtNota(ant,mi-1);
       const bg=pos%2===0?'rgba(255,255,255,.94)':'rgba(248,247,245,.94)';
       let pc=rk&&pos<3?`<span style="font-size:.9vw">${MD[pos]}</span>`
         :rk?`<b style="font-size:.72vw;color:${DARK}">#${pos+1}</b>`
@@ -2975,8 +3614,8 @@ function buildTV(){
       if(!rk) badge=`<span style="background:#f0f0f0;color:#bbb;padding:0 4px;border-radius:6px;font-size:.6vw">s/d</span>`;
       else if(mi===0) badge=`<span style="background:#f0f0f0;color:#aaa;padding:0 4px;border-radius:6px;font-size:.6vw">1°m</span>`;
       else if(delta===null) badge=`<span style="background:#f0f0f0;color:#aaa;padding:0 4px;border-radius:6px;font-size:.6vw">–</span>`;
-      else if(delta>0) badge=`<span style="background:#d4edda;color:#155724;padding:0 4px;border-radius:6px;font-size:.65vw;font-weight:700">▲+${delta}</span>`;
-      else if(delta<0) badge=`<span style="background:#f8d7da;color:#721c24;padding:0 4px;border-radius:6px;font-size:.65vw;font-weight:700">▼${delta}</span>`;
+      else if(delta>0) badge=`<span style="background:#d4edda;color:#155724;padding:0 4px;border-radius:6px;font-size:.65vw;font-weight:700">▲+${fmtDelta(delta,mi)}</span>`;
+      else if(delta<0) badge=`<span style="background:#f8d7da;color:#721c24;padding:0 4px;border-radius:6px;font-size:.65vw;font-weight:700">▼-${fmtDelta(delta,mi)}</span>`;
       else badge=`<span style="background:#e2e3e5;color:#555;padding:0 4px;border-radius:6px;font-size:.6vw">→Est.</span>`;
       return `<tr style="background:${bg}">
         <td style="text-align:center;padding:2px 3px;border-bottom:1px solid rgba(224,221,217,.4);width:2.2vw">${pc}</td>
@@ -3007,7 +3646,7 @@ function buildTV(){
   }
 
   // Pódio — ouro/prata/bronze
-  const top3=sorted.slice(0,3).map(si=>({n:SECTORS[si]||'',pts:Math.round(vals[si]||0)}));
+  const top3=sorted.slice(0,3).map(si=>({n:SECTORS[si]||'',pts:fmtNota(vals[si]||0,mi)}));
   const podOrder=[top3[1],top3[0],top3[2]];
   const podColors=[RED,RED,RED];
   const podH=['38%','56%','27%'];
@@ -4082,6 +4721,7 @@ async function init(){
       setStat('placarStatus','📝 Rascunho pendente carregado. Entre em edição e clique "Publicar" para atualizar para todos.','warn');
     }catch(e){}
   }
+  recalcularNotasDesde(AC_NORMALIZADO_START_MONTH);
   document.getElementById('mensal-sel-wrap').style.display='flex';
 
   // Abrir sempre na última auditoria já lançada, não fixo em Março
@@ -4103,5 +4743,6 @@ async function init(){
 
 init();
 </script>
-</body>
-</html>
+
+
+</body></html>
