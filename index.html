@@ -1762,12 +1762,22 @@ function sensosEfetivo(mi,sectorName,ownSS){
     const of=OFICINA_SCORES[mi]||[0,0,0,0,0];
     return [0,1,2,3,4].map(k=>(ownSS[k]||0)+(of[k]||0));
   }
+  // Setembro/2026: P&D Documentação e Software só tinham 10 perguntas cadastradas.
+  // Para não penalizar, a nota é calculada sobre 20: as 10 perguntas que faltaram
+  // contam como conformes (2 por senso) e só as NC reais descontam.
+  if(isPd10Como20(sectorName,mi)){
+    return [0,1,2,3,4].map(k=>(ownSS[k]||0)+2);
+  }
   return ownSS;
+}
+const PD_10_COMO_20_START_MONTH = 8; // Setembro/2026
+function isPd10Como20(sectorName,mi){
+  return PD_10_SOZINHO.indexOf(sectorName)>=0 && mi!==undefined && mi>=PD_10_COMO_20_START_MONTH && mi<PD_10_SOZINHO_END_MONTH;
 }
 // Divisor do bloco Sensos: 10 para os setores isolados (até a data de virada), 20 para todo o resto
 function sensosDivisorPara(sectorName,mi){
   const isPd10Sozinho = PD_10_SOZINHO.indexOf(sectorName)>=0 && (mi===undefined || mi<PD_10_SOZINHO_END_MONTH);
-  if(isPd10Sozinho) return 10;
+  if(isPd10Sozinho && !isPd10Como20(sectorName,mi)) return 10;
   return 20;
 }
 
@@ -1775,6 +1785,16 @@ function sensosDivisorPara(sectorName,mi){
 // "perguntas" é o valor ATUAL (editável no Cadastro). O valor usado em cada mês
 // já lançado fica congelado dentro de AC_DATA[mi][areaId].perg — mudanças aqui
 // só valem para meses ainda não preenchidos.
+// A partir de Outubro/2026: Café e Copa passam de 6 para 4 perguntas e cada
+// Banheiro passa a ter 8 (4 feminino + 4 masculino). Fixado no código para não
+// depender do valor salvo no Cadastro online. Meses já lançados ficam congelados.
+const AC_PERG_OUT_START_MONTH = 9; // Outubro/2026
+const AC_PERG_OUT = {copa:4, cafe_subsolo:4, cafe_producao:4,
+  banheiro_adm:8, banheiro_producao:8, banheiro_subsolo:8, banheiro_smt:8};
+function perguntasAreaMes(key,mi){
+  if(mi>=AC_PERG_OUT_START_MONTH && AC_PERG_OUT[key]!==undefined) return AC_PERG_OUT[key];
+  const a=AREAS_COMUNS[key]; return a?a.perguntas:0;
+}
 let AREAS_COMUNS = {
   copa:              { nome:'Copa',              perguntas:6 },
   cafe_subsolo:      { nome:'Café Subsolo',      perguntas:6 },
@@ -1983,7 +2003,7 @@ function processarCsvImportado(rows, mi){
       }
       const conf=qs.filter(q=>q['pontuacao']==='Conforme').length;
       const area=AREAS_COMUNS[key];
-      const perg=area?area.perguntas:total;
+      const perg=area?perguntasAreaMes(key,mi):total;
       if(!AC_DATA[mi]) AC_DATA[mi]={};
       if(!AC_DATA[mi][key]) AC_DATA[mi][key]={perg,conf};
       else AC_DATA[mi][key].conf=conf; // mantém perguntas já congeladas se já existia
@@ -2870,6 +2890,8 @@ function maxEfetivoPorSenso(mi,nome){
   if(PD_LAB_COMBINA.indexOf(nome)>=0) return 4;
   // Métodos e Processos que soma a Oficina Mecânica fecha 4 (3 próprias + 1 da oficina)
   if(OFICINA_COMBINA.indexOf(nome)>=0 && mi>=OFICINA_START_MONTH) return 4;
+  // P&D Documentação/Software em Setembro: calculado sobre 20 (4 por senso)
+  if(isPd10Como20(nome,mi)) return 4;
   return sensosMaxPorSenso(nome,mi);
 }
 function calcSensoMedias(mi){
@@ -3718,7 +3740,7 @@ function buildTV(){
           const d=acMonthData[key];
           const conf=d?d.conf:0, perg=d?d.perg:area.perguntas;
           const pct=d?conf/perg:null;
-          const col=pct===null?'#bbb':pct>=0.83?'#1E7E34':pct>=0.67?'#9A6B0A':'#C0392B';
+          const col=pct===null?'#bbb':pct>=0.83?'#1E7E34':pct>=0.66?'#9A6B0A':'#C0392B';
           return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15vw;padding:.2vw .3vw;border-right:1px solid #eee;min-width:0">
             <span style="font-size:.68vw;font-weight:700;color:${DARK};text-transform:uppercase;letter-spacing:.02em;text-align:center;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${area.nome}</span>
             <span style="font-size:1.5vw;font-weight:900;color:${col};line-height:1">${d?conf:'–'}<span style="font-size:.7vw;font-weight:400;color:${MUTED}">/${perg}</span></span>
@@ -3921,7 +3943,7 @@ function buildTVTrimestral(){
           let perg=0,conf=0;
           acAuditedMonths.forEach(m=>{ const d=(AC_DATA[m]||{})[key]; if(d){perg+=d.perg;conf+=d.conf;} });
           const pct=perg>0?conf/perg:null;
-          const col=pct===null?'#bbb':pct>=0.83?'#1E7E34':pct>=0.67?'#9A6B0A':'#C0392B';
+          const col=pct===null?'#bbb':pct>=0.83?'#1E7E34':pct>=0.66?'#9A6B0A':'#C0392B';
           return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15vw;padding:.2vw .3vw;border-right:1px solid #eee;min-width:0">
             <span style="font-size:.68vw;font-weight:700;color:${DARK};text-transform:uppercase;letter-spacing:.02em;text-align:center;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${area.nome}</span>
             <span style="font-size:1.5vw;font-weight:900;color:${col};line-height:1">${perg>0?conf:'–'}<span style="font-size:.7vw;font-weight:400;color:${MUTED}">/${perg||area.perguntas}</span></span>
@@ -3979,7 +4001,7 @@ function printTV(){
 function acBarColor(pct){
   if(pct===null) return '#ccc';
   if(pct>=0.83) return '#22c55e';
-  if(pct>=0.67) return '#f59e0b';
+  if(pct>=0.66) return '#f59e0b';
   return '#C8102E';
 }
 
@@ -3993,7 +4015,7 @@ function acCardHTML(nome, data, pergPadrao, label){
   const pct = hasVal ? conf/perg : null;
   const bar = pct !== null ? Math.round(pct*100) : 0;
   const col = acBarColor(pct);
-  const fg = !hasVal ? '#BBB' : (pct>=0.83?'#1E7E34':pct>=0.67?'#9A6B0A':'#C0392B');
+  const fg = !hasVal ? '#BBB' : (pct>=0.83?'#1E7E34':pct>=0.66?'#9A6B0A':'#C0392B');
   return `<div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
     ${label?`<div style="font-size:8px;color:var(--muted);font-weight:700;letter-spacing:.5px;text-transform:uppercase;text-align:right;margin-bottom:2px">${label}</div>`:''}
     <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px" title="${nome}">${nome}</div>
@@ -4028,7 +4050,7 @@ function buildAcPlacar(mi){
   body.innerHTML = keys.map((key,i)=>{
     const area=AREAS_COMUNS[key]||{nome:key,perguntas:(data[key]?data[key].perg:6)};
     const d=data[key]||null;
-    const maxQ=d?d.perg:area.perguntas; // congelado se já lançado; senão, valor atual do Cadastro
+    const maxQ=d?d.perg:perguntasAreaMes(key,mi); // congelado se já lançado; senão, valor atual do Cadastro
     const v=d?d.conf:'';
     const last=i===keys.length-1;
     const canEdit=isNew&&editMode;
@@ -4049,7 +4071,7 @@ function onAcAreaInput(mi,key,input){
   const area=AREAS_COMUNS[key];
   if(!area) return;
   const existing=(AC_DATA[mi]&&AC_DATA[mi][key])?AC_DATA[mi][key]:null;
-  const maxQ=existing?existing.perg:area.perguntas;
+  const maxQ=existing?existing.perg:perguntasAreaMes(key,mi);
   const raw=input.value;
   if(raw===''){
     if(AC_DATA[mi]) delete AC_DATA[mi][key];
@@ -4057,7 +4079,7 @@ function onAcAreaInput(mi,key,input){
     const v=Math.min(maxQ,Math.max(0,parseInt(raw)||0));
     if(!AC_DATA[mi]) AC_DATA[mi]={};
     if(!AC_DATA[mi][key]){
-      AC_DATA[mi][key]={perg:area.perguntas,conf:v}; // congela nº de perguntas agora
+      AC_DATA[mi][key]={perg:perguntasAreaMes(key,mi),conf:v}; // congela nº de perguntas agora
     } else {
       AC_DATA[mi][key].conf=v; // mantém as perguntas já congeladas
     }
