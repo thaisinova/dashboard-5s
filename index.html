@@ -859,7 +859,7 @@ body:not(.app-loading) #initial-loader { display:none; }
   <!-- ─── ÁREAS COMUNS NA ABA MENSAL ─── -->
   <section class="section fade" id="ac-mensal-section">
     <div class="slabel">Áreas Comuns <span style="font-size:9px;background:rgba(61,57,53,.08);color:var(--muted);border:1px solid var(--border);padding:2px 8px;border-radius:2px;margin-left:4px">pontuação separada · não entra no ranking</span></div>
-    <div id="ac-mensal-cards" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px"><div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
+    <div id="ac-mensal-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px"><div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
     
     <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px" title="Copa">Copa</div>
     <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px">
@@ -2339,7 +2339,7 @@ function acPointsForSector(mi,sectorName){
   if(mi>=AC_NORMALIZADO_START_MONTH){
     let totalPerg=0;
     areas.forEach(key=>{ const d=monthData[key]; if(d&&d.perg>0) totalPerg+=d.perg; });
-    const nc=totalPerg>0?Math.round(totalNaoConf*6/totalPerg):0;
+    const nc=totalPerg>0?Math.round(totalNaoConf*6/totalPerg*10)/10:0; // 1 casa decimal
     return Math.max(0,6-nc);
   }
   return Math.max(0,6-totalNaoConf);
@@ -2508,7 +2508,8 @@ function buildPlacar(){
   </tr>`;
 
   const tbody=document.getElementById('placarBody'); tbody.innerHTML='';
-  SECTORS.forEach((sec,si)=>{
+  const ordemAlfa=SECTORS.map((_,i)=>i).sort((a,b)=>SECTORS[a].localeCompare(SECTORS[b],'pt-BR',{sensitivity:'base'}));
+  ordemAlfa.forEach(si=>{ const sec=SECTORS[si];
     const ss=S_SCORES[mi][si]||[0,0,0,0,0,0];
     const r=computeSectorResult(mi,si);
     const total=r.total>0?Math.round(r.total*100)/100:0;
@@ -2532,7 +2533,7 @@ function buildPlacar(){
     } else if(r.ac===null){
       acCell=`<span style="color:#ccc">não auditado</span>`;
     } else {
-      const acRounded=Math.round(r.ac*100)/100;
+      const acRounded=mi>=AC_NORMALIZADO_START_MONTH?fmt1(r.ac):Math.round(r.ac*100)/100;
       acCell=`<span style="font-weight:700">${acRounded} <small style="color:var(--muted);font-weight:400">/ 6</small></span>`;
     }
     cells+=`<td id="ac_${si}" style="font-size:13px">${acCell}</td>`;
@@ -2632,7 +2633,7 @@ function recalcAllSectorsAC(mi){
       } else if(r.ac===null){
         acEl.innerHTML=`<span style="color:#ccc">não auditado</span>`;
       } else {
-        const acRounded=Math.round(r.ac*100)/100;
+        const acRounded=mi>=AC_NORMALIZADO_START_MONTH?fmt1(r.ac):Math.round(r.ac*100)/100;
         acEl.innerHTML=`<span style="font-weight:700">${acRounded} <small style="color:var(--muted);font-weight:400">/ 6</small></span>`;
       }
     }
@@ -2768,7 +2769,8 @@ function buildHeatmap(mi){
   tr.innerHTML+=`<th class="th-a" style="min-width:70px;color:#fff">Média</th><th class="th-a" style="min-width:110px;letter-spacing:1px;color:#fff">Variação</th>`;
   tbl.createTHead().appendChild(tr);
   const tb=tbl.createTBody();
-  SECTORS.forEach((sec,si)=>{
+  const ordemAlfaHm=SECTORS.map((_,i)=>i).sort((a,b)=>SECTORS[a].localeCompare(SECTORS[b],'pt-BR',{sensitivity:'base'}));
+  ordemAlfaHm.forEach(si=>{ const sec=SECTORS[si];
     const row=tb.insertRow();
     const tdS=row.insertCell();tdS.className='td-s';tdS.textContent=sec;
     const rv=[];
@@ -2787,7 +2789,7 @@ function buildHeatmap(mi){
     const spark=Array.from({length:12},(_,m)=>{
       const v=(SCORES[m]||[])[si]||0;
       if(v===0) return '<span style="color:#DDD">·</span>';
-      const lvl=v<=13?1:v<=15?2:v<=16?3:v<=17?4:v===18?6:v===19?7:8;
+      const lvl=v<=13?1:v<=15?2:v<=16?3:v<=17?4:v<18?5:v<19?6:v<20?7:8;
       const col=v<=13?'#C8102E':v<=17?'#E89B1A':'#2E7D32';
       return '<span style="color:'+col+'">'+BLOCKS[lvl]+'</span>';
     });
@@ -3806,8 +3808,8 @@ function buildTV(){
           const conf=d?d.conf:0, perg=d?d.perg:area.perguntas;
           const pct=d?conf/perg:null;
           const col=pct===null?'#bbb':pct>=0.83?'#1E7E34':pct>=0.66?'#9A6B0A':'#C0392B';
-          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15vw;padding:.2vw .3vw;border-right:1px solid #eee;min-width:0">
-            <span style="font-size:.68vw;font-weight:700;color:${DARK};text-transform:uppercase;letter-spacing:.02em;text-align:center;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${area.nome}</span>
+          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.12vw;padding:.15vw .2vw;border-right:1px solid #eee;min-width:0">
+            <span style="font-size:.6vw;font-weight:700;color:${DARK};text-transform:uppercase;letter-spacing:0;text-align:center;line-height:1.1;white-space:normal;word-break:break-word;max-width:100%">${area.nome}</span>
             <span style="font-size:1.5vw;font-weight:900;color:${col};line-height:1">${d?conf:'–'}<span style="font-size:.7vw;font-weight:400;color:${MUTED}">/${perg}</span></span>
           </div>`;
         }).join('')}
@@ -3919,7 +3921,7 @@ function buildTVTrimestral(){
       const ic=['🥇','🥈','🥉'];
       const pc=pos<3?`<span style="font-size:.9vw">${ic[pos]}</span>`:`<b style="font-size:.72vw;color:${DARK}">#${pos+1}</b>`;
       const c=scC(nota);
-      const nc=nota>0?`<span style="background:${c.bg};color:${c.fg};border:1px solid ${c.bd};padding:0 4px;border-radius:2px;font-weight:900;font-size:.7vw">${fmt1(nota)}<span style="font-weight:400;font-size:.55vw;color:${MUTED}">/60</span></span>`:`<span style="color:#ccc">–</span>`;
+      const nc=nota>0?`<span style="background:${c.bg};color:${c.fg};border:1px solid ${c.bd};padding:0 4px;border-radius:2px;font-weight:900;font-size:.75vw">${fmt1(nota)}</span>`:`<span style="color:#ccc">–</span>`;
       return `<tr style="background:${bg}">
         <td style="text-align:center;padding:2px 3px;border-bottom:1px solid rgba(224,221,217,.4);width:2.2vw">${pc}</td>
         <td style="padding:2px 5px;font-size:.78vw;font-weight:${pos<3?700:400};color:${DARK};border-bottom:1px solid rgba(224,221,217,.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:0">${SECTORS[si]}</td>
@@ -3954,7 +3956,7 @@ function buildTVTrimestral(){
     if(!s||!s.n)return`<div style="flex:1"></div>`;
     return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%">
       <div style="text-align:center;font-size:.72vw;font-weight:700;color:${DARK};line-height:1.2;margin-bottom:.04vw;padding:0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%">${s.n}</div>
-      <div style="font-size:.6vw;color:${RED};font-weight:700;margin-bottom:.04vw">${s.pts}<span style="font-weight:400;font-size:.52vw;color:${MUTED}">/60</span></div>
+      <div style="font-size:.6vw;color:${RED};font-weight:700;margin-bottom:.04vw">${s.pts} pts</div>
       <div style="width:94%;height:${podH[i]};background:${RED};display:flex;align-items:center;justify-content:center;border-radius:3px 3px 0 0;color:#fff;font-size:2.4vw;font-weight:900;text-shadow:0 1px 3px rgba(0,0,0,.3)">${podLabel[i]}</div>
     </div>`;
   }).join('');
@@ -4014,8 +4016,8 @@ function buildTVTrimestral(){
           acAuditedMonths.forEach(m=>{ const d=(AC_DATA[m]||{})[key]; if(d){perg+=d.perg;conf+=d.conf;} });
           const pct=perg>0?conf/perg:null;
           const col=pct===null?'#bbb':pct>=0.83?'#1E7E34':pct>=0.66?'#9A6B0A':'#C0392B';
-          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15vw;padding:.2vw .3vw;border-right:1px solid #eee;min-width:0">
-            <span style="font-size:.68vw;font-weight:700;color:${DARK};text-transform:uppercase;letter-spacing:.02em;text-align:center;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${area.nome}</span>
+          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.12vw;padding:.15vw .2vw;border-right:1px solid #eee;min-width:0">
+            <span style="font-size:.6vw;font-weight:700;color:${DARK};text-transform:uppercase;letter-spacing:0;text-align:center;line-height:1.1;white-space:normal;word-break:break-word;max-width:100%">${area.nome}</span>
             <span style="font-size:1.5vw;font-weight:900;color:${col};line-height:1">${perg>0?conf:'–'}<span style="font-size:.7vw;font-weight:400;color:${MUTED}">/${perg||area.perguntas}</span></span>
           </div>`;
         }).join('')}
@@ -4088,7 +4090,7 @@ function acCardHTML(nome, data, pergPadrao, label){
   const fg = !hasVal ? '#BBB' : (pct>=0.83?'#1E7E34':pct>=0.66?'#9A6B0A':'#C0392B');
   return `<div style="background:#fff;border:1px solid var(--border);border-top:2px solid var(--dark);border-radius:3px;padding:8px 10px;min-width:0">
     ${label?`<div style="font-size:8px;color:var(--muted);font-weight:700;letter-spacing:.5px;text-transform:uppercase;text-align:right;margin-bottom:2px">${label}</div>`:''}
-    <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px" title="${nome}">${nome}</div>
+    <div style="font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);white-space:normal;line-height:1.2;margin-bottom:3px" title="${nome}">${nome}</div>
     <div style="display:flex;align-items:baseline;gap:3px;margin-bottom:4px">
       <span style="font-size:16px;font-weight:900;color:${fg}">${hasVal?conf:'–'}</span>
       <span style="font-size:10px;color:var(--muted)">/ ${perg}</span>
