@@ -1758,14 +1758,16 @@ const PD_10_SOZINHO_END_MONTH = 9; // Outubro/2026
 // ════════════════════════════════════════════════════════════════════
 const OFICINA_NOME = 'Oficina Mecânica';
 const OFICINA_COMBINA = ['Métodos e Processos'];
-const OFICINA_START_MONTH = 9; // Oficina só soma com Métodos a partir de Outubro/2026
+// Out/2026: separação AINDA NÃO implantada. Métodos e Processos segue com 20 perguntas
+// próprias (incluindo a Oficina). Para ativar no futuro, trocar 99 pelo mês de início (0=Jan).
+const OFICINA_START_MONTH = 99;
 let OFICINA_SCORES = {0:[0,0,0,0,0],1:[0,0,0,0,0],2:[0,0,0,0,0],3:[0,0,0,0,0],
   4:[0,0,0,0,0],5:[0,0,0,0,0],6:[0,0,0,0,0],7:[0,0,0,0,0],
   8:[0,0,0,0,0],9:[0,0,0,0,0],10:[0,0,0,0,0],11:[0,0,0,0,0]};
 
 // Máximo de conformidade por senso daquele setor (própria auditoria, sem contar o lab/oficina)
 function sensosMaxPorSenso(sectorName,mi){
-  if(OFICINA_COMBINA.indexOf(sectorName)>=0 && (mi===undefined || mi>=OFICINA_START_MONTH)) return 3; // Métodos: 15 próprias (a partir de Out)
+  if(OFICINA_COMBINA.indexOf(sectorName)>=0 && mi!==undefined && mi>=OFICINA_START_MONTH) return 3; // Métodos: 15 próprias (a partir de Out)
   const isPd10Sozinho = PD_10_SOZINHO.indexOf(sectorName)>=0 && (mi===undefined || mi<PD_10_SOZINHO_END_MONTH);
   if(PD_LAB_COMBINA.indexOf(sectorName)>=0 || isPd10Sozinho) return 2;
   return 4;
@@ -1808,7 +1810,30 @@ function sensosDivisorPara(sectorName,mi){
 // depender do valor salvo no Cadastro online. Meses já lançados ficam congelados.
 const AC_PERG_OUT_START_MONTH = 9; // Outubro/2026
 const AC_PERG_OUT = {copa:4, cafe_subsolo:4, cafe_producao:4,
-  banheiro_adm:8, banheiro_producao:8, banheiro_subsolo:8, banheiro_smt:8};
+  banheiro_adm:4, banheiro_producao:4, banheiro_subsolo:4, banheiro_smt:4, fresa:4};
+// Fresa: nova área comum, conta para Métodos e Processos e Usinagem só a partir de Out/2026
+const FRESA_START_MONTH = 9;
+// Garante as regras de Out/2026 em diante mesmo que o dado salvo online tenha valor antigo
+function aplicaRegrasOut2026(){
+  if(!AREAS_COMUNS.fresa) AREAS_COMUNS.fresa={nome:'Fresa',perguntas:4};
+  AREAS_COMUNS.fresa.perguntas=4;
+  ['Usinagem','Métodos e Processos'].forEach(sec=>{
+    if(!SECTOR_AC_MAP[sec]) SECTOR_AC_MAP[sec]=[];
+    if(SECTOR_AC_MAP[sec].indexOf('fresa')<0) SECTOR_AC_MAP[sec].push('fresa');
+  });
+  Object.keys(AC_DATA||{}).forEach(m=>{
+    const mi=+m, md=AC_DATA[m]||{};
+    if(mi<FRESA_START_MONTH && md.fresa) delete md.fresa;
+    if(mi>=AC_PERG_OUT_START_MONTH){
+      Object.keys(md).forEach(k=>{
+        if(AC_PERG_OUT[k]!==undefined){
+          md[k].perg=AC_PERG_OUT[k];
+          if(md[k].conf>md[k].perg) md[k].conf=md[k].perg;
+        }
+      });
+    }
+  });
+}
 function perguntasAreaMes(key,mi){
   if(mi>=AC_PERG_OUT_START_MONTH && AC_PERG_OUT[key]!==undefined) return AC_PERG_OUT[key];
   const a=AREAS_COMUNS[key]; return a?a.perguntas:0;
@@ -1821,7 +1846,7 @@ let AREAS_COMUNS = {
   banheiro_producao: { nome:'Banheiro Produção', perguntas:8 },
   banheiro_subsolo:  { nome:'Banheiro Subsolo',  perguntas:8 },
   banheiro_smt:      { nome:'Banheiro SMT',      perguntas:8 },
-  fresa:             { nome:'Fresa',             perguntas:3 },
+  fresa:             { nome:'Fresa',             perguntas:4 },
 };
 
 // Relação setor (por NOME, estável mesmo se a ordem/índice mudar) → áreas comuns usadas
@@ -1954,7 +1979,8 @@ const BATHROOM_START_MONTH = 8; // Setembro/2026 — banheiro só conta a partir
 const AC_SUBSETOR_TO_KEY = {
   'Café Subsolo':'cafe_subsolo','Café Produção':'cafe_producao','Copa':'copa',
   'Banheiro Adm':'banheiro_adm','Banheiro Produção':'banheiro_producao',
-  'Banheiro Subsolo':'banheiro_subsolo','Banheiro SMT':'banheiro_smt'
+  'Banheiro Subsolo':'banheiro_subsolo','Banheiro SMT':'banheiro_smt',
+  'Fresa':'fresa','Fresas':'fresa'
 };
 const SUBSETOR_ALIAS_CSV = {'Recursos Humanos':'RH','Tecnologia da Informação':'TI'};
 const SETORES_FORA_DO_DASHBOARD = ['Direção','Gestão P&D','Gestão Industrial'];
@@ -2015,6 +2041,10 @@ function processarCsvImportado(rows, mi){
         ignorados.push(`${subsetor} (form ${fid}): área comum não reconhecida`);
         return;
       }
+      if(key==='fresa' && mi<FRESA_START_MONTH){
+        ignorados.push(`${subsetor} (form ${fid}): Fresa só entra a partir de ${MONTHS[FRESA_START_MONTH]}, ignorado em ${MONTHS[mi]}`);
+        return;
+      }
       if(key.indexOf('banheiro_')===0 && mi<BATHROOM_START_MONTH){
         ignorados.push(`${subsetor} (form ${fid}): banheiro só entra a partir de ${MONTHS[BATHROOM_START_MONTH]}, ignorado em ${MONTHS[mi]}`);
         return;
@@ -2046,6 +2076,10 @@ function processarCsvImportado(rows, mi){
       return;
     }
 
+    if(subsetor===OFICINA_NOME && mi<OFICINA_START_MONTH){
+      ignorados.push(`${subsetor} (form ${fid}): Oficina ainda não separada de Métodos e Processos, ignorado`);
+      return;
+    }
     if(subsetor===OFICINA_NOME){
       const contagemOf={};
       SENSO_ORDEM_CSV.forEach(s=>contagemOf[s]=0);
@@ -2105,6 +2139,7 @@ async function binLoad(){
       if(d.AC_DATA)AC_DATA=d.AC_DATA;
       if(d.PD_LAB_SCORES)PD_LAB_SCORES=d.PD_LAB_SCORES;
       if(d.OFICINA_SCORES)OFICINA_SCORES=d.OFICINA_SCORES;
+      aplicaRegrasOut2026();
     }
   }catch(e){}
   // Buscar dados atualizados da API em segundo plano
@@ -2121,7 +2156,8 @@ async function binLoad(){
     if(d.record.AC_DATA)       AC_DATA       = d.record.AC_DATA;
     if(d.record.PD_LAB_SCORES) PD_LAB_SCORES = d.record.PD_LAB_SCORES;
     if(d.record.OFICINA_SCORES) OFICINA_SCORES = d.record.OFICINA_SCORES;
-    migrarAcLegado(d.record); // compatibilidade com o formato antigo (Café/Copa antes de Ago)
+    migrarAcLegado(d.record);
+    aplicaRegrasOut2026(); // compatibilidade com o formato antigo (Café/Copa antes de Ago)
     N = SECTORS.length;
     // Atualizar cache com dados frescos
     try{localStorage.setItem('inova5s_cache',JSON.stringify({SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES,OFICINA_SCORES}));}catch(e){}
@@ -4761,6 +4797,7 @@ async function init(){
       setStat('placarStatus','📝 Rascunho pendente carregado. Entre em edição e clique "Publicar" para atualizar para todos.','warn');
     }catch(e){}
   }
+  aplicaRegrasOut2026();
   recalcularNotasDesde(AC_NORMALIZADO_START_MONTH);
   document.getElementById('mensal-sel-wrap').style.display='flex';
 
