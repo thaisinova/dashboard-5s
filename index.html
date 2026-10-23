@@ -2339,7 +2339,7 @@ function acPointsForSector(mi,sectorName){
   if(mi>=AC_NORMALIZADO_START_MONTH){
     let totalPerg=0;
     areas.forEach(key=>{ const d=monthData[key]; if(d&&d.perg>0) totalPerg+=d.perg; });
-    const nc=totalPerg>0?Math.round(totalNaoConf*6/totalPerg*10)/10:0; // 1 casa decimal
+    const nc=totalPerg>0?Math.round(totalNaoConf*6/totalPerg):0; // inteiro, igual ao Power Apps
     return Math.max(0,6-nc);
   }
   return Math.max(0,6-totalNaoConf);
@@ -2533,7 +2533,7 @@ function buildPlacar(){
     } else if(r.ac===null){
       acCell=`<span style="color:#ccc">não auditado</span>`;
     } else {
-      const acRounded=mi>=AC_NORMALIZADO_START_MONTH?fmt1(r.ac):Math.round(r.ac*100)/100;
+      const acRounded=Math.round(r.ac*100)/100;
       acCell=`<span style="font-weight:700">${acRounded} <small style="color:var(--muted);font-weight:400">/ 6</small></span>`;
     }
     cells+=`<td id="ac_${si}" style="font-size:13px">${acCell}</td>`;
@@ -2633,7 +2633,7 @@ function recalcAllSectorsAC(mi){
       } else if(r.ac===null){
         acEl.innerHTML=`<span style="color:#ccc">não auditado</span>`;
       } else {
-        const acRounded=mi>=AC_NORMALIZADO_START_MONTH?fmt1(r.ac):Math.round(r.ac*100)/100;
+        const acRounded=Math.round(r.ac*100)/100;
         acEl.innerHTML=`<span style="font-weight:700">${acRounded} <small style="color:var(--muted);font-weight:400">/ 6</small></span>`;
       }
     }
