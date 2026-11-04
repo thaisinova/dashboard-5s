@@ -615,7 +615,7 @@ body:not(.app-loading) #initial-loader { display:none; }
   <div class="placar-header">
     <div>
       <h2>Placar de Auditorias 5S — 2026</h2>
-      <p>Pontuação por Senso · Totais calculados automaticamente · Edição protegida por senha</p>
+      <p>Conformidades por setor · Totais calculados automaticamente · Edição protegida por senha</p>
     </div>
     <div class="placar-controls">
       <div class="sel-wrap">
@@ -1674,8 +1674,16 @@ body:not(.app-loading) #initial-loader { display:none; }
     </div>
   </div>
 
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:3px;padding:12px 16px;margin-bottom:14px">
+    <label for="pergMesIni" style="font-weight:700;font-size:13px">Alteração no nº de perguntas (sensos e áreas comuns) vale a partir de:</label>
+    <select id="pergMesIni" class="sinput" style="width:140px;text-align:left" onchange="buildCadastro()">
+      <option value="9" selected>Outubro/2026</option><option value="10">Novembro/2026</option><option value="11">Dezembro/2026</option>
+    </select>
+    <span style="font-size:11px;color:var(--muted)">meses anteriores ao escolhido não mudam</span>
+  </div>
+
   <section class="section">
-    <div class="slabel">Áreas Comuns <span class="stag" style="background:rgba(61,57,53,.08);color:var(--muted);border-color:var(--border)">peso total fixo: 6 pontos, dividido pelas perguntas somadas</span></div>
+    <div class="slabel">Áreas Comuns <span class="stag" style="background:rgba(61,57,53,.08);color:var(--muted);border-color:var(--border)">peso total fixo: 6 pontos, proporcional às perguntas somadas</span></div>
     <div class="rank-wrap"><table class="rank" id="cadastroAreasTable"></table></div>
     <div style="display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:3px;padding:14px 16px">
       <input id="novaAreaNome" type="text" placeholder="Nome da nova área comum" class="sinput" style="width:220px;text-align:left;font-weight:400">
@@ -1766,7 +1774,7 @@ let OFICINA_SCORES = {0:[0,0,0,0,0],1:[0,0,0,0,0],2:[0,0,0,0,0],3:[0,0,0,0,0],
   8:[0,0,0,0,0],9:[0,0,0,0,0],10:[0,0,0,0,0],11:[0,0,0,0,0]};
 
 // Máximo de conformidade por senso daquele setor (própria auditoria, sem contar o lab/oficina)
-function sensosMaxPorSenso(sectorName,mi){
+function sensosMaxPorSensoLegado(sectorName,mi){
   if(OFICINA_COMBINA.indexOf(sectorName)>=0 && mi!==undefined && mi>=OFICINA_START_MONTH) return 3; // Métodos: 15 próprias (a partir de Out)
   const isPd10Sozinho = PD_10_SOZINHO.indexOf(sectorName)>=0 && (mi===undefined || mi<PD_10_SOZINHO_END_MONTH);
   if(PD_LAB_COMBINA.indexOf(sectorName)>=0 || isPd10Sozinho) return 2;
@@ -1795,10 +1803,70 @@ function isPd10Como20(sectorName,mi){
   return PD_10_SOZINHO.indexOf(sectorName)>=0 && mi!==undefined && mi>=PD_10_COMO_20_START_MONTH && mi<PD_10_SOZINHO_END_MONTH;
 }
 // Divisor do bloco Sensos: 10 para os setores isolados (até a data de virada), 20 para todo o resto
-function sensosDivisorPara(sectorName,mi){
+function sensosDivisorParaLegado(sectorName,mi){
   const isPd10Sozinho = PD_10_SOZINHO.indexOf(sectorName)>=0 && (mi===undefined || mi<PD_10_SOZINHO_END_MONTH);
   if(isPd10Sozinho && !isPd10Como20(sectorName,mi)) return 10;
   return 20;
+}
+
+
+// ════════════════════════════════════════════════════════════════════
+//  PERGUNTAS POR SENSO VINDAS DO CADASTRO — a partir de Outubro/2026
+// ════════════════════════════════════════════════════════════════════
+// Nota dos Sensos = conformidades × 14 ÷ total de perguntas (próprias + lab/oficina).
+// Funciona com qualquer quantidade de perguntas. O nº de perguntas fica
+// CONGELADO em PERG_MES[mês] assim que o mês tem lançamento; mudanças no
+// Cadastro só valem para os meses ainda não preenchidos.
+const PERG_CAD_START_MONTH = 9; // Outubro/2026
+let SECTOR_PERG = {}; // nome → [p1S,p2S,p3S,p4S,p5S] (valor atual do Cadastro)
+let PERG_MES = {};    // mês → { nome → [5] } (congelado)
+function totPerg(v){ return Array.isArray(v)?v.reduce((x,y)=>x+(+y||0),0):Math.max(0,+v||0); }
+function pergPadrao(nome){
+  if(nome===PD_LAB_NOME) return 10;
+  return sensosMaxPorSensoLegado(nome,PERG_CAD_START_MONTH)*5;
+}
+function pergCadastro(nome){
+  const p=SECTOR_PERG[nome];
+  return (p===undefined||p===null||p==='')?pergPadrao(nome):totPerg(p);
+}
+function pergSetorMes(nome,mi){
+  const f=PERG_MES[mi]&&PERG_MES[mi][nome];
+  return (f===undefined||f===null)?pergCadastro(nome):totPerg(f);
+}
+function nomesComPerguntas(){ return SECTORS.concat([PD_LAB_NOME]); }
+function mesTemLancamento(mi){
+  const m=S_SCORES[mi]||{};
+  if(Object.keys(m).some(k=>(m[k]||[]).slice(0,5).some(v=>v>0))) return true;
+  return (PD_LAB_SCORES[mi]||[]).some(v=>v>0);
+}
+// Congela o nº de perguntas atual em todos os meses (a partir de Out) que já têm lançamento
+function congelaPergMeses(){
+  for(let mi=PERG_CAD_START_MONTH;mi<12;mi++){
+    if(!mesTemLancamento(mi)) continue;
+    if(!PERG_MES[mi]) PERG_MES[mi]={};
+    nomesComPerguntas().forEach(n=>{ if(PERG_MES[mi][n]===undefined) PERG_MES[mi][n]=pergCadastro(n); });
+  }
+}
+function soma5(a){ return (a||[]).reduce((x,y)=>x+(+y||0),0); }
+function totalPergEfetivo(nome,mi){
+  let t=pergSetorMes(nome,mi);
+  if(PD_LAB_COMBINA.indexOf(nome)>=0) t+=pergSetorMes(PD_LAB_NOME,mi);
+  return t;
+}
+// Limite de cada campo de senso no Placar: o total de perguntas do setor
+function sensosMaxPorSenso(sectorName,mi,k){
+  if(mi===undefined||mi<PERG_CAD_START_MONTH) return sensosMaxPorSensoLegado(sectorName,mi);
+  return pergSetorMes(sectorName,mi)||1;
+}
+// Nota dos sensos = conformidades × 14 ÷ total de perguntas (próprias + laboratório)
+function sensosDivisorPara(sectorName,mi){
+  if(mi===undefined||mi<PERG_CAD_START_MONTH) return sensosDivisorParaLegado(sectorName,mi);
+  return totalPergEfetivo(sectorName,mi)||20;
+}
+// Usado só no gráfico de média por senso: considera as perguntas distribuídas igualmente
+function maxEfetivoPorSenso(mi,nome,k){
+  if(mi<PERG_CAD_START_MONTH) return maxEfetivoPorSensoLegado(mi,nome);
+  return (totalPergEfetivo(nome,mi)/5)||1;
 }
 
 // Cadastro de áreas comuns: id → {nome, perguntas}
@@ -1816,7 +1884,6 @@ const FRESA_START_MONTH = 9;
 // Garante as regras de Out/2026 em diante mesmo que o dado salvo online tenha valor antigo
 function aplicaRegrasOut2026(){
   if(!AREAS_COMUNS.fresa) AREAS_COMUNS.fresa={nome:'Fresa',perguntas:4};
-  AREAS_COMUNS.fresa.perguntas=4;
   ['Usinagem','Métodos e Processos'].forEach(sec=>{
     if(!SECTOR_AC_MAP[sec]) SECTOR_AC_MAP[sec]=[];
     if(SECTOR_AC_MAP[sec].indexOf('fresa')<0) SECTOR_AC_MAP[sec].push('fresa');
@@ -1824,7 +1891,7 @@ function aplicaRegrasOut2026(){
   Object.keys(AC_DATA||{}).forEach(m=>{
     const mi=+m, md=AC_DATA[m]||{};
     if(mi<FRESA_START_MONTH && md.fresa) delete md.fresa;
-    if(mi>=AC_PERG_OUT_START_MONTH){
+    if(mi===AC_PERG_OUT_START_MONTH && !(PERG_MES[mi]&&PERG_MES[mi].__acManual)){
       Object.keys(md).forEach(k=>{
         if(AC_PERG_OUT[k]!==undefined){
           md[k].perg=AC_PERG_OUT[k];
@@ -1835,7 +1902,7 @@ function aplicaRegrasOut2026(){
   });
 }
 function perguntasAreaMes(key,mi){
-  if(mi>=AC_PERG_OUT_START_MONTH && AC_PERG_OUT[key]!==undefined) return AC_PERG_OUT[key];
+  if(mi===AC_PERG_OUT_START_MONTH && AC_PERG_OUT[key]!==undefined && !(PERG_MES[mi]&&PERG_MES[mi].__acManual)) return AC_PERG_OUT[key];
   const a=AREAS_COMUNS[key]; return a?a.perguntas:0;
 }
 let AREAS_COMUNS = {
@@ -2139,7 +2206,9 @@ async function binLoad(){
       if(d.AC_DATA)AC_DATA=d.AC_DATA;
       if(d.PD_LAB_SCORES)PD_LAB_SCORES=d.PD_LAB_SCORES;
       if(d.OFICINA_SCORES)OFICINA_SCORES=d.OFICINA_SCORES;
-      aplicaRegrasOut2026();
+      if(d.SECTOR_PERG)SECTOR_PERG=d.SECTOR_PERG;
+      if(d.PERG_MES)PERG_MES=d.PERG_MES;
+      aplicaRegrasOut2026(); congelaPergMeses();
     }
   }catch(e){}
   // Buscar dados atualizados da API em segundo plano
@@ -2156,16 +2225,18 @@ async function binLoad(){
     if(d.record.AC_DATA)       AC_DATA       = d.record.AC_DATA;
     if(d.record.PD_LAB_SCORES) PD_LAB_SCORES = d.record.PD_LAB_SCORES;
     if(d.record.OFICINA_SCORES) OFICINA_SCORES = d.record.OFICINA_SCORES;
+    if(d.record.SECTOR_PERG) SECTOR_PERG = d.record.SECTOR_PERG;
+    if(d.record.PERG_MES) PERG_MES = d.record.PERG_MES;
     migrarAcLegado(d.record);
-    aplicaRegrasOut2026(); // compatibilidade com o formato antigo (Café/Copa antes de Ago)
+    aplicaRegrasOut2026(); congelaPergMeses(); // compatibilidade com o formato antigo (Café/Copa antes de Ago)
     N = SECTORS.length;
     // Atualizar cache com dados frescos
-    try{localStorage.setItem('inova5s_cache',JSON.stringify({SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES,OFICINA_SCORES}));}catch(e){}
+    try{localStorage.setItem('inova5s_cache',JSON.stringify({SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES,OFICINA_SCORES,SECTOR_PERG,PERG_MES}));}catch(e){}
     return true;
   }catch(e){return SECTORS.length>0;}
 }
 async function binSave(){
-  const data={SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES,OFICINA_SCORES};
+  const data={SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES,OFICINA_SCORES,SECTOR_PERG,PERG_MES};
   if(!BIN_ID){
     const r=await fetch('https://api.jsonbin.io/v3/b',{
       method:'POST',
@@ -2496,6 +2567,15 @@ function buildPlacar(){
 
   // Rebuild thead dinamicamente
   const thead=document.getElementById('placarHead');
+  const unico = mi>=PERG_CAD_START_MONTH; // a partir de Out/2026: um campo só de conformidades
+  if(unico){
+    thead.innerHTML=`<tr>
+    <th class="pt-s">Setor</th>
+    <th>Conformidades<br><small style="font-weight:400;opacity:.6">de total de perguntas</small></th>
+    <th>Áreas Comuns<br><small style="font-weight:400;opacity:.6">calculado · máx. 6</small></th>
+    <th style="background:#4A4540">Total</th>
+  </tr>`;
+  } else
   thead.innerHTML=`<tr>
     <th class="pt-s">Setor</th>
     <th>1º S<br><small style="font-weight:400;opacity:.6">Utilização</small></th>
@@ -2520,9 +2600,19 @@ function buildPlacar(){
 
     let cells = `<td class="pt-s">${sec}${combina?' <small style="color:var(--muted);font-weight:400">(+lab)</small>':''}${combinaOficina?' <small style="color:var(--muted);font-weight:400">(+oficina)</small>':''}</td>`;
 
+    if(unico){
+      const conf=[0,1,2,3,4].reduce((a,k)=>a+(+ss[k]||0),0);
+      const tp=pergSetorMes(sec,mi);
+      const extra=combina?` <small style="color:var(--muted)">(+ lab ${pergSetorMes(PD_LAB_NOME,mi)})</small>`:'';
+      cells+=`<td><div style="display:flex;align-items:center;justify-content:center;gap:6px">
+        <input class="sinput" type="number" min="0" max="${tp}" value="${conf||''}" id="si_${si}_0"
+          aria-label="Conformidades de ${sec}" ${editMode?'':'readonly'} oninput="onConfInput(${si},this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ ${tp}${extra}</span></div></td>`;
+    } else
     for(let s=0;s<5;s++){
       const v=ss[s]||0;
-      cells+=`<td><input class="sinput" type="number" min="0" max="${maxSenso}" value="${v||''}"
+      const maxS=isNew?sensosMaxPorSenso(sec,mi,s):4;
+      cells+=`<td><input class="sinput" type="number" min="0" max="${maxS}" value="${v||''}"
               id="si_${si}_${s}" ${editMode?'':'readonly'} oninput="onSInput(${si},${s},this)"></td>`;
     }
 
@@ -2554,24 +2644,35 @@ function buildPdLabPlacar(mi){
   if(!isNew){ wrap.style.display='none'; return; }
   wrap.style.display='block';
   const ss=PD_LAB_SCORES[mi]||[0,0,0,0,0];
+  if(mi>=PERG_CAD_START_MONTH){
+    const conf=ss.reduce((a,b)=>a+(+b||0),0), tp=pergSetorMes(PD_LAB_NOME,mi);
+    body.innerHTML=`<div style="flex:1;padding:12px 14px">
+      <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Conformidades</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" min="0" max="${tp}" value="${conf||''}" placeholder="0" class="sinput" style="width:56px;font-size:15px;font-weight:900"
+          aria-label="Conformidades do laboratório" ${editMode?'':'readonly'} oninput="onPdLabConf(this)">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ ${tp}</span></div></div>`;
+    return;
+  }
   const labels=['1º S','2º S','3º S','4º S','5º S'];
   body.innerHTML=labels.map((lbl,s)=>{
     const v=ss[s]||0;
     return `<div style="flex:1;min-width:100px;padding:12px 14px;border-right:1px solid var(--border)">
       <div style="font-size:10px;font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">${lbl}</div>
       <div style="display:flex;align-items:center;gap:6px">
-        <input type="number" min="0" max="2" value="${v||''}" placeholder="0"
+        <input type="number" min="0" max="${labMax(mi,s)}" value="${v||''}" placeholder="0"
           class="sinput" style="width:48px;font-size:15px;font-weight:900"
           ${editMode?'':'readonly'}
           oninput="onPdLabInput(${s},this)">
-        <span style="font-size:11px;color:var(--muted);font-weight:700">/ 2</span>
+        <span style="font-size:11px;color:var(--muted);font-weight:700">/ ${labMax(mi,s)}</span>
       </div>
     </div>`;
   }).join('');
 }
+function labMax(mi,s){ return mi>=PERG_CAD_START_MONTH?pergSetorMes(PD_LAB_NOME,mi):2; }
 function onPdLabInput(s,input){
   const mi=parseInt(document.getElementById('placarMonthSel').value);
-  const v=Math.min(2,Math.max(0,parseInt(input.value)||0));
+  const v=Math.min(labMax(mi,s),Math.max(0,parseInt(input.value)||0));
   if(!PD_LAB_SCORES[mi]) PD_LAB_SCORES[mi]=[0,0,0,0,0];
   PD_LAB_SCORES[mi][s]=v;
   recalcAllSectorsAC(mi); // recalcula Industrial/RAID/HIT, que dependem do laboratório
@@ -2640,11 +2741,32 @@ function recalcAllSectorsAC(mi){
   });
 }
 
+function onConfInput(si,input){
+  const mi=parseInt(document.getElementById('placarMonthSel').value);
+  const sec=SECTORS[si], tp=pergSetorMes(sec,mi);
+  let v=parseInt(input.value)||0;
+  if(v<0) v=0; if(v>tp){ v=tp; input.value=tp; }
+  if(!S_SCORES[mi][si]) S_SCORES[mi][si]=[0,0,0,0,0,0];
+  const ex=S_SCORES[mi][si][5]||0;
+  S_SCORES[mi][si]=[v,0,0,0,0,ex]; // total guardado no 1º campo; a nota usa só a soma
+  // reaproveita a atualização de total/AC do onSInput
+  const fake={value:String(v)};
+  onSInput(si,0,fake);
+}
+function onPdLabConf(input){
+  const mi=parseInt(document.getElementById('placarMonthSel').value);
+  const tp=pergSetorMes(PD_LAB_NOME,mi);
+  let v=parseInt(input.value)||0;
+  if(v<0) v=0; if(v>tp){ v=tp; input.value=tp; }
+  PD_LAB_SCORES[mi]=[v,0,0,0,0];
+  recalcAllSectorsAC(mi);
+  setStat('placarStatus','✏️ Alterações não salvas...','warn');
+}
 function onSInput(si,s,input){
   const mi=parseInt(document.getElementById('placarMonthSel').value);
   const sec=SECTORS[si];
   const isNew=mi>=NEW_FORMULA_START_MONTH;
-  const maxSenso=isNew?sensosMaxPorSenso(sec,mi):4;
+  const maxSenso=isNew?sensosMaxPorSenso(sec,mi,s):4;
   const v=Math.min(maxSenso,Math.max(0,parseInt(input.value)||0));
   if(!S_SCORES[mi][si]) S_SCORES[mi][si]=[0,0,0,0,0,0];
   S_SCORES[mi][si][s]=v;
@@ -2700,7 +2822,7 @@ function cancelEdit(){
 }
 function saveDraft(){
   try{
-    localStorage.setItem('inova5s_draft',JSON.stringify({SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES,OFICINA_SCORES}));
+    localStorage.setItem('inova5s_draft',JSON.stringify({SCORES,S_SCORES,SECTORS,AREAS_COMUNS,SECTOR_AC_MAP,AC_DATA,PD_LAB_SCORES,OFICINA_SCORES,SECTOR_PERG,PERG_MES}));
     showToast('📝 Rascunho salvo! Clique em Publicar para enviar para todos.','warn');
   }catch(e){
     showToast('❌ Erro ao salvar rascunho: '+e.message,'err');
@@ -2941,7 +3063,7 @@ function gaugeSVG(pct){
     <circle cx="${cx}" cy="${cy}" r="3.8" fill="#2A2725"/></svg>`;
 }
 
-function maxEfetivoPorSenso(mi,nome){
+function maxEfetivoPorSensoLegado(mi,nome){
   // Fórmula antiga (até Julho/2026): todos os setores tinham 4 perguntas por senso
   if(mi<NEW_FORMULA_START_MONTH) return 4;
   // Fórmula nova: P&D que soma o laboratório fecha 4 (2 próprias + 2 do lab)
@@ -2950,15 +3072,15 @@ function maxEfetivoPorSenso(mi,nome){
   if(OFICINA_COMBINA.indexOf(nome)>=0 && mi>=OFICINA_START_MONTH) return 4;
   // P&D Documentação/Software em Setembro: calculado sobre 20 (4 por senso)
   if(isPd10Como20(nome,mi)) return 4;
-  return sensosMaxPorSenso(nome,mi);
+  return sensosMaxPorSensoLegado(nome,mi);
 }
 function calcSensoMedias(mi){
   const somas=[0,0,0,0,0],counts=[0,0,0,0,0];
   SECTORS.forEach((nome,si)=>{
     if(((SCORES[mi]||[])[si]||0)<=0) return;
     const ownSS=(S_SCORES[mi]&&S_SCORES[mi][si])?S_SCORES[mi][si]:[0,0,0,0,0,0];
-    const ss=sensosEfetivo(mi,nome,ownSS), max=maxEfetivoPorSenso(mi,nome);
-    for(let k=0;k<5;k++){ somas[k]+=Math.min(1,(ss[k]||0)/max)*100; counts[k]++; }
+    const ss=sensosEfetivo(mi,nome,ownSS);
+    for(let k=0;k<5;k++){ const max=maxEfetivoPorSenso(mi,nome,k); somas[k]+=Math.min(1,(ss[k]||0)/max)*100; counts[k]++; }
   });
   return somas.map((s,k)=>counts[k]?Math.round(s/counts[k]):0);
 }
@@ -4271,7 +4393,7 @@ function buildCadastroAreas(){
       oninput="renomeaAreaComum('${key}',this.value)">`;
     const tdP=tr.insertCell(); tdP.className='td-ant'; tdP.style.textAlign='center';
     tdP.innerHTML=`<input class="sinput" type="number" min="1" style="width:60px"
-      value="${area.perguntas}" oninput="alteraPerguntasArea('${key}',this.value)">`;
+      value="${perguntasAreaMes(key,pergMesIniSel())}" onchange="alteraPerguntasArea('${key}',this.value)">`;
     const tdS=tr.insertCell();
     tdS.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:4px;max-width:340px">${
       Object.keys(SECTOR_AC_MAP).map(nome=>{
@@ -4294,7 +4416,7 @@ function buildCadastroSetores(){
   if(!tbl) return;
   tbl.innerHTML='';
   const thead=tbl.createTHead(),hr=thead.insertRow();
-  [['Setor',''],['Áreas Comuns usadas',''],['Ações','tc']].forEach(([l,c])=>{
+  [['Setor',''],['Nº de perguntas','tc'],['Áreas Comuns usadas',''],['Ações','tc']].forEach(([l,c])=>{
     hr.appendChild(Object.assign(document.createElement('th'),{textContent:l,className:c}));
   });
   const tb=tbl.createTBody();
@@ -4304,6 +4426,7 @@ function buildCadastroSetores(){
     const tdN=tr.insertCell();
     tdN.innerHTML=`<input class="sinput" type="text" style="width:220px;text-align:left;font-weight:400"
       value="${sec.replace(/"/g,'&quot;')}" oninput="renomeaSetor(${si},this.value)">`;
+    const tdQ=tr.insertCell(); tdQ.innerHTML=pergInputsHTML(sec);
     const tdA=tr.insertCell();
     tdA.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:4px;max-width:420px">${
       Object.keys(AREAS_COMUNS).map(key=>{
@@ -4319,6 +4442,36 @@ function buildCadastroSetores(){
       style="background:none;border:1px solid var(--red);color:var(--red);border-radius:2px;
       padding:5px 10px;cursor:pointer;font-size:13px;font-weight:700">✕</button>`;
   });
+  [[PD_LAB_NOME,'soma com P&D - Industrial, RAID e HIT']].forEach(([nome,obs])=>{
+    const tr=tb.insertRow();
+    tr.insertCell().innerHTML=`<span style="font-weight:700">${nome}</span><br><small style="color:var(--muted)">compartilhado · ${obs}</small>`;
+    const q=tr.insertCell(); q.innerHTML=pergInputsHTML(nome);
+    tr.insertCell(); tr.insertCell();
+  });
+}
+function pergMesIniSel(){ const el=document.getElementById('pergMesIni'); return el?parseInt(el.value):PERG_CAD_START_MONTH; }
+function aplicaCadastroDesde(){
+  recalcularNotasDesde(PERG_CAD_START_MONTH);
+  try{ buildPlacar(); }catch(e){}
+  try{ updateMensal(); }catch(e){}
+  try{ buildTrimestral(); }catch(e){}
+  try{ buildAnual(); }catch(e){}
+}
+function pergInputsHTML(nome){
+  const p=pergSetorMes(nome,pergMesIniSel()), id=encodeURIComponent(nome);
+  return `<input class="sinput" type="number" min="1" style="width:60px" aria-label="Nº de perguntas de ${nome}"
+      value="${p}" onchange="alteraPergSetor('${id}',this.value)">`;
+}
+function alteraPergSetor(idNome,valor){
+  const nome=decodeURIComponent(idNome);
+  congelaPergMeses();
+  const v=Math.max(1,parseInt(valor)||1);
+  SECTOR_PERG[nome]=v;
+  const ini=pergMesIniSel();
+  for(let mi=ini;mi<12;mi++){ if(!PERG_MES[mi]) PERG_MES[mi]={}; PERG_MES[mi][nome]=v; }
+  aplicaCadastroDesde();
+  buildCadastro();
+  setStat('cadastroStatus','✏️ Alterações não salvas — clique em Publicar','warn');
 }
 
 function toggleSectorArea(sectorName,areaKey){
@@ -4336,6 +4489,8 @@ function renomeaSetor(si,novoNome){
   if(!novoNome||novoNome===antigo) return;
   if(SECTORS.includes(novoNome)){ return; } // evita duplicar silenciosamente durante digitação
   SECTORS[si]=novoNome;
+  if(SECTOR_PERG[antigo]){ SECTOR_PERG[novoNome]=SECTOR_PERG[antigo]; delete SECTOR_PERG[antigo]; }
+  Object.keys(PERG_MES).forEach(m=>{ if(PERG_MES[m][antigo]){ PERG_MES[m][novoNome]=PERG_MES[m][antigo]; delete PERG_MES[m][antigo]; } });
   if(SECTOR_AC_MAP[antigo]!==undefined){
     SECTOR_AC_MAP[novoNome]=SECTOR_AC_MAP[antigo];
     delete SECTOR_AC_MAP[antigo];
@@ -4353,8 +4508,21 @@ function renomeaAreaComum(key,novoNome){
 function alteraPerguntasArea(key,valor){
   const v=Math.max(1,parseInt(valor)||1);
   if(!AREAS_COMUNS[key]) return;
+  const ini=pergMesIniSel();
+  // 1ª edição manual: as outras áreas herdam os valores que já valiam em outubro (4)
+  if(!(PERG_MES[AC_PERG_OUT_START_MONTH]&&PERG_MES[AC_PERG_OUT_START_MONTH].__acManual)){
+    Object.keys(AC_PERG_OUT).forEach(k=>{ if(AREAS_COMUNS[k]) AREAS_COMUNS[k].perguntas=AC_PERG_OUT[k]; });
+  }
   AREAS_COMUNS[key].perguntas=v;
-  setStat('cadastroStatus','✏️ Alterações não salvas... (só vale para meses ainda não preenchidos)','warn');
+  for(let mi=ini;mi<12;mi++){
+    if(!PERG_MES[mi]) PERG_MES[mi]={};
+    PERG_MES[mi].__acManual=true;
+    const d=AC_DATA[mi]&&AC_DATA[mi][key];
+    if(d){ d.perg=v; if(d.conf>v) d.conf=v; }
+  }
+  // fixa o valor das demais áreas nesses meses (sai a regra automática de outubro)
+  aplicaCadastroDesde();
+  setStat('cadastroStatus','✏️ Alterações não salvas — clique em Publicar','warn');
 }
 
 function criarSetor(){
@@ -4433,6 +4601,7 @@ function excluirAreaComum(key){
 async function publicarCadastro(){
   showToast('⏳ Publicando cadastro online...','');
   try{
+    recalcularNotasDesde(PERG_CAD_START_MONTH);
     const res=await binSave();
     buildCadastro();
     buildPlacar();
@@ -4812,10 +4981,12 @@ async function init(){
       if(d.AC_DATA) AC_DATA=d.AC_DATA;
       if(d.PD_LAB_SCORES) PD_LAB_SCORES=d.PD_LAB_SCORES;
       if(d.OFICINA_SCORES) OFICINA_SCORES=d.OFICINA_SCORES;
+      if(d.SECTOR_PERG) SECTOR_PERG=d.SECTOR_PERG;
+      if(d.PERG_MES) PERG_MES=d.PERG_MES;
       setStat('placarStatus','📝 Rascunho pendente carregado. Entre em edição e clique "Publicar" para atualizar para todos.','warn');
     }catch(e){}
   }
-  aplicaRegrasOut2026();
+  aplicaRegrasOut2026(); congelaPergMeses();
   recalcularNotasDesde(AC_NORMALIZADO_START_MONTH);
   document.getElementById('mensal-sel-wrap').style.display='flex';
 
