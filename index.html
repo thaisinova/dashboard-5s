@@ -535,6 +535,10 @@ body:not(.app-loading) #initial-loader { display:none; }
       </svg>
       <span id="pdfBtnLabel">PDF</span>
     </button>
+    <button class="hbtn" id="jpgBtn" onclick="exportTVJpg()" title="Exportar Divulgação como imagem 16:9 em alta resolução (3840×2160)" style="display:none;border-color:#9E1B22;color:#9E1B22">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+      <span id="jpgBtnLabel">JPG</span>
+    </button>
     <button class="hbtn" onclick="exportExcel()" style="border-color:#1B7A3E;color:#1B7A3E">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -4635,11 +4639,56 @@ function updatePdfBtn(){
   const lbl = document.getElementById('pdfBtnLabel');
   if(!lbl) return;
   lbl.textContent = activeTab==='tv' ? 'Imprimir' : 'PDF';
+  const jb=document.getElementById('jpgBtn'); if(jb) jb.style.display = activeTab==='tv' ? '' : 'none';
 }
 
 // ════════════════════════════════════════════════════════════════════
 //  PRINT TV CORRIGIDO — abre janela e aguarda fontes + imagens
 // ════════════════════════════════════════════════════════════════════
+
+// ═════════════════════════════════════════════════════════════════
+//  EXPORTAR DIVULGAÇÃO COMO JPG — tamanho de slide 16:9 (1920×1080)
+// ═════════════════════════════════════════════════════════════════
+function carregaHtml2Canvas(){
+  if(window.html2canvas) return Promise.resolve();
+  return new Promise((ok,erro)=>{
+    const sc=document.createElement('script');
+    sc.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    sc.onload=()=>ok(); sc.onerror=()=>erro(new Error('Não foi possível carregar o gerador de imagem. Verifique a internet.'));
+    document.head.appendChild(sc);
+  });
+}
+async function exportTVJpg(){
+  const lbl=document.getElementById('jpgBtnLabel');
+  const slide=document.getElementById('tv-slide');
+  if(!slide||!slide.innerHTML.trim()){ alert('Abra a Divulgação antes de exportar.'); return; }
+  const W=1920,H=1080, pxPorVw=W/100;
+  if(lbl) lbl.textContent='Gerando...';
+  let palco=null;
+  try{
+    await carregaHtml2Canvas();
+    if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+    // cópia do slide em tamanho fixo, convertendo vw → px (preserva imagens embutidas)
+    palco=document.createElement('div');
+    palco.style.cssText=`position:fixed;left:-${W+200}px;top:0;width:${W}px;height:${H}px;overflow:hidden;background:#fff;font-family:'Lato',sans-serif`;
+    palco.innerHTML=slide.innerHTML.replace(/(data:[^"')\s]+)|(\d*\.?\d+)vw/g,(m,uri,n)=>uri?uri:(parseFloat(n)*pxPorVw).toFixed(1)+'px');
+    document.body.appendChild(palco);
+    await Promise.all([...palco.querySelectorAll('img')].map(im=>im.complete?null:new Promise(r=>{im.onload=im.onerror=r;})));
+    const ESC=2; // gera em 3840×2160 (4K) para a foto não ficar tremida
+    const canvas=await html2canvas(palco,{width:W,height:H,scale:ESC,useCORS:true,allowTaint:true,imageTimeout:0,backgroundColor:'#ffffff',logging:false});
+    const mes = (typeof tvSubTab!=='undefined'&&tvSubTab==='trimestral') ? QUARTERS[tvTriIdx].label : MONTHS[parseInt(document.getElementById('tvMonthSel').value)];
+    const a=document.createElement('a');
+    a.download=`5S - Divulgacao - ${mes} 2026.jpg`;
+    a.href=canvas.toDataURL('image/jpeg',0.97);
+    document.body.appendChild(a); a.click(); a.remove();
+  }catch(e){
+    alert('Erro ao gerar a imagem: '+(e&&e.message?e.message:e));
+  }finally{
+    if(palco) palco.remove();
+    if(lbl) lbl.textContent='JPG';
+  }
+}
+
 function printTVFixed(){
   const mes = tvSubTab==='trimestral' ? QUARTERS[tvTriIdx].label : MONTHS[parseInt(document.getElementById('tvMonthSel').value)];
   const slideHTML = document.getElementById('tv-slide').innerHTML
