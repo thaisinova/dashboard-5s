@@ -1896,18 +1896,25 @@ function aplicaRegrasOut2026(){
   Object.keys(AC_DATA||{}).forEach(m=>{
     const mi=+m, md=AC_DATA[m]||{};
     if(mi<FRESA_START_MONTH && md.fresa) delete md.fresa;
-    if(mi===AC_PERG_OUT_START_MONTH && !(PERG_MES[mi]&&PERG_MES[mi].__acManual)){
+    if(mi>=AC_PERG_OUT_START_MONTH){
+      // De Out/2026 em diante o nº de perguntas de cada área vem da regra/Cadastro do mês
       Object.keys(md).forEach(k=>{
-        if(AC_PERG_OUT[k]!==undefined){
-          md[k].perg=AC_PERG_OUT[k];
-          if(md[k].conf>md[k].perg) md[k].conf=md[k].perg;
-        }
+        if(!md[k]) return;
+        const p=perguntasAreaMes(k,mi);
+        if(p>0){ md[k].perg=p; if(md[k].conf>p) md[k].conf=p; }
       });
     }
   });
 }
+// Nº de perguntas de uma área comum em um mês.
+// Out/2026 em diante: 1º valor ajustado no Cadastro para aquele mês (PERG_MES[mi].__ac);
+// se não houver ajuste, vale a regra de Out/2026 (AC_PERG_OUT). Antes de Out: valor do Cadastro.
 function perguntasAreaMes(key,mi){
-  if(mi===AC_PERG_OUT_START_MONTH && AC_PERG_OUT[key]!==undefined && !(PERG_MES[mi]&&PERG_MES[mi].__acManual)) return AC_PERG_OUT[key];
+  if(mi!==undefined && mi>=AC_PERG_OUT_START_MONTH){
+    const man=PERG_MES[mi]&&PERG_MES[mi].__ac&&PERG_MES[mi].__ac[key];
+    if(man>0) return +man;
+    if(AC_PERG_OUT[key]!==undefined) return AC_PERG_OUT[key];
+  }
   const a=AREAS_COMUNS[key]; return a?a.perguntas:0;
 }
 let AREAS_COMUNS = {
@@ -2126,8 +2133,11 @@ function processarCsvImportado(rows, mi){
       const perg=area?perguntasAreaMes(key,mi):total;
       if(!AC_DATA[mi]) AC_DATA[mi]={};
       if(!AC_DATA[mi][key]) AC_DATA[mi][key]={perg,conf};
-      else AC_DATA[mi][key].conf=conf; // mantém perguntas já congeladas se já existia
-      acAtualizadas.push(`${area?area.nome:subsetor}: ${conf}/${AC_DATA[mi][key].perg}`);
+      else if(mi>=AC_PERG_OUT_START_MONTH){ AC_DATA[mi][key].perg=perg; AC_DATA[mi][key].conf=conf; }
+      else AC_DATA[mi][key].conf=conf; // antes de Out: mantém perguntas já congeladas
+      if(AC_DATA[mi][key].conf>AC_DATA[mi][key].perg) AC_DATA[mi][key].conf=AC_DATA[mi][key].perg;
+      if(mi>=AC_PERG_OUT_START_MONTH && total!==perg) ignorados.push(`${area?area.nome:subsetor}: o formulário tem ${total} perguntas, mas o Cadastro está com ${perg} para ${MONTHS[mi]}. Ajuste no Cadastro se necessário.`);
+      acAtualizadas.push(`${area?area.nome:subsetor}: ${AC_DATA[mi][key].conf}/${AC_DATA[mi][key].perg}`);
       return;
     }
 
@@ -4520,19 +4530,18 @@ function alteraPerguntasArea(key,valor){
   const v=Math.max(1,parseInt(valor)||1);
   if(!AREAS_COMUNS[key]) return;
   const ini=pergMesIniSel();
-  // 1ª edição manual: as outras áreas herdam os valores que já valiam em outubro (4)
-  if(!(PERG_MES[AC_PERG_OUT_START_MONTH]&&PERG_MES[AC_PERG_OUT_START_MONTH].__acManual)){
-    Object.keys(AC_PERG_OUT).forEach(k=>{ if(AREAS_COMUNS[k]) AREAS_COMUNS[k].perguntas=AC_PERG_OUT[k]; });
-  }
   AREAS_COMUNS[key].perguntas=v;
+  // Ajusta SÓ esta área, do mês escolhido em diante (inclusive meses já lançados).
   for(let mi=ini;mi<12;mi++){
     if(!PERG_MES[mi]) PERG_MES[mi]={};
-    PERG_MES[mi].__acManual=true;
+    if(!PERG_MES[mi].__ac) PERG_MES[mi].__ac={};
+    PERG_MES[mi].__ac[key]=v;
     const d=AC_DATA[mi]&&AC_DATA[mi][key];
     if(d){ d.perg=v; if(d.conf>v) d.conf=v; }
   }
-  // fixa o valor das demais áreas nesses meses (sai a regra automática de outubro)
+  for(let mi=ini;mi<12;mi++){ try{ recalcAllSectorsAC(mi); }catch(e){} }
   aplicaCadastroDesde();
+  buildCadastro();
   setStat('cadastroStatus','✏️ Alterações não salvas — clique em Publicar','warn');
 }
 
