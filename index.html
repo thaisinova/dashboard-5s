@@ -2399,6 +2399,8 @@ function sensosPoints(ss,divisor){
 // áreas que o setor usa). Cada não conformidade tira 1 ponto dos 6, travado em 0.
 // Setembro/2026 em diante: NC das Áreas Comuns normalizada para 6 e arredondada (igual ao Power Apps)
 const AC_NORMALIZADO_START_MONTH = 8;
+// Novembro/2026 em diante: desconto das Áreas Comuns sem arredondamento (igual ao relatório)
+const AC_SEM_ARRED_START_MONTH = 10;
 // Exibição da nota com 1 casa decimal a partir de Setembro/2026 (meses anteriores: inteiro)
 const DECIMAL_START_MONTH = 8;
 function fmtNota(v,mi){
@@ -2425,7 +2427,9 @@ function acPointsForSector(mi,sectorName){
   if(mi>=AC_NORMALIZADO_START_MONTH){
     let totalPerg=0;
     areas.forEach(key=>{ const d=monthData[key]; if(d&&d.perg>0) totalPerg+=d.perg; });
-    const nc=totalPerg>0?Math.round(totalNaoConf*6/totalPerg):0; // inteiro, igual ao Power Apps
+    let nc=totalPerg>0?totalNaoConf*6/totalPerg:0;
+    // Set/Out: arredondado para inteiro. Nov/2026 em diante: sem arredondar (igual ao relatório)
+    if(mi<AC_SEM_ARRED_START_MONTH) nc=Math.round(nc);
     return Math.max(0,6-nc);
   }
   return Math.max(0,6-totalNaoConf);
